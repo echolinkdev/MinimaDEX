@@ -1,0 +1,80 @@
+@font-face {
+	font-family: Manrope;
+	src: url('./Manrope-Regular.ttf');
+}
+
+html, body {
+	font-family: Manrope; 
+    margin: 0px;
+	width:100%;
+	height:100%;
+	border:none;
+}
+
+.greyrounded {
+	text-align:left;
+	background-color: #eeeeff;
+  	border-radius: 8px;
+  	border-color: #2222ff;
+	padding:0px;
+	margin:0px;
+	width:100%;
+	height:100%;
+}
+
+.paddedborder{
+	padding:8px;
+}
+
+.buyorder{background-color: #88ff88;} 
+.sellorder{background-color: #ff8888;} 
+
+/* Normal buttons */
+.mybtn {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  border-radius: 4px;
+  color: white; /* White text */
+  padding: 6px 8px; /* Some padding */
+  font-size: 12px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+  min-width:60px;
+}
+
+/* Darker background on mouse-over */
+.mybtn:hover {
+  background-color: RoyalBlue;
+}
+
+.mybtn:active {
+  background-color: red;
+}
+
+.mybtn:disabled {
+  background-color: grey;
+}
+
+/* Menu buttons */
+.menubtn {
+  background-color: DodgerBlue; /* Blue background */
+  border: none; /* Remove borders */
+  border-radius: 4px;
+  color: white; /* White text */
+  padding: 6px 8px; /* Some padding */
+  font-size: 16px; /* Set a font size */
+  cursor: pointer; /* Mouse pointer on hover */
+  min-width:100px;
+}
+
+/* Darker background on mouse-over */
+.menubtn:hover {
+  background-color: RoyalBlue;
+}
+
+.menubtn:active {
+  background-color: green;
+}
+
+.menubtn:disabled {
+  background-color: RoyalBlue;
+}

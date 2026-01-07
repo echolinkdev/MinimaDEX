@@ -1,0 +1,49 @@
+/**
+ * User Variables
+ */
+var USER_NAME 	= "paddy";
+var USER_ID 	= "0x00";
+
+var USER_SEED 		= "GRIEF KITTEN WOOL HARSH RESCUE VALID SLIM SECTION SHOE CLIENT LEGAL SETTLE ALONE RETREAT LINK SHIVER ILLEGAL GIRL CHAPTER MEDAL PET GENIUS WEIRD REVEAL";
+var USER_ADDRESS 	= "MxG0839DENQ2AF05JPSAG6H5B9H5JBD2SZACUR5TQUAQN0RQH7CB243DK3QHWJ5";
+var USER_PUBLICKEY 	= "0x0C0DF0C87BE757DE9444113014B109473CB7BE0940774DB2AED1CC5C2B956078";
+var USER_PRIVATEKEY	= "0x3FF8F51DD4B92073E1E82CB8D7C0CE981EFFDCF476C4A1A190F3477CF6A7C2A3";
+var USER_SCRIPT 	= "RETURN SIGNEDBY(0x0C0DF0C87BE757DE9444113014B109473CB7BE0940774DB2AED1CC5C2B956078)";
+
+var USER_BALANCE 	= {};
+
+/**
+ * Complete list of User orders
+ */
+var USER_ORDERS = [];
+
+/**
+ * ALL orders
+ */
+var ALL_ORDERS = {};
+
+/**
+ * Which Market is this
+ */
+var CURRENT_MARKET 				= {};
+CURRENT_MARKET.token1 			= {};
+CURRENT_MARKET.token1.name 		= "Minima";
+CURRENT_MARKET.token1.tokenid 	= "0x00";
+CURRENT_MARKET.token2 			= {};
+CURRENT_MARKET.token2.name 		= "MxUSD";
+CURRENT_MARKET.token2.tokenid 	= "0xFFEEDDFFEEDD";
+
+/**
+ * Remove an order from Your OrderBook
+ */
+function removeMyOrder(uuid){
+	var neworders = [];
+	var len = USER_ORDERS.length;
+	for(var i=0;i<len;i++) {
+		if(USER_ORDERS[i].uuid != uuid){
+			neworders.push(USER_ORDERS[i]);
+		}
+	}
+	
+	USER_ORDERS = neworders;
+}
