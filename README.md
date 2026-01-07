@@ -1,2 +1,2 @@
 # MinimaDEX
-A MiniMask enabl;ed Minima DEX
+A MiniMask enabled Minima DEX
