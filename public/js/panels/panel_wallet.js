@@ -100,11 +100,14 @@ function updateBalancePanel(balance){
 		var cellcoins 	= row.insertCell();
 		var cellsplt 	= row.insertCell();
 		
+		var tokenname = "";
 		if(tokenbal.tokenid == "0x00"){
-			celltoken.innerHTML 	= "Minima";
+			tokenname = "Minima";
 		}else{
-			celltoken.innerHTML 	= tokenbal.token.name;
+			tokenname = tokenbal.token.name;
 		}
+		
+		celltoken.innerHTML = tokenname;
 		celltoken.style.width="100%";
 		
 		if(tokenbal.unconfirmed != "0"){
@@ -115,7 +118,7 @@ function updateBalancePanel(balance){
 		
 		cellcoins.innerHTML = tokenbal.coins;
 		
-		cellsplt.innerHTML 	= "<button class=mybtn>Split Coins</button>";
+		cellsplt.innerHTML 	= "<button class=mybtn onclick='splitWalletCoins(\""+tokenname+"\",\""+tokenbal.tokenid+"\");'>Split Coins</button>";
 		
 		//Insert row
 		var rowid 				= baltable.insertRow();
@@ -129,6 +132,35 @@ function updateBalancePanel(balance){
 		var rowgap 	= baltable.insertRow();
 		var rowgap 	= rowgap.insertCell();
 		rowgap.innerHTML = "&nbsp;";	
+	}
+}
+
+function getTokenBalance(tokenid){
+	
+	//Search through the Balance and get total..
+	//..
+	
+	return 103;
+}
+
+
+/**
+ * Split token coins back into 10
+ */
+function splitWalletCoins(tokenname, tokenid){
+	
+	if(confirm("This will split your "+tokenname+" coins into 10 equal amounts.\n\nContinue ?")){
+		
+		//Get the balance..
+		var balance = getTokenBalance(tokenid);
+		
+		//Send and split..
+		MINIMASK.meg.send(balance, USER_ADDRESS, tokenid, USER_ADDRESS, USER_PRIVATEKEY, USER_SCRIPT, USER_KEYUSES, 10, function(resp){
+			console.log("SPLIT : "+JSON.stringify(resp));
+			
+			//And Auto Update..
+			autoUpdateBalance();
+		});
 	}
 }
 
