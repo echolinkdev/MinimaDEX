@@ -83,8 +83,8 @@ function updateBalancePanel(balance){
 	//Set the Headers
 	var row   = baltable.insertRow(0);
 	row.insertCell(0).outerHTML = "<th>Token</th>";
-	row.insertCell(1).outerHTML = "<th>Amount</th>"; 
-	row.insertCell(2).outerHTML = "<th>Coins</th>";
+	row.insertCell(1).outerHTML = "<th>Amount&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
+	row.insertCell(2).outerHTML = "<th>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
 		
 	//Get my Orders
 	var len = balance.length;
@@ -98,12 +98,14 @@ function updateBalancePanel(balance){
 		var celltoken 	= row.insertCell();
 		var cellamount 	= row.insertCell();
 		var cellcoins 	= row.insertCell();
+		var cellsplt 	= row.insertCell();
 		
 		if(tokenbal.tokenid == "0x00"){
 			celltoken.innerHTML 	= "Minima";
 		}else{
 			celltoken.innerHTML 	= tokenbal.token.name;
 		}
+		celltoken.style.width="100%";
 		
 		if(tokenbal.unconfirmed != "0"){
 			cellamount.innerHTML 	= tokenbal.confirmed+" ("+tokenbal.unconfirmed+")";
@@ -111,13 +113,15 @@ function updateBalancePanel(balance){
 			cellamount.innerHTML 	= tokenbal.confirmed;	
 		}
 		
-		cellcoins.innerHTML 	= tokenbal.coins;
+		cellcoins.innerHTML = tokenbal.coins;
+		
+		cellsplt.innerHTML 	= "<button class=mybtn>Split Coins</button>";
 		
 		//Insert row
 		var rowid 				= baltable.insertRow();
 		var celltokenid 		= rowid.insertCell();
-		celltokenid.colSpan 				= "3";
-		celltokenid.style.fontSize 			= "0.7em";
+		celltokenid.colSpan 		= "4";
+		celltokenid.style.fontSize 	= "0.7em";
 		celltokenid.style.color 	= "grey";
 		celltokenid.innerHTML 	= tokenbal.tokenid;
 		

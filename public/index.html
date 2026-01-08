@@ -172,7 +172,7 @@
 								<td>
 									<button class="menubtn" onclick="dex();">DEX</button>
 									<button class="menubtn" onclick="wallet();">Wallet</button>
-									<button class="menubtn">All Orders</button>
+									<button class="menubtn">All My Orders</button>
 									<button class="menubtn">History</button>
 								</td>
 								
@@ -389,10 +389,17 @@
 								<div class="greyrounded">
 																									
 									<div class="paddedborder">
-										<b>Balance</b> &nbsp;&nbsp;&nbsp; <button id="id_refreshbalance" onclick="autoUpdateBalance();" class=mybtn>Refresh</button>
+										<table style="width:100%" border=0>
+											<tr>
+												<td><b>Balance</b></td>
+												<td style="text-align:right;">
+													<button id="id_refreshbalance" onclick="autoUpdateBalance();" class=mybtn>Auto-Refresh</button>
+												</td>
+											</tr>
+										<table>
 										<br>
 										<table id="id_balance_table" style="width:100%;border-spacing:2px;" border=0>
-											<tr><th>Token</th><th>Amount</th><th>Coins</th></tr>
+											<tr><th>Token</th><th>Amount</th><th>Coins</th><th>Split</th></tr>
 										</table>
 									</div>
 								
@@ -419,8 +426,13 @@
 															<div id="id_wallet_address" style="font-size:0.9em;white-space: wrap;width:350px;overflow-wrap: break-word;"></div>
 															<br>
 															<p style="font-size:0.7em;">
-															When you send funds to this wallet make sure you SPLIT them<br>
+															1. When you send funds to this wallet make sure you SPLIT them<br>
 															( so that you can handle multiple trades simultaneously )</p>
+															
+															<p style="font-size:0.7em;">
+															2. When you send funds to this wallet press <b>Auto-Refresh</b> to check for coins<br>
+															( this happens automatically when you trade or send )</p>
+															
 														</center>
 														
 													</div>
@@ -467,10 +479,10 @@
 										<table style="width:90%" border=0>
 											<tr>
 												<td class="alignright">
-													Token : 
+													Token : &nbsp;
 												</td>
 												<td>
-													<select style="">
+													<select style="width:100%">
 														<option>Minima</option>
 														<option>MxUSD</option>
 														<option>BarryBoy</option>	
@@ -480,23 +492,19 @@
 											
 											<tr>
 												<td class="alignright">
-													Amount : 
+													Amount : &nbsp; 
 												</td>
 												<td>
-													<div>
-													  <input id="id_wallet_send_amount" type="number"/>
-													</div>
+													  <input id="id_wallet_send_amount" type="number" style="width:100%"/>
 												</td>			
 											</tr>
 											
 											<tr>
 												<td class="alignright">
-													Address : 
+													Address : &nbsp;
 												</td>
 												<td>
-													<div>
-													  <input id="id_wallet_send_address"  type="text"/>
-													</div>
+													<input id="id_wallet_send_address"  type="text" style="width:100%">
 												</td>			
 											</tr>
 											
@@ -627,13 +635,10 @@
 		}
 		
 		function help(){
-			
-			autoUpdateBalance();
-			
-			/*id_view_maindex.style.display="none";
+			id_view_maindex.style.display="none";
 			id_view_wallet.style.display="none";
 			id_view_help.style.display="block";
-			id_view_settings.style.display="none";*/
+			id_view_settings.style.display="none";
 		}
 		
 		function settings(){
