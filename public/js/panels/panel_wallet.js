@@ -59,8 +59,16 @@ function fetchBalance(){
 		//Store for later
 		USER_BALANCE = balance;
 			
-		//Put this in the page..
-		updateBalancePanel(balresp.data);
+		try{
+			
+			//Put this in the page..
+			updateBalancePanel(balresp.data);
+				
+		}catch(Error){
+			console.log("Error update balance : "+Error);
+			console.log("balanceresp : "+JSON.stringify(balresp));
+		}
+		
 	});
 }
 
