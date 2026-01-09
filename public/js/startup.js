@@ -38,7 +38,7 @@ function initDEX(){
 
 function initPanels(){
 	
-	dex();
+	navigate_dex();
 	
 	//Init each Panel
 	chatroomInit();

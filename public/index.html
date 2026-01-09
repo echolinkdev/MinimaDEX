@@ -170,15 +170,15 @@
 							<tr>
 								
 								<td>
-									<button class="menubtn" onclick="dex();">DEX</button>
-									<button class="menubtn" onclick="wallet();">Wallet</button>
-									<button class="menubtn">All My Orders</button>
-									<button class="menubtn">History</button>
+									<button class="menubtn" onclick="navigate_dex();">DEX</button>
+									<button class="menubtn" onclick="navigate_wallet();">Wallet</button>
+									<button class="menubtn" onclick="navigate_allorders();">All My Orders</button>
+									<button class="menubtn" onclick="navigate_history();">History</button>
 								</td>
 								
 								<td style="text-align:right">
-									<button class="menubtn" onclick="help();">Help</button>
-									<button class="menubtn" onclick="settings();">Settings</button>
+									<button class="menubtn" onclick="navigate_help();">Help</button>
+									<button class="menubtn" onclick="navigate_settings();">Settings</button>
 								</td>
 							
 							</tr>
@@ -431,7 +431,7 @@
 															
 															<p style="font-size:0.7em;">
 															2. When you send funds to this wallet press <b>Auto-Refresh</b> to check for coins<br>
-															( this happens automatically when you trade or send )</p>
+															( this happens automatically when you send, split or trade )</p>
 															
 														</center>
 														
@@ -531,6 +531,44 @@
 					
 				</div>
 
+				<!--All Orders-->
+				<div class="fullwidthheight" id="id_view_allorders" style="display:none;">
+					<table class="fullwidthheight" style="" border=0>
+						<tr>
+							<td style="padding:10px;">
+								
+								<div class="greyrounded">
+																									
+									<div class="paddedborder">
+										<b>All Orders</b><br>
+  
+									</div>
+								
+								</div>			
+							</td>
+						</tr>
+					</table>
+				</div>
+				
+				<!--History-->
+				<div class="fullwidthheight" id="id_view_history" style="display:none;">
+					<table class="fullwidthheight" style="" border=0>
+						<tr>
+							<td style="padding:10px;">
+								
+								<div class="greyrounded">
+																									
+									<div class="paddedborder">
+										<b>History</b><br>
+  
+									</div>
+								
+								</div>			
+							</td>
+						</tr>
+					</table>
+				</div>
+				
 				<!--The HELP -->
 				<div class="fullwidthheight" id="id_view_help" style="display:none;">
 					<table class="fullwidthheight" style="" border=0>
