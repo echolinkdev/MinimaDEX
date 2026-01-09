@@ -56,7 +56,7 @@ var STORAGE = {
 			//Convert to JSON
 			var dataJSON = JSON.parse(datastr);
 			
-			return dataJSON	
+			return dataJSON;	
 			
 		}catch(Error){
 		

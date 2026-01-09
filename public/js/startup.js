@@ -5,6 +5,9 @@ var MINIMASK_INITED = false;
 
 function initDEX(){
 	
+	//Init
+	initPanels();
+			
 	//Wait for page to load
 	window.onload = function () {
 		
@@ -20,8 +23,6 @@ function initDEX(){
 				if(initmsg.event == "MINIMASK_INIT"){
 					
 					MINIMASK_INITED = true;		
-						
-					initPanels();
 					
 				}else if(initmsg.event == "MINIMASK_PENDING"){
 					//Confirmed Pending actions will be sent here..
@@ -33,13 +34,20 @@ function initDEX(){
 			console.log("MINIMASK extension not active!");	
 		}	
 	}
-	
-	
 }
 
 function initPanels(){
-	fetchBalance();	
+	
+	dex();
+	
+	//Init each Panel
+	chatroomInit();
+	myordersInit();
+	allordersInit();
+	
+	//Wallet
+	walletInit();
+	
+	//Now connect to server
+	wsInitSocket();
 }
-
-//Init the DEX
-initDEX();

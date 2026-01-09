@@ -195,7 +195,7 @@
 			<td style="" colspan=1>
 				
 				<!--The MAIN dex-->
-				<div class="fullwidthheight" style="" id="id_view_maindex" >
+				<div class="fullwidthheight" style="display:none;" id="id_view_maindex" >
 					
 					<!-- the Main DEX page -->	
 					<table class="fullwidthheight" style="" border=0>
@@ -380,7 +380,7 @@
 				</div>
 				
 				<!--The WALLET -->
-				<div class="fullwidthheight" id="id_view_wallet" >
+				<div class="fullwidthheight" style="display:none;" id="id_view_wallet" >
 					
 					<table class="fullwidthheight" style="" border=0>
 						<tr>
@@ -532,7 +532,7 @@
 				</div>
 
 				<!--The HELP -->
-				<div style="width:100%;height:100%;" id="id_view_help" >
+				<div class="fullwidthheight" id="id_view_help" style="display:none;">
 					<table class="fullwidthheight" style="" border=0>
 						<tr>
 							<td style="padding:10px;">
@@ -554,7 +554,7 @@
 				</div>
 				
 				<!--The Settings-->
-				<div style="width:100%;height:100%;" id="id_view_settings" >
+				<div class="fullwidthheight" id="id_view_settings" style="display:none;">
 					<table class="fullwidthheight" style="" border=0>
 						<tr>
 							<td style="padding:10px;">
@@ -584,12 +584,12 @@
 	<script type="text/javascript" src="./js/mktaction.js"></script>
 	<script type="text/javascript" src="./js/client.js"></script>
 	<script type="text/javascript" src="./js/variables.js"></script>
-	
+	<script src="./js/navigation.js"></script>
+		
 	<script type="text/javascript" src="./js/panels/panel_chatroom.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_createorder.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_myorders.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_allorders.js"></script>
-	
 	<script type="text/javascript" src="./js/panels/panel_wallet.js"></script>
 	
 	<script type="text/javascript" src="./js/chartgraph.js"></script>
@@ -615,57 +615,10 @@
 		var dd = STORAGE.getData("mydata");
 		console.log("DATA : "+JSON.stringify(dd));
 		
-		//Show the dex..
-		wallet();
-		
-		//Init listeners
-		chatroomInit();
-		myordersInit();
-		allordersInit();
-		
-		//Wallet
-		initWallet();
-		
-		//Now connect to server
-		wsInitSocket();
-		
-		function dex(){
-			id_view_maindex.style.display="block";
-			id_view_wallet.style.display="none";
-			id_view_help.style.display="none";
-			id_view_settings.style.display="none";
-		}
-		
-		function wallet(){
-			id_view_maindex.style.display="none";
-			id_view_wallet.style.display="block";
-			id_view_help.style.display="none";
-			id_view_settings.style.display="none";
-			
-			//Reset balance.. will be cached by MiniMask anyway
-			if(typeof MINIMASK !== "undefined"){
-				fetchBalance();
-			}
-		}
-		
-		function help(){
-			id_view_maindex.style.display="none";
-			id_view_wallet.style.display="none";
-			id_view_help.style.display="block";
-			id_view_settings.style.display="none";
-		}
-		
-		function settings(){
-			id_view_maindex.style.display="none";
-			id_view_wallet.style.display="none";
-			id_view_help.style.display="none";
-			id_view_settings.style.display="block";
-		}
+		//Init the DEX
+		initDEX();
 		
 	</script>
-<!--
-	
-	-->
 				
 </body>
 </html>

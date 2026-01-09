@@ -2,7 +2,7 @@
 const seed_blakout_panel	= document.getElementById('id_blackoutdiv');
 const seed_show_panel 		= document.getElementById('id_seedphrasepanel');
 
-function initWallet(){
+function walletInit(){
 	
 	var qrcode = new QRCode("wallet_receiveqr", {
 		    text: USER_ADDRESS,
