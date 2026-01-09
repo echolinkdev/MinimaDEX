@@ -595,6 +595,7 @@
 	<script type="text/javascript" src="./js/chartgraph.js"></script>
 	
 	<script src="./js/libs/crypto-js.4.2.0.min.js"></script>
+	<script src="./js/storage.js"></script>
 		
 	<script type="text/javascript">
 		
@@ -604,23 +605,15 @@
 		}*/
 		
 		//Local Storage Test
-		var data = localStorage.getItem('minimadex');
-		console.log("Local : "+data);
-		
 		var datajson= {};
 		datajson.type="what";
 		
-		var datastr = JSON.stringify(datajson);
+		STORAGE.setPassword("hello");
+		STORAGE.setData("mydata",datajson);
 		
-		var encrypted = CryptoJS.AES.encrypt(datastr, "mypassword");
-		console.log("Encrypted : "+encrypted);
-		
-		var decrypted = CryptoJS.AES.decrypt(encrypted, "mypassword");
-		console.log("Decrypted : "+decrypted.toString(CryptoJS.enc.Utf8));
-						
-		localStorage.setItem("minimadex",JSON.stringify(datajson));
-		
-		
+		STORAGE.setPassword("hello");
+		var dd = STORAGE.getData("mydata");
+		console.log("DATA : "+JSON.stringify(dd));
 		
 		//Show the dex..
 		wallet();
