@@ -24,6 +24,8 @@ function initDEX(){
 					
 					MINIMASK_INITED = true;		
 					
+					navigate_wallet();
+					
 				}else if(initmsg.event == "MINIMASK_PENDING"){
 					//Confirmed Pending actions will be sent here..
 					
@@ -34,11 +36,11 @@ function initDEX(){
 			console.log("MINIMASK extension not active!");	
 		}	
 	}
+	
+	
 }
 
 function initPanels(){
-	
-	navigate_dex();
 	
 	//Init each Panel
 	chatroomInit();
@@ -50,4 +52,6 @@ function initPanels(){
 	
 	//Now connect to server
 	wsInitSocket();
+	
+	//navigate_wallet();
 }

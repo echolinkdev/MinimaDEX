@@ -42,7 +42,7 @@ function fetchBalance(){
 		//Check New vs Old
 		if(JSON.stringify(balance) != oldbalance){
 			
-			if(oldbalance != "{}"){
+			if(oldbalance != "[]"){
 				//Some thing has changed.. check for a few minutes..
 				autoUpdateBalance();	
 			}
@@ -75,16 +75,19 @@ function fetchBalance(){
 function updateBalancePanel(balance){
 	console.log("Update balance display..");
 	
-	var baltable = document.getElementById('id_balance_table');
+	var baltable 	= document.getElementById('id_balance_table');
+	var tokenselect	= document.getElementById('id_wallet_tokenselect');
 	
 	//Clear Table
-	baltable.innerHTML = "";
+	baltable.innerHTML 		= "";
+	tokenselect.innerHTML 	= "";
 	
 	//Set the Headers
 	var row   = baltable.insertRow(0);
-	row.insertCell(0).outerHTML = "<th>Token</th>";
-	row.insertCell(1).outerHTML = "<th>Amount&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
-	row.insertCell(2).outerHTML = "<th>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
+	row.insertCell().outerHTML = "<th>Token</th>";
+	row.insertCell().outerHTML = "<th>Available&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
+	row.insertCell().outerHTML = "<th>Amount&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
+	row.insertCell().outerHTML = "<th>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
 		
 	//Get my Orders
 	var len = balance.length;
@@ -95,10 +98,11 @@ function updateBalancePanel(balance){
 		//Insert row
 		var row = baltable.insertRow();
 		
-		var celltoken 	= row.insertCell();
-		var cellamount 	= row.insertCell();
-		var cellcoins 	= row.insertCell();
-		var cellsplt 	= row.insertCell();
+		var celltoken 		= row.insertCell();
+		var cellavailable 	= row.insertCell();
+		var cellamount 		= row.insertCell();
+		var cellcoins 		= row.insertCell();
+		var cellsplt 		= row.insertCell();
 		
 		var tokenname = "";
 		if(tokenbal.tokenid == "0x00"){
@@ -109,6 +113,8 @@ function updateBalancePanel(balance){
 		
 		celltoken.innerHTML = tokenname;
 		celltoken.style.width="100%";
+		
+		cellavailable.innerHTML = "0";
 		
 		if(tokenbal.unconfirmed != "0"){
 			cellamount.innerHTML 	= tokenbal.confirmed+" ("+tokenbal.unconfirmed+")";
@@ -131,7 +137,13 @@ function updateBalancePanel(balance){
 		//Final gap
 		var rowgap 	= baltable.insertRow();
 		var rowgap 	= rowgap.insertCell();
-		rowgap.innerHTML = "&nbsp;";	
+		rowgap.innerHTML = "&nbsp;";
+		
+		//And sort the select
+		var opt 		= document.createElement('option');
+        opt.value 		= tokenbal.tokenid;
+        opt.innerHTML 	= tokenname;
+        tokenselect.appendChild(opt); 	
 	}
 }
 
@@ -143,6 +155,46 @@ function getTokenBalance(tokenid){
 	return 103;
 }
 
+/**
+ * Send fundxs from the wallet
+ */
+function wallet_sendfunds(){
+	
+	var sel = id_wallet_tokenselect.selectedIndex;
+	
+	//Get the details..
+	var tokenname 	= id_wallet_tokenselect.options[sel].text;
+	var tokenid 	= id_wallet_tokenselect.value;
+	var address 	= id_wallet_send_address.value.trim();
+	var amount  	= financial(id_wallet_send_amount.value);
+	
+	if(amount <= 0){
+		alert("Invalid amount : "+amount);
+		return;
+	}
+	
+	if(address == ""){
+		alert("Cannot have blank address");
+		return;
+	}
+	
+	if(confirm("You are about to send "+amount+" "+tokenname+" to "+address+"\n\nContinue ?")){
+		
+		//Send
+		utility_send(tokenid, amount, address, 1, function(resp){
+			//console.log("WALLET SEND : "+JSON.stringify(resp));
+			
+			if(resp.status){
+				alert("Funds Sent!");
+			}else{
+				alert(resp.error);
+			}
+		});
+		
+		id_wallet_send_amount.value  = 0;
+		id_wallet_send_address.value = "";
+	}
+}
 
 /**
  * Split token coins back into 10
@@ -155,11 +207,8 @@ function splitWalletCoins(tokenname, tokenid){
 		var balance = getTokenBalance(tokenid);
 		
 		//Send and split..
-		MINIMASK.meg.send(balance, USER_ADDRESS, tokenid, USER_ADDRESS, USER_PRIVATEKEY, USER_SCRIPT, USER_KEYUSES, 10, function(resp){
-			console.log("SPLIT : "+JSON.stringify(resp));
-			
-			//And Auto Update..
-			autoUpdateBalance();
+		utility_send(tokenid, balance, USER_ADDRESS, 10, function(resp){
+			console.log("WALLET SPLIT : "+JSON.stringify(resp));
 		});
 	}
 }
@@ -200,4 +249,22 @@ function autoUpdateBalance(){
 		
 	}, 10000);
 	
+}
+
+/**
+ * Utility SEND function that deals
+ */
+function utility_send(tokenid, amount, address, split, callback){
+	//Send
+	MINIMASK.meg.send(amount+"", address, tokenid, USER_ADDRESS, USER_PRIVATEKEY, USER_SCRIPT, USER_KEYUSES, split, function(resp){
+		
+		//Update KEY USES
+		USER_KEYUSES++;
+		
+		//And Auto Update the balance..
+		autoUpdateBalance();
+					
+		//Callback
+		callback(resp);
+	});
 }
