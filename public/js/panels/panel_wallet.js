@@ -155,14 +155,6 @@ function updateBalancePanel(){
 	}
 }
 
-function getTokenBalance(tokenid){
-	
-	//Search through the Balance and get total..
-	//..
-	
-	return 103;
-}
-
 /**
  * Send fundxs from the wallet
  */
@@ -174,10 +166,13 @@ function wallet_sendfunds(){
 	var tokenname 	= id_wallet_tokenselect.options[sel].text;
 	var tokenid 	= id_wallet_tokenselect.value;
 	var address 	= id_wallet_send_address.value.trim();
-	var amount  	= financial(id_wallet_send_amount.value);
+	var amount  	= id_wallet_send_amount.value;
 	
-	if(amount <= 0){
-		alert("Invalid amount : "+amount);
+	//Get totasl available amount
+	var available = getAvailableBalance(tokenid);
+	
+	if(amount <= 0 || amount>available){
+		alert("Invalid amount : "+amount+"\n\nAvailable : "+available);
 		return;
 	}
 	
@@ -209,10 +204,10 @@ function wallet_sendfunds(){
  */
 function splitWalletCoins(tokenname, tokenid){
 	
-	if(confirm("This will split your "+tokenname+" coins into 10 equal amounts.\n\nContinue ?")){
-		
-		//Get the balance..
-		var balance = getTokenBalance(tokenid);
+	//Get the balance..
+	var balance = getAvailableBalance(tokenid);
+			
+	if(confirm("This will split your AVAILABLE "+tokenname+" coins ("+balance+") into 10 equal amounts.\n\nContinue ?")){
 		
 		//Send and split..
 		utility_send(tokenid, balance, USER_ADDRESS, 10, function(resp){
