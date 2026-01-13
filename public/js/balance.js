@@ -1,4 +1,75 @@
 /**
+ * Fetch the balance for thisa User
+ */
+function fetchFullBalance(callback){
+	
+	MINIMASK.meg.balance(USER_ADDRESS, function(balresp){
+		
+		//The balance bit
+		var balance = balresp.data;
+		
+		//The OLD balance..
+		var oldbalance = JSON.stringify(USER_BALANCE);
+		
+		//Store for later
+		USER_BALANCE = balance;
+					
+		//Check New vs Old
+		if(JSON.stringify(balance) != oldbalance){
+					
+			if(oldbalance != "[]"){
+				//Some thing has changed.. check for a few minutes..
+				autoUpdateBalance();	
+			}
+			
+			//Update the Panel
+			updateBalancePanel();
+		}
+		
+		if(callback){
+			callback();
+		}
+	});
+}
+
+/**
+ * Auto check balance for a certain amount of time.. 
+ */
+var AUTO_BALANCE_INTERVALID 		= 0;
+var AUTO_BALANCE_INTERVAL_COUNTER 	= 0;
+function autoUpdateBalance(){
+	
+	console.log("START Balance auto checker");
+	
+	//Disable the refresh button
+	id_refreshbalance.disabled=true;
+	
+	//Clear the old
+	clearInterval(AUTO_BALANCE_INTERVALID);
+	
+	//Reset counter
+	AUTO_BALANCE_INTERVAL_COUNTER = 0;
+	
+	//Start a new one..
+	AUTO_BALANCE_INTERVALID = setInterval(function(){
+	
+		console.log("Auto-Balance checker Called!! "+AUTO_BALANCE_INTERVAL_COUNTER);	
+		
+		fetchFullBalance();
+		
+		//Do we stop!!
+		AUTO_BALANCE_INTERVAL_COUNTER++;
+		if(AUTO_BALANCE_INTERVAL_COUNTER > 10){
+			clearInterval(AUTO_BALANCE_INTERVALID);
+			console.log("END Balance auto checker");
+			
+			id_refreshbalance.disabled=false;	
+		}
+		
+	}, 10000);
+}
+
+/**
  * Check available balance for a tokenid
  */
 

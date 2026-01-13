@@ -28,58 +28,6 @@ function hideSeedPhrase(){
 	seed_show_panel.style.display = "none";
 }
 
-function fetchBalance(callback){
-	
-	MINIMASK.meg.balance(USER_ADDRESS, function(balresp){
-		//console.log("BALANCE : "+JSON.stringify(balresp));
-		
-		//The balance bit
-		var balance = balresp.data;
-		
-		//The OLD balance..
-		var oldbalance = JSON.stringify(USER_BALANCE);
-		
-		//Check New vs Old
-		if(JSON.stringify(balance) != oldbalance){
-			
-			if(oldbalance != "[]"){
-				//Some thing has changed.. check for a few minutes..
-				autoUpdateBalance();	
-			}
-			
-		}else{
-			
-			if(callback){
-				callback();
-			}
-			
-			//The SAME .. no change..
-			return;
-		}
-		
-		//Update DEX server..
-		//..
-		
-		//Store for later
-		USER_BALANCE = balance;
-			
-		try{
-			
-			//Put this in the page..
-			updateBalancePanel();
-				
-		}catch(Error){
-			console.log("Error update balance : "+Error);
-			console.log("balanceresp : "+JSON.stringify(balresp));
-		}
-		
-		if(callback){
-			callback();
-		}
-		
-	});
-}
-
 function updateBalancePanel(){
 	console.log("Update balance display..");
 	
@@ -214,44 +162,6 @@ function splitWalletCoins(tokenname, tokenid){
 			console.log("WALLET SPLIT : "+JSON.stringify(resp));
 		});
 	}
-}
-
-/**
- * Auto check balance for a certain amount of time.. 
- */
-var AUTO_BALANCE_INTERVALID 		= 0;
-var AUTO_BALANCE_INTERVAL_COUNTER 	= 0;
-function autoUpdateBalance(){
-	
-	console.log("START Balance auto checker");
-	
-	//Disable the refresh button
-	id_refreshbalance.disabled=true;
-	
-	//Clear the old
-	clearInterval(AUTO_BALANCE_INTERVALID);
-	
-	//Reset counter
-	AUTO_BALANCE_INTERVAL_COUNTER = 0;
-	
-	//Start a new one..
-	AUTO_BALANCE_INTERVALID = setInterval(function(){
-	
-		console.log("Auto-Balance checker Called!! "+AUTO_BALANCE_INTERVAL_COUNTER);	
-		
-		fetchBalance();
-		
-		//Do we stop!!
-		AUTO_BALANCE_INTERVAL_COUNTER++;
-		if(AUTO_BALANCE_INTERVAL_COUNTER > 10){
-			clearInterval(AUTO_BALANCE_INTERVALID);
-			console.log("END Balance auto checker");
-			
-			id_refreshbalance.disabled=false;	
-		}
-		
-	}, 10000);
-	
 }
 
 /**

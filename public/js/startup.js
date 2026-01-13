@@ -24,7 +24,7 @@ function initDEX(){
 					
 					MINIMASK_INITED = true;		
 					
-					fetchBalance(function(){
+					fetchFullBalance(function(){
 						navigate_dex();	
 					});
 					
