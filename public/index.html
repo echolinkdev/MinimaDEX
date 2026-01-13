@@ -14,6 +14,8 @@
 	
 	<script src="./js/libs/chartjs-chart-financial.min.js" type="text/javascript"></script>
 	
+	<script src="./js/libs/decimal.js" type="text/javascript"></script>
+		
 	<script src="./js/libs/qrcode.min.js" type="text/javascript"></script>
 	
     <title>Minima DEX</title>
@@ -224,7 +226,7 @@
 													
 													<div style="text-align:center;padding-top:10px;">
 														<select style="width:90%">
-															<option>Minima / MxUSD</option>
+															<option>Minima / paddy</option>
 															<option>BarryBoy / Minima </option>
 															<option>BarryBoy / MxUSD </option>	
 														</select>
@@ -574,8 +576,9 @@
 	<script type="text/javascript" src="./js/mktaction.js"></script>
 	<script type="text/javascript" src="./js/client.js"></script>
 	<script type="text/javascript" src="./js/variables.js"></script>
-	<script src="./js/navigation.js"></script>
-		
+	<script type="text/javascript" src="./js/navigation.js"></script>
+	<script type="text/javascript" src="./js/balance.js"></script>
+			
 	<script type="text/javascript" src="./js/panels/panel_chatroom.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_createorder.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_myorders.js"></script>
@@ -593,6 +596,8 @@
 		    var element = document.getElementById(id);
 		    return element.currentStyle ? element.currentStyle[name] : window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null;
 		}*/
+		
+		console.log("TEST:"+financial("100"));
 		
 		//Local Storage Test
 		var datajson= {};

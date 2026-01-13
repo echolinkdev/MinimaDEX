@@ -11,5 +11,6 @@ function getRandomHexString() {
 }
 
 function financial(x) {
-  return Number.parseFloat(x).toFixed(4);
+  return new Decimal(x).toDecimalPlaces(4).toNumber();		
+  //return +Number.parseFloat(x).toFixed(4);
 }

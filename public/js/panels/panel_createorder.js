@@ -15,11 +15,18 @@ function createOrder(buysell, amount, price){
 }
 
 function sendOrder(buysell){
+	
+	//Get the available balance..
+	var available1 = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
+	console.log("Available "+CURRENT_MARKET.token1.name+":"+available1);
+	
+	var available2 = getAvailableBalance(CURRENT_MARKET.token2.tokenid);
+	console.log("Available "+CURRENT_MARKET.token2.name+":"+available2);
+	
 	//Check values positive..
-	var amount 	= +financial(+createamount.value);
-	var price 	= +financial(+createprice.value);
-	//..
-
+	var amount 	= financial(createamount.value);
+	var price 	= financial(createprice.value);
+		
 	//Create the order
 	var order = createOrder(buysell, amount, price);
 		

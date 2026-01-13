@@ -22,7 +22,11 @@ function navigate_wallet(){
 	
 	//Reset balance.. will be cached by MiniMask anyway
 	if(typeof MINIMASK !== "undefined"){
-		fetchBalance();
+		fetchBalance(function(){
+			updateBalancePanel();
+		});
+	}else{
+		updateBalancePanel();
 	}
 }
 

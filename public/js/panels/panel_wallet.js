@@ -28,7 +28,7 @@ function hideSeedPhrase(){
 	seed_show_panel.style.display = "none";
 }
 
-function fetchBalance(){
+function fetchBalance(callback){
 	
 	MINIMASK.meg.balance(USER_ADDRESS, function(balresp){
 		//console.log("BALANCE : "+JSON.stringify(balresp));
@@ -49,6 +49,10 @@ function fetchBalance(){
 			
 		}else{
 			
+			if(callback){
+				callback();
+			}
+			
 			//The SAME .. no change..
 			return;
 		}
@@ -62,17 +66,21 @@ function fetchBalance(){
 		try{
 			
 			//Put this in the page..
-			updateBalancePanel(balresp.data);
+			updateBalancePanel();
 				
 		}catch(Error){
 			console.log("Error update balance : "+Error);
 			console.log("balanceresp : "+JSON.stringify(balresp));
 		}
 		
+		if(callback){
+			callback();
+		}
+		
 	});
 }
 
-function updateBalancePanel(balance){
+function updateBalancePanel(){
 	console.log("Update balance display..");
 	
 	var baltable 	= document.getElementById('id_balance_table');
@@ -90,10 +98,10 @@ function updateBalancePanel(balance){
 	row.insertCell().outerHTML = "<th>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
 		
 	//Get my Orders
-	var len = balance.length;
+	var len = USER_BALANCE.length;
 	for(var i=0;i<len;i++) {
 		
-		var tokenbal=balance[i];
+		var tokenbal=USER_BALANCE[i];
 		
 		//Insert row
 		var row = baltable.insertRow();
@@ -114,7 +122,7 @@ function updateBalancePanel(balance){
 		celltoken.innerHTML = tokenname;
 		celltoken.style.width="100%";
 		
-		cellavailable.innerHTML = "0";
+		cellavailable.innerHTML = getAvailableBalance(tokenbal.tokenid);
 		
 		if(tokenbal.unconfirmed != "0"){
 			cellamount.innerHTML 	= tokenbal.confirmed+" ("+tokenbal.unconfirmed+")";

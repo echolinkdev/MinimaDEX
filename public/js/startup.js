@@ -24,7 +24,9 @@ function initDEX(){
 					
 					MINIMASK_INITED = true;		
 					
-					navigate_wallet();
+					fetchBalance(function(){
+						navigate_dex();	
+					});
 					
 				}else if(initmsg.event == "MINIMASK_PENDING"){
 					//Confirmed Pending actions will be sent here..

@@ -2,7 +2,7 @@ const DEX_SERVER = "ws://localhost:8081";
 var WEB_SOCKET;
 const MESSAGE_LISTENERS = [];
 
-var LOGGING_ENABLED = true;
+var LOGGING_ENABLED = false;
 
 function wsInitSocket(){
 	

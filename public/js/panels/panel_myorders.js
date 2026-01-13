@@ -12,8 +12,7 @@ function myordersInit(){
 	wsAddListener(function(msg){
 		//Is it a chat message
 		if(msg.type=="update_orderbook"){
-			console.log("My Orders : "+JSON.stringify(msg));
-			
+			//console.log("My Orders : "+JSON.stringify(msg));
 			myordersSetTable();
 		}
 	});	
