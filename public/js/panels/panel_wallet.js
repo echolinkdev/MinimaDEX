@@ -153,9 +153,10 @@ function wallet_sendfunds(){
 function splitWalletCoins(tokenname, tokenid){
 	
 	//Get the balance..
-	var balance = getAvailableBalance(tokenid);
+	var balance = getConfirmedBalance(tokenid);
 			
-	if(confirm("This will split your AVAILABLE "+tokenname+" coins ("+balance+") into 10 equal amounts.\n\nContinue ?")){
+	if(confirm("This will split your "+tokenname+" coins ("+balance+") into 10 equal amounts."
+				+"\n\nContinue ?")){
 		
 		//Send and split..
 		utility_send(tokenid, balance, USER_ADDRESS, 10, function(resp){

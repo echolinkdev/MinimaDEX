@@ -18,6 +18,21 @@ function myordersInit(){
 	});	
 }
 
+/**
+ * Remove an order from Your OrderBook
+ */
+function removeMyOrder(uuid){
+	var neworders = [];
+	var len = USER_ORDERS.length;
+	for(var i=0;i<len;i++) {
+		if(USER_ORDERS[i].uuid != uuid){
+			neworders.push(USER_ORDERS[i]);
+		}
+	}
+	
+	USER_ORDERS = neworders;
+}
+
 function _rmorder(uuid){
 	
 	//First remove the ortder..

@@ -15,7 +15,11 @@ function chatroomInit(){
 		//Is it a chat message
 		if(msg.type=="chat"){
 			console.log("Chat room : "+JSON.stringify(msg));
-			chatarea.value+=msg.data+"\n";
+			
+			//Add the UUID..
+			var shortuuid = msg.uuid.substring(0,8);
+			
+			chatarea.value+= shortuuid+"_"+msg.data+"\n";
 		}
 	});	
 }

@@ -36,18 +36,3 @@ CURRENT_MARKET.token1.tokenid 	= "0x00";
 CURRENT_MARKET.token2 			= {};
 CURRENT_MARKET.token2.name 		= "paddy";
 CURRENT_MARKET.token2.tokenid 	= "0x0819335DE1BFC9D78248A944DE0A9843B2F6A2F9DF54296B22BA48BA9C2CA7EC";
-
-/**
- * Remove an order from Your OrderBook
- */
-function removeMyOrder(uuid){
-	var neworders = [];
-	var len = USER_ORDERS.length;
-	for(var i=0;i<len;i++) {
-		if(USER_ORDERS[i].uuid != uuid){
-			neworders.push(USER_ORDERS[i]);
-		}
-	}
-	
-	USER_ORDERS = neworders;
-}

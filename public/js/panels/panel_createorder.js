@@ -26,6 +26,46 @@ function sendOrder(buysell){
 	//Check values positive..
 	var amount 	= financial(createamount.value);
 	var price 	= financial(createprice.value);
+	var tot 	= financial(amount * price) 
+	
+	//Check you have enough!
+	var confmsg = "";
+	if(buysell == "buy"){
+		
+		if(tot > available2){
+			var msg = "Insufficient funds.."
+					  +"\n\nYou are trying to BUY "+amount+" "+CURRENT_MARKET.token1.name+" @ "+price
+					  +"\n\nThat is a total of "+tot+" "+CURRENT_MARKET.token2.name
+					  +"\n\nYou currently only have "+available2+" available";
+			
+			alert(msg);
+			return;	
+		}
+		
+		confmsg = "Create order to BUY "+amount+" "+CURRENT_MARKET.token1.name+" @ "+price
+				+"\n\nThat will be a total of "+tot+" "+CURRENT_MARKET.token2.name
+				+"\n\nConfirm ? ";
+		
+	}else if(buysell == "sell"){
+		
+		if(tot > available1){
+			var msg = "Insufficient funds.."
+					  +"\n\nYou are trying to SELL "+amount+" "+CURRENT_MARKET.token1.name
+					  +"\n\nYou currently only have "+available1+" available";
+			
+			alert(msg);
+			return;	
+		}
+		
+		confmsg = "Create order to SELL "+amount+" "+CURRENT_MARKET.token1.name+" @ "+price
+				+"\n\nThat will be a total of "+tot+" "+CURRENT_MARKET.token2.name
+				+"\n\nConfirm ? ";
+	} 
+	
+	//Check cnfirm
+	if(!confirm(confmsg)){
+		return;
+	}
 		
 	//Create the order
 	var order = createOrder(buysell, amount, price);
