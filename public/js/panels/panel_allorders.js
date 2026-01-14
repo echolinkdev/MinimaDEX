@@ -17,14 +17,10 @@ function allordersInit(){
 			//Set this..
 			ALL_ORDERS[msg.uuid] = msg.data;
 			
-			//console.log("ALL ORDERS : "+JSON.stringify(ALL_ORDERS));
-			
-			for (const key in ALL_ORDERS) {
-			    
+			/*for (const key in ALL_ORDERS) {
 				var val = ALL_ORDERS[key];
-				
 				console.log("ALL ORDERS : "+key+" : "+val);
-			}
+			}*/
 			
 			allordersSetTable();
 		
@@ -41,14 +37,34 @@ function allordersInit(){
 }
 
 function getOrdersOnly(buysell){
+	
 	var list = [];
+	
+	//Cycle throuigh ALL_ORDERS users
+	for(const key in ALL_ORDERS) {
+		
+		//Get the order book
+		var book = ALL_ORDERS[key].orders;
+		
+		//Cycle through the book
+		var len = book.length;
+		for(var i=0;i<len;i++) {
+			if(book[i].type==buysell){
+				list.push(book[i]);
+			}
+		}
+	}
+	
+	return list;
+	
+	/*var list = [];
 	var len = USER_ORDERS.length;
 	for(var i=0;i<len;i++) {
 		if(USER_ORDERS[i].type==buysell){
 			list.push(USER_ORDERS[i]);
 		}
 	}
-	return list;
+	return list;*/
 }
 
 function buyAction(price, maxamount){
