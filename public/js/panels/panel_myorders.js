@@ -13,41 +13,12 @@ function myordersInit(){
 		//Is it a chat message
 		if(msg.type=="update_orderbook"){
 			//console.log("My Orders : "+JSON.stringify(msg));
-			myordersSetTable();
+			myOrdersSetTable();
 		}
 	});	
 }
 
-/**
- * Remove an order from Your OrderBook
- */
-function removeMyOrder(uuid){
-	var neworders = [];
-	var len = USER_ORDERS.length;
-	for(var i=0;i<len;i++) {
-		if(USER_ORDERS[i].uuid != uuid){
-			neworders.push(USER_ORDERS[i]);
-		}
-	}
-	
-	USER_ORDERS = neworders;
-}
-
-function _rmorder(uuid){
-	
-	//First remove the ortder..
-	removeMyOrder(uuid);
-	
-	//Now send updated book to server
-	var msg  = {};
-	msg.type = "update_orderbook";
-	msg.data = USER_ORDERS;
-	
-	//Will update table when I receive the server message
-	wsPostToServer(msg);
-}
-
-function myordersSetTable(){
+function myOrdersSetTable(){
 	
 	//Clear Table
 	myorderstable.innerHTML = "";
@@ -88,6 +59,6 @@ function myordersSetTable(){
 		cellamount.innerHTML 	= "&nbsp;"+order.amount;
 		cellprice.innerHTML 	= "&nbsp;"+order.price;
 		celltype.innerHTML 		= "&nbsp;"+order.type; 
-		cellaction.innerHTML 	= "<button class='mybtn' onclick='_rmorder(\""+order.uuid+"\")'>Cancel</button>";
+		cellaction.innerHTML 	= "<button class='mybtn' onclick='removeMyOrderAndPost(\""+order.uuid+"\")'>Cancel</button>";
 	}
 }

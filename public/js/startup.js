@@ -1,12 +1,29 @@
 /**
  * Called to  init DEX
  */
-var MINIMASK_INITED = false;
-
 function initDEX(){
 	
-	//Init
-	initPanels();
+	//Init each Panel
+	chatroomInit();
+	myordersInit();
+	allordersInit();
+	
+	//Wallet
+	walletInit();
+	
+	//Load your Orders
+	loadMyOrders();
+	
+	//Display them..
+	myOrdersSetTable();
+	
+	//Now connect to server
+	wsInitSocket(function(){
+		
+		//Have connected to server - post your orders to it..
+		postMyOrdersToServer();
+		
+	});
 			
 	//Wait for page to load
 	window.onload = function () {
@@ -22,8 +39,6 @@ function initDEX(){
 				
 				if(initmsg.event == "MINIMASK_INIT"){
 					
-					MINIMASK_INITED = true;		
-					
 					fetchFullBalance(function(){
 						navigate_dex();	
 					});
@@ -36,24 +51,7 @@ function initDEX(){
 			
 		}else{
 			console.log("MINIMASK extension not active!");	
+			alert("MiniMask Extensiopn Not Active!\n\nThis applicatgion requires MiniMask");
 		}	
 	}
-	
-	
-}
-
-function initPanels(){
-	
-	//Init each Panel
-	chatroomInit();
-	myordersInit();
-	allordersInit();
-	
-	//Wallet
-	walletInit();
-	
-	//Now connect to server
-	wsInitSocket();
-	
-	//navigate_wallet();
 }

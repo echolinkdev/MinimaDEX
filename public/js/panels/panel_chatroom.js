@@ -17,9 +17,9 @@ function chatroomInit(){
 			console.log("Chat room : "+JSON.stringify(msg));
 			
 			//Add the UUID..
-			var shortuuid = msg.uuid.substring(0,8);
+			var shortuuid = msg.uuid.substring(2,10);
 			
-			chatarea.value+= shortuuid+"_"+msg.data+"\n";
+			chatarea.value+= shortuuid+" > "+msg.data+"\n";
 		}
 	});	
 }
@@ -30,10 +30,13 @@ function chatroomInit(){
 chatbutton.addEventListener('click', () => {
     var msg  = {};
 	msg.type = "chat";
-	msg.data = USER_NAME+" > "+chatinput.value.trim();
+	//msg.data = USER_NAME+" > "+chatinput.value.trim();
+	msg.data = chatinput.value.trim();
+	chatinput.value = '';
+	
+	if(msg.data == ""){
+		return;
+	}
 	
 	wsPostToServer(msg);
-	
-	//ws.send(JSON.stringify(msg));
-    chatinput.value = '';
 });

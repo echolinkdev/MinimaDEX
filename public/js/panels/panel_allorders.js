@@ -10,9 +10,31 @@ const allorderstable = document.getElementById('id_allorders_table');
 function allordersInit(){
 	
 	wsAddListener(function(msg){
-		//Is it a chat message
+		
 		if(msg.type=="update_orderbook"){
-			//console.log("All Orders : "+JSON.stringify(msg));
+			console.log("update_orderbook : "+JSON.stringify(msg));
+			
+			//Set this..
+			ALL_ORDERS[msg.uuid] = msg.data;
+			
+			//console.log("ALL ORDERS : "+JSON.stringify(ALL_ORDERS));
+			
+			for (const key in ALL_ORDERS) {
+			    
+				var val = ALL_ORDERS[key];
+				
+				console.log("ALL ORDERS : "+key+" : "+val);
+			}
+			
+			allordersSetTable();
+		
+		}else if(msg.type=="init_orderbooks"){
+			console.log("Init Order Books : "+JSON.stringify(msg));
+			
+			//Store this..
+			ALL_ORDERS = msg.data;
+			
+			//Set the Table
 			allordersSetTable();
 		}
 	});	
@@ -28,34 +50,6 @@ function getOrdersOnly(buysell){
 	}
 	return list;
 }
-
-/*function addAllOrdersRows(data){
-	
-	var len = data.length;
-	for(var i=0;i<len;i++) {
-		var order=data[i];
-		
-		//Insert row
-		var row = allorderstable.insertRow();
-		
-		//Set row color
-		if(order.type == "buy"){
-			row.className = "buyorder"
-		}else{
-			row.className = "sellorder"	
-		}
-		
-		var celltotal 	= row.insertCell();
-		var cellamount 	= row.insertCell();
-		var cellprice 	= row.insertCell();
-		var cellaction 	= row.insertCell();
-		
-		celltotal.innerHTML 	= "0";
-		cellamount.innerHTML 	= order.amount;
-		cellprice.innerHTML 	= order.price;
-		cellaction.innerHTML 	= "<button onclick=''>Action</button>";
-	}
-}*/
 
 function buyAction(price, maxamount){
 	showMktActionPanel(true, price, maxamount);	

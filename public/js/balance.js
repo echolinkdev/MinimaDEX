@@ -3,7 +3,7 @@
  */
 function fetchFullBalance(callback){
 	
-	MINIMASK.meg.balance(USER_ADDRESS, function(balresp){
+	MINIMASK.meg.fullbalance(USER_ADDRESS, function(balresp){
 		
 		//The balance bit
 		var balance = balresp.data;
@@ -18,9 +18,13 @@ function fetchFullBalance(callback){
 		if(JSON.stringify(balance) != oldbalance){
 					
 			if(oldbalance != "[]"){
+				
 				//Some thing has changed.. check for a few minutes..
 				autoUpdateBalance();	
 			}
+			
+			//Update the server
+			postMyOrdersToServer();
 			
 			//Update the Panel
 			updateBalancePanel();

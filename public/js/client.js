@@ -4,12 +4,16 @@ const MESSAGE_LISTENERS = [];
 
 var LOGGING_ENABLED = false;
 
-function wsInitSocket(){
+function wsInitSocket(initcallback){
 	
 	WEB_SOCKET = new WebSocket(DEX_SERVER);
 
 	WEB_SOCKET.onopen = () => {
 	    console.log('Connected to server');
+		
+		if(initcallback){
+			initcallback();
+		}
 	};
 
 	WEB_SOCKET.onmessage = (event) => {

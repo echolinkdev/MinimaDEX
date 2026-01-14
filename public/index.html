@@ -135,7 +135,7 @@
 								
 								<td style="text-align:right">
 									<button class="menubtn" onclick="navigate_help();">Help</button>
-									<button class="menubtn" onclick="navigate_settings();">Settings</button>
+									<!-- <button class="menubtn" onclick="navigate_settings();">Settings</button> -->
 								</td>
 							
 							</tr>
@@ -208,7 +208,7 @@
 												
 										</td>
 									</tr>
-								</table>
+								</table> 
 								
 							</td>
 							
@@ -578,17 +578,21 @@
 	<script type="text/javascript" src="./js/variables.js"></script>
 	<script type="text/javascript" src="./js/navigation.js"></script>
 	<script type="text/javascript" src="./js/balance.js"></script>
-			
+	<script type="text/javascript" src="./js/orders.js"></script>
+	
+	<!-- Storage Lib -->
+	<script src="./js/libs/crypto-js.4.2.0.min.js"></script>
+	<script type="text/javascript" src="./js/storage.js"></script>
+	
+	<!-- The Chart Graph Panel -->
+	<script type="text/javascript" src="./js/chartgraph.js"></script>
+				
+	<!--The Panels -->
 	<script type="text/javascript" src="./js/panels/panel_chatroom.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_createorder.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_myorders.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_allorders.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_wallet.js"></script>
-	
-	<script type="text/javascript" src="./js/chartgraph.js"></script>
-	
-	<script src="./js/libs/crypto-js.4.2.0.min.js"></script>
-	<script src="./js/storage.js"></script>
 		
 	<script type="text/javascript">
 		
@@ -596,17 +600,6 @@
 		    var element = document.getElementById(id);
 		    return element.currentStyle ? element.currentStyle[name] : window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null;
 		}*/
-		
-		//Local Storage Test
-		var datajson= {};
-		datajson.type="what";
-		
-		STORAGE.setPassword("hello");
-		STORAGE.setData("mydata",datajson);
-		
-		STORAGE.setPassword("hello");
-		var dd = STORAGE.getData("mydata");
-		console.log("DATA : "+JSON.stringify(dd));
 		
 		//Init the DEX
 		initDEX();

@@ -30,7 +30,7 @@ server.on('connection', (socket) => {
 	clients.add(socket);
 	
 	//Tell the user their uuid and the current orderbooks
-	socket.send(createCustomMsg(socket.id,"init",orderbooks));
+	socket.send(createCustomMsg(socket.id,"init_orderbooks",orderbooks));
 	
 	//On receive message
     socket.on('message', (message) => {
