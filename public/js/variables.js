@@ -22,9 +22,14 @@ var USER_BALANCE 	= [];
 var USER_ORDERS = [];
 
 /**
- * ALL orders
+ * ALL orders - sorted by UUID
  */
 var ALL_ORDERS = {};
+
+/**
+ * What Markets are available.. based on the tokens of all users connected
+ */
+var ALL_MARKETS = [];
 
 /**
  * Which Market is this
@@ -36,3 +41,27 @@ CURRENT_MARKET.token1.tokenid 	= "0x00";
 CURRENT_MARKET.token2 			= {};
 CURRENT_MARKET.token2.name 		= "paddy";
 CURRENT_MARKET.token2.tokenid 	= "0x0819335DE1BFC9D78248A944DE0A9843B2F6A2F9DF54296B22BA48BA9C2CA7EC";
+
+/**
+ * The MxUSD TOKENID! - there is always this market
+ */
+var MXUSD_TOKENID = "0xFFEEDDFFEEDD";
+
+/**
+ * MxUSD Market
+ */
+const MXUSD_MARKET = {};
+MXUSD_MARKET.token1 			= {};
+MXUSD_MARKET.token1.name 		= "Minima";
+MXUSD_MARKET.token1.tokenid 	= "0x00";
+MXUSD_MARKET.token2 			= {};
+MXUSD_MARKET.token2.name 		= "MxUSD";
+MXUSD_MARKET.token2.tokenid 	= MXUSD_TOKENID;
+
+
+
+
+
+
+
+

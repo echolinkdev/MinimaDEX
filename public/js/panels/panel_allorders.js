@@ -12,26 +12,28 @@ function allordersInit(){
 	wsAddListener(function(msg){
 		
 		if(msg.type=="update_orderbook"){
-			console.log("update_orderbook : "+JSON.stringify(msg));
+			console.log("update_orderbook : ");
 			
 			//Set this..
 			ALL_ORDERS[msg.uuid] = msg.data;
 			
-			/*for (const key in ALL_ORDERS) {
-				var val = ALL_ORDERS[key];
-				console.log("ALL ORDERS : "+key+" : "+val);
-			}*/
-			
+			//Set the table
 			allordersSetTable();
-		
+			
+			//Update the markets 
+			updateAllMarkets();
+						
 		}else if(msg.type=="init_orderbooks"){
-			console.log("Init Order Books : "+JSON.stringify(msg));
+			//console.log("Init Order Books : "+JSON.stringify(msg));
 			
 			//Store this..
 			ALL_ORDERS = msg.data;
 			
 			//Set the Table
 			allordersSetTable();
+			
+			//Update the markets 
+			updateAllMarkets();
 		}
 	});	
 }

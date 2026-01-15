@@ -58,11 +58,8 @@ function postMyOrdersToServer(){
 	
 	//Create the OrderBook Details - includes your Balance!
 	var myorderbook 	= {};
-	
-	myorderbook.balance = [];//USER_BALANCE;
-	
+	myorderbook.balance = USER_BALANCE;
 	myorderbook.orders 	= USER_ORDERS;
-	
 	msg.data = myorderbook;
 	
 	//Will update table when I receive the server message

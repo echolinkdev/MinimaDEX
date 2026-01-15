@@ -3,7 +3,7 @@
  */
 function fetchFullBalance(callback){
 	
-	MINIMASK.meg.fullbalance(USER_ADDRESS, function(balresp){
+	MINIMASK.meg.balancefull(USER_ADDRESS, 3, true, true, function(balresp){
 		
 		//The balance bit
 		var balance = balresp.data;
