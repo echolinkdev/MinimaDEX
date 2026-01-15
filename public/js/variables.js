@@ -32,17 +32,6 @@ var ALL_ORDERS = {};
 var ALL_MARKETS = [];
 
 /**
- * Which Market is this
- */
-var CURRENT_MARKET 				= {};
-CURRENT_MARKET.token1 			= {};
-CURRENT_MARKET.token1.name 		= "Minima";
-CURRENT_MARKET.token1.tokenid 	= "0x00";
-CURRENT_MARKET.token2 			= {};
-CURRENT_MARKET.token2.name 		= "paddy";
-CURRENT_MARKET.token2.tokenid 	= "0x0819335DE1BFC9D78248A944DE0A9843B2F6A2F9DF54296B22BA48BA9C2CA7EC";
-
-/**
  * The MxUSD TOKENID! - there is always this market
  */
 var MXUSD_TOKENID = "0xFFEEDDFFEEDD";
@@ -51,6 +40,8 @@ var MXUSD_TOKENID = "0xFFEEDDFFEEDD";
  * MxUSD Market
  */
 const MXUSD_MARKET = {};
+MXUSD_MARKET.mktname			= "Minima / MxUSD";
+MXUSD_MARKET.mktuid				= "0x00 / "+MXUSD_TOKENID;
 MXUSD_MARKET.token1 			= {};
 MXUSD_MARKET.token1.name 		= "Minima";
 MXUSD_MARKET.token1.tokenid 	= "0x00";
@@ -58,9 +49,23 @@ MXUSD_MARKET.token2 			= {};
 MXUSD_MARKET.token2.name 		= "MxUSD";
 MXUSD_MARKET.token2.tokenid 	= MXUSD_TOKENID;
 
+/**
+ * NULL Market
+ */
+const NULL_MARKET 			= {};
+NULL_MARKET.mktname			= "NULL / NULL";
+NULL_MARKET.mktuid			= "0xFF / 0xFF";
+NULL_MARKET.token1 			= {};
+NULL_MARKET.token1.name 	= "NULL";
+NULL_MARKET.token1.tokenid 	= "0xFF";
+NULL_MARKET.token2 			= {};
+NULL_MARKET.token2.name 	= "NULL";
+NULL_MARKET.token2.tokenid 	= "0xFF";
 
-
-
+/**
+ * Which Market is this
+ */
+var CURRENT_MARKET 	= NULL_MARKET;
 
 
 

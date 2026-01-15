@@ -6,44 +6,53 @@ const market_select = document.getElementById('id_allmarkets');
 market_select.onchange = function (e) {
     
 	var selectedOption = this[this.selectedIndex];
-    
-	var selectedText 	= selectedOption.text;
+ 	var selectedText 	= selectedOption.text;
 	var selectedValue 	= selectedOption.value;
 	
-	console.log("Market Change : "+selectedValue);
+	//Set the current market
+	CURRENT_MARKET = ALL_MARKETS[selectedValue];
+	
+	console.log("Market Change : "+JSON.stringify(CURRENT_MARKET));
+	
+	//Reload all orders
+	setAllOrdersTable();
+	
+	//Reload My Orders..
+	setMyOrdersTable();
 }
 
 function setMarketSelect(){
 	
-	//Get the selected item..
-	var selectedText 	= market_select[market_select.selectedIndex].text;
+	//Get the previous mkt..
+	prevmktuid = CURRENT_MARKET.mktuid;
 	
 	//Clear it..
 	market_select.innerHTML = "";
 	
 	//Previous market
-	var previousmkt = -1;
+	var previousmkt = 0;
 	
 	var len = ALL_MARKETS.length;
 	for(var i=0;i<len;i++){
 		
 		var mkt 	= ALL_MARKETS[i];
 		
-		var mktname = mkt.token1.name+" / "+mkt.token2.name;  
-		if(mktname == selectedText){
+		//Is this the prvious selected
+		if(mkt.mktuid == prevmktuid){
 			previousmkt = i;
 		}
 		
 		var opt 		= document.createElement('option');
         opt.value 		= i;
-        opt.innerHTML 	= mktname;
+        opt.innerHTML 	= mkt.mktname;
         market_select.appendChild(opt);
 	}
 	
-	//Set the previous..
-	if(previousmkt != -1){
-		market_select.value = previousmkt;
-	}
+	//Set the previous.. if any
+	market_select.value = previousmkt;
+	
+	//Now set the Current Market
+	CURRENT_MARKET = ALL_MARKETS[previousmkt];
 }
 
 /**
@@ -52,9 +61,14 @@ function setMarketSelect(){
 function createMinimaMarket(userbal){
 	
 	var market				= {};
+	
+	market.mktname 			= userbal.token.name+" / Minima";
+	market.mktuid 			= userbal.tokenid+" / 0x00";
+	
 	market.token1 			= {};
 	market.token1.name 		= userbal.token.name;
 	market.token1.tokenid 	= userbal.tokenid;
+	
 	market.token2 			= {};
 	market.token2.name 		= "Minima";
 	market.token2.tokenid 	= "0x00";	
@@ -102,7 +116,7 @@ function updateAllMarkets(){
 	}
 	
 	//Order the Markets..!
-	
+	//..
 	
 	//Set this..
 	ALL_MARKETS = markets;

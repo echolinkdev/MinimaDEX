@@ -12,28 +12,29 @@ function allordersInit(){
 	wsAddListener(function(msg){
 		
 		if(msg.type=="update_orderbook"){
-			console.log("update_orderbook : ");
 			
 			//Set this..
 			ALL_ORDERS[msg.uuid] = msg.data;
 			
-			//Set the table
-			allordersSetTable();
-			
 			//Update the markets 
 			updateAllMarkets();
 						
+			//Set the table
+			setAllOrdersTable();
+						
 		}else if(msg.type=="init_orderbooks"){
-			//console.log("Init Order Books : "+JSON.stringify(msg));
 			
 			//Store this..
 			ALL_ORDERS = msg.data;
 			
-			//Set the Table
-			allordersSetTable();
-			
 			//Update the markets 
 			updateAllMarkets();
+						
+			//Set the Table
+			setAllOrdersTable();
+			
+			//Set My Orders - need the markets setup..
+			setMyOrdersTable();
 		}
 	});	
 }
@@ -51,22 +52,15 @@ function getOrdersOnly(buysell){
 		//Cycle through the book
 		var len = book.length;
 		for(var i=0;i<len;i++) {
-			if(book[i].type==buysell){
+			
+			//Is it the right Market and right type..
+			if(book[i].market.mktuid == CURRENT_MARKET.mktuid && book[i].type==buysell){
 				list.push(book[i]);
 			}
 		}
 	}
 	
 	return list;
-	
-	/*var list = [];
-	var len = USER_ORDERS.length;
-	for(var i=0;i<len;i++) {
-		if(USER_ORDERS[i].type==buysell){
-			list.push(USER_ORDERS[i]);
-		}
-	}
-	return list;*/
 }
 
 function buyAction(price, maxamount){
@@ -182,7 +176,7 @@ function compareDesc(a,b){
 	return b.price-a.price;
 }
 
-function allordersSetTable(){
+function setAllOrdersTable(){
 	
 	//Clear Table
 	allorderstable.innerHTML = "";

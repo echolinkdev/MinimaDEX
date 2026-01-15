@@ -5,7 +5,6 @@ function initDEX(){
 	
 	//Init each Panel
 	chatroomInit();
-	myordersInit();
 	allordersInit();
 	
 	//Wallet
@@ -13,9 +12,6 @@ function initDEX(){
 	
 	//Load your Orders
 	loadMyOrders();
-	
-	//Display them..
-	myOrdersSetTable();
 	
 	//Now connect to server
 	wsInitSocket(function(){

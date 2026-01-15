@@ -4,21 +4,8 @@
  */
 const myorderstable = document.getElementById('id_myorders_table');
 
-/**
- * Initialise chat area
- */
-function myordersInit(){
-	
-	wsAddListener(function(msg){
-		//Is it a chat message
-		if(msg.type=="update_orderbook"){
-			//console.log("My Orders : "+JSON.stringify(msg));
-			myOrdersSetTable();
-		}
-	});	
-}
 
-function myOrdersSetTable(){
+function setMyOrdersTable(){
 	
 	//Clear Table
 	myorderstable.innerHTML = "";
@@ -35,6 +22,11 @@ function myOrdersSetTable(){
 	for(var i=0;i<len;i++) {
 		
 		var order=USER_ORDERS[i];
+		
+		//Is it in the current mkt..
+		if(order.market.mktuid != CURRENT_MARKET.mktuid){
+			continue;
+		}
 		
 		//Insert row
 		var row = myorderstable.insertRow();

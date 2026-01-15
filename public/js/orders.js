@@ -24,6 +24,9 @@ function addMyOrderAndPost(order){
 	
 	//Now send updated book to server
 	postMyOrdersToServer();
+
+	//And set
+	setMyOrdersTable();
 }
 
 /**
@@ -46,6 +49,9 @@ function removeMyOrderAndPost(uuid){
 		
 	//Now send updated book to server
 	postMyOrdersToServer();
+	
+	//And set
+	setMyOrdersTable();
 }
 
 /**
