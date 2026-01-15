@@ -35,6 +35,9 @@ function allordersInit(){
 			
 			//Set My Orders - need the markets setup..
 			setMyOrdersTable();
+			
+			//Set ALL my orders table
+			setAllMyOrders();
 		}
 	});	
 }

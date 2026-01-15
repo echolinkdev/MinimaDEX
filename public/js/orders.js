@@ -19,14 +19,24 @@ function addMyOrderAndPost(order){
 	//Now add this order to our list of prders
 	USER_ORDERS.push(order);
 	
-	//Now Store this locally..
-	storeMyOrders();
+	//Order!
+	USER_ORDERS.sort(	(a, b) => {
+	  
+		const nameA = a.market.mktname; 
+		const nameB = b.market.mktname; 
+		if (nameA < nameB) {
+		  return -1;
+		}
+		if (nameA > nameB) {
+		  return 1;
+		}
+		
+		// names must be equal
+		return 0;
+	});
 	
-	//Now send updated book to server
-	postMyOrdersToServer();
-
-	//And set
-	setMyOrdersTable();
+	//Update all relevant
+	updateMyOrders();
 }
 
 /**
@@ -44,14 +54,23 @@ function removeMyOrderAndPost(uuid){
 	//Reset User Orders
 	USER_ORDERS = neworders;
 	
-	//Now Store this locally..
+	//Update all relevant
+	updateMyOrders();
+}
+
+function updateMyOrders(){
+	
+	//Store this locally..
 	storeMyOrders();
 		
-	//Now send updated book to server
+	//Send updated book to server
 	postMyOrdersToServer();
 	
-	//And set
+	//And set my orders table
 	setMyOrdersTable();
+	
+	//Set ALL my orders table
+	setAllMyOrders();
 }
 
 /**

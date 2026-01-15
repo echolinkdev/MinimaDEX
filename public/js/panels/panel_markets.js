@@ -19,6 +19,9 @@ market_select.onchange = function (e) {
 	
 	//Reload My Orders..
 	setMyOrdersTable();
+	
+	//Set ALL my orders table
+	setAllMyOrders();
 }
 
 function setMarketSelect(){
