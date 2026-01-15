@@ -53,9 +53,9 @@ function sendOrder(buysell){
 	} 
 	
 	//Check cnfirm
-	if(!confirm(confmsg)){
+	/*if(!confirm(confmsg)){
 		return;
-	}
+	}*/
 		
 	//Create the order
 	var order = createMyOrder(buysell, amount, price);
