@@ -149,7 +149,13 @@ function getAvailableBalance(tokenid){
 	//How much is in the orderbook
 	var book = getOrderBookBalance(tokenid);
 	
-	return financial(confirmed - book);
+	//How much 
+	var available = financial(confirmed - book);
+	if(available<0){
+		available = 0;
+	}
+	
+	return available;
 }
 
 /**
