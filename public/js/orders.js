@@ -20,20 +20,7 @@ function addMyOrderAndPost(order){
 	USER_ORDERS.push(order);
 	
 	//Order!
-	USER_ORDERS.sort(	(a, b) => {
-	  
-		const nameA = a.market.mktname; 
-		const nameB = b.market.mktname; 
-		if (nameA < nameB) {
-		  return -1;
-		}
-		if (nameA > nameB) {
-		  return 1;
-		}
-		
-		// names must be equal
-		return 0;
-	});
+	USER_ORDERS.sort(sortUserOrdersAlphabetically);
 	
 	//Update all relevant
 	updateMyOrders();

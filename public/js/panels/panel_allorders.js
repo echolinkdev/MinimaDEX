@@ -186,11 +186,11 @@ function setAllOrdersTable(){
 	
 	//Set the Headers
 	var row   = allorderstable.insertRow(0);
-	row.insertCell(0).outerHTML = "<th>Orders</th>";
-	row.insertCell(1).outerHTML = "<th>Total Amount</th>";
-	row.insertCell(2).outerHTML = "<th>Max Amount</th>";
-	row.insertCell(3).outerHTML = "<th>Price</th>";
-	row.insertCell(4).outerHTML = "<th style='width:0%;'>Action</th>"; 
+	row.insertCell(0).outerHTML = "<th class='smalltableheadertext'>Orders</th>";
+	row.insertCell(1).outerHTML = "<th class='smalltableheadertext'>Total Amount</th>";
+	row.insertCell(2).outerHTML = "<th class='smalltableheadertext'>Max Amount</th>";
+	row.insertCell(3).outerHTML = "<th class='smalltableheadertext'>Price</th>";
+	row.insertCell(4).outerHTML = "<th  class='smalltableheadertext' style='width:0%;'>Action</th>"; 
 	
 	//FIRST the SELL orders..
 	var sells=getOrdersOnly("sell");

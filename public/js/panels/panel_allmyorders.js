@@ -8,10 +8,10 @@ function setAllMyOrders(){
 	
 	//Set the Headers
 	var row   = allmyorders_table.insertRow(0);
-	row.insertCell().outerHTML = "<th>Amount</th>";
-	row.insertCell().outerHTML = "<th>Price</th>"; 
-	row.insertCell().outerHTML = "<th>Type</th>";
-	row.insertCell().outerHTML = "<th style='width:0%;'>Action</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Amount</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Price</th>"; 
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Type</th>";
+	row.insertCell().outerHTML = "<th  class='smalltableheadertext' style='width:0%;'>Action</th>";
 	
 	var old_mkt = "";	
 	

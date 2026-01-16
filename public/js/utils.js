@@ -20,3 +20,48 @@ function getTimeMilli(){
 	var recdate = new Date();
 	return recdate.getTime();
 }
+
+function sortUserOrdersAlphabetically(a,b){
+	var nameA = a.market.mktname.toLowerCase(); 
+	var nameB = b.market.mktname.toLowerCase(); 
+	
+	if(nameA.startsWith("minima")){
+		nameA="A";
+	}
+	
+	if(nameB.startsWith("minima")){
+		nameB="A";
+	}
+	
+	if (nameA < nameB) {
+	  return -1;
+	}
+	if (nameA > nameB) {
+	  return 1;
+	}
+	
+	// names must be equal
+	return 0;
+}
+
+function sortMarketsAlphabetically(a,b){
+	var nameA = a.mktname.toLowerCase(); 
+	var nameB = b.mktname.toLowerCase();
+	
+	if(nameA.startsWith("minima")){
+		nameA="A";
+	}
+	
+	if(nameB.startsWith("minima")){
+		nameB="A";
+	}
+	
+	if (nameA < nameB) {
+	  return -1;
+	}
+	if (nameA > nameB) {
+	  return 1;
+	}	
+
+	return 0;
+}

@@ -140,8 +140,10 @@ function updateAllMarkets(){
 		}
 	}
 	
+	console.log("MARKETS : "+JSON.stringify(markets));
+	
 	//Order the Markets..!
-	//..
+	markets.sort(sortMarketsAlphabetically);
 	
 	//Set this..
 	ALL_MARKETS = markets;

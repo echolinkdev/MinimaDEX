@@ -40,10 +40,10 @@ function updateBalancePanel(){
 	
 	//Set the Headers
 	var row   = baltable.insertRow(0);
-	row.insertCell().outerHTML = "<th>Token</th>";
-	row.insertCell().outerHTML = "<th>Available&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
-	row.insertCell().outerHTML = "<th>Amount&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
-	row.insertCell().outerHTML = "<th>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Token</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Available&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Amount&nbsp;&nbsp;&nbsp;&nbsp;</th>"; 
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Coins&nbsp;&nbsp;&nbsp;&nbsp;</th>";
 		
 	//Get my Orders
 	var len = USER_BALANCE.length;

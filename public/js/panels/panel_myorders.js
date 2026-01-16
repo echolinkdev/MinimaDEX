@@ -12,10 +12,10 @@ function setMyOrdersTable(){
 	
 	//Set the Headers
 	var row   = myorderstable.insertRow(0);
-	row.insertCell(0).outerHTML = "<th>Amount</th>";
-	row.insertCell(1).outerHTML = "<th>Price</th>"; 
-	row.insertCell(2).outerHTML = "<th>Type</th>";
-	row.insertCell(3).outerHTML = "<th style='width:0%;'>Action</th>";
+	row.insertCell(0).outerHTML = "<th class='smalltableheadertext'>Amount</th>";
+	row.insertCell(1).outerHTML = "<th class='smalltableheadertext'>Price</th>"; 
+	row.insertCell(2).outerHTML = "<th class='smalltableheadertext'>Type</th>";
+	row.insertCell(3).outerHTML = "<th class='smalltableheadertext' style='width:0%;'>Action</th>";
 		
 	//Get my Orders
 	var len = USER_ORDERS.length;
