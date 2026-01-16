@@ -14,3 +14,9 @@ function financial(x) {
   return new Decimal(x).toDecimalPlaces(4, Decimal.ROUND_DOWN).toNumber();		
   //return +Number.parseFloat(x).toFixed(4);
 }
+
+function getTimeMilli(){
+	//Date as of NOW
+	var recdate = new Date();
+	return recdate.getTime();
+}
