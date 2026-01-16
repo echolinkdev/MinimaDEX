@@ -156,8 +156,15 @@ function splitWalletCoins(tokenname, tokenid){
 	var balance = getConfirmedBalance(tokenid);
 			
 	if(confirm("This will split your "+tokenname+" coins ("+balance+") into 10 equal amounts."
+				+"\n\nWhile the coins are being split your orders will not be available.."
 				+"\n\nContinue ?")){
 		
+		//FOR NOW - set the confirmed to 0..
+		setSplitCoinsBalanceZero(tokenid);
+		
+		//Update the server..
+		
+								
 		//Send and split..
 		utility_send(tokenid, balance, USER_ADDRESS, 10, function(resp){
 			console.log("WALLET SPLIT : "+JSON.stringify(resp));

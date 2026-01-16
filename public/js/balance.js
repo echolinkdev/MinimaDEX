@@ -3,6 +3,20 @@
  */
 function fetchFullBalance(callback){
 	
+	//Are we splitting..
+	var timenow = getTimeMilli();
+	if(SPLIT_COIN_STOP_UPDATE + SPLIT_COIN_STOP_TIMEOUT > timenow){
+		console.log("Fetch balance during split.. stopped..");
+		
+		//Don't update..! Splitting coins..
+		if(callback){
+			callback();
+		}
+		
+		return;
+	}
+	
+	//Check Balance..
 	MINIMASK.meg.balancefull(USER_ADDRESS, 3, true, true, function(balresp){
 		
 		//The balance bit
@@ -136,4 +150,33 @@ function getAvailableBalance(tokenid){
 	var book = getOrderBookBalance(tokenid);
 	
 	return financial(confirmed - book);
+}
+
+/**
+ * When you split coins set amount to 0 until the confirmed balance changes..
+ */
+var SPLIT_COIN_STOP_UPDATE 	= 0;
+var SPLIT_COIN_STOP_TIMEOUT = 60000;
+function setSplitCoinsBalanceZero(tokenid){
+	
+	//Cycle through the tokens..
+	var len = USER_BALANCE.length;
+	for(var i=0;i<len;i++){
+		
+		var balance = USER_BALANCE[i];
+		if(balance.tokenid == tokenid){
+			balance.confirmed = 0;
+			
+			//Don;t update for 1 minute..
+			SPLIT_COIN_STOP_UPDATE = getTimeMilli();
+			
+			//Update the server
+			postMyOrdersToServer();
+			
+			//Update the Panel
+			updateBalancePanel();
+			
+			return;		
+		}
+	}
 }
