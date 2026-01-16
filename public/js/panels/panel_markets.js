@@ -1,8 +1,12 @@
 
+const market_select 	= document.getElementById('id_allmarkets');
+const market_tokenname 	= document.getElementById('id_market_tokenname');
+const market_tokenid 	= document.getElementById('id_market_tokenid');
+
 /**
  * The Market Select
  */
-const market_select = document.getElementById('id_allmarkets');
+
 market_select.onchange = function (e) {
     
 	var selectedOption = this[this.selectedIndex];
@@ -22,6 +26,9 @@ market_select.onchange = function (e) {
 	
 	//Set ALL my orders table
 	setAllMyOrders();
+	
+	//Set the market tokenid
+	setMarketTokenID();
 }
 
 function setMarketSelect(){
@@ -56,6 +63,21 @@ function setMarketSelect(){
 	
 	//Now set the Current Market
 	CURRENT_MARKET = ALL_MARKETS[previousmkt];
+	
+	//Set the market tokenid
+	setMarketTokenID(); 
+}
+
+function setMarketTokenID(){
+	
+	if(CURRENT_MARKET.token1.tokenid == "0x00"){
+		//Use token2
+		market_tokenname.innerHTML 	= CURRENT_MARKET.token2.name;
+		market_tokenid.innerHTML 	= CURRENT_MARKET.token2.tokenid;
+	}else{
+		market_tokenname.innerHTML 	= CURRENT_MARKET.token1.name;
+		market_tokenid.innerHTML 	= CURRENT_MARKET.token1.tokenid;	
+	}
 }
 
 /**

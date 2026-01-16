@@ -22,6 +22,11 @@ td {
 	white-space: nowrap;
 }
 
+.smallgreytext{
+	font-size : 10px;
+	color:grey;
+}
+
 .alignright{
 	text-align:right;
 }
