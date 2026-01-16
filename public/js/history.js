@@ -25,13 +25,16 @@ function saveHistory(){
 }
 
 function clearHistory(){
-	USER_HISTORY = [];
 	
-	//Save it for later
-	saveHistory();
+	if(confirm("Are you sure you wish to clear ALL your history ?")){
+		USER_HISTORY = [];
+			
+		//Save it for later
+		saveHistory();
 
-	//Reset the view..
-	showHistory();
+		//Reset the view..
+		showHistory();	
+	}
 }
 
 function addHistoryLog(action, details, extra){
