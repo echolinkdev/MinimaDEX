@@ -24,6 +24,16 @@ function saveHistory(){
 	console.log("SAVE HISTORY : "+JSON.stringify(USER_HISTORY));
 }
 
+function clearHistory(){
+	USER_HISTORY = [];
+	
+	//Save it for later
+	saveHistory();
+
+	//Reset the view..
+	showHistory();
+}
+
 function addHistoryLog(action, details, extra){
 	
 	var history 	= {};
