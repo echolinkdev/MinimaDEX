@@ -82,7 +82,6 @@ function postMyOrdersToServer(){
  * Store your Orders Locally
  */
 function storeMyOrders(){
-	
 	//Store!
 	STORAGE.setData("**USER_ORDERS_STORAGE**",USER_ORDERS);
 }

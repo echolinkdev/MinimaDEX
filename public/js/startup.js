@@ -13,6 +13,9 @@ function initDEX(){
 	//Load your Orders
 	loadMyOrders();
 	
+	//Init History
+	initHistory();
+	
 	//Now connect to server
 	wsInitSocket(function(){
 		

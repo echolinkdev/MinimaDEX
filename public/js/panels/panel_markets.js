@@ -16,7 +16,7 @@ market_select.onchange = function (e) {
 	//Set the current market
 	CURRENT_MARKET = ALL_MARKETS[selectedValue];
 	
-	console.log("Market Change : "+JSON.stringify(CURRENT_MARKET));
+	//console.log("Market Change : "+JSON.stringify(CURRENT_MARKET));
 	
 	//Reload all orders
 	setAllOrdersTable();
@@ -139,8 +139,6 @@ function updateAllMarkets(){
 			}
 		}
 	}
-	
-	console.log("MARKETS : "+JSON.stringify(markets));
 	
 	//Order the Markets..!
 	markets.sort(sortMarketsAlphabetically);

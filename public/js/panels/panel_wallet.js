@@ -132,7 +132,7 @@ function wallet_sendfunds(){
 	if(confirm("You are about to send "+amount+" "+tokenname+" to "+address+"\n\nContinue ?")){
 		
 		//Send
-		utility_send(tokenid, amount, address, 1, function(resp){
+		utility_send(tokenname, tokenid, amount, address, 1, function(resp){
 			//console.log("WALLET SEND : "+JSON.stringify(resp));
 			
 			if(resp.status){
@@ -158,16 +158,19 @@ function splitWalletCoins(tokenname, tokenid){
 	if(confirm("This will split your "+tokenname+" coins ("+balance+") into 10 equal amounts."
 				+"\n\nWhile the coins are being split your orders will not be available.."
 				+"\n\nContinue ?")){
-		
+					
 		//FOR NOW - set the confirmed to 0..
 		setSplitCoinsBalanceZero(tokenid);
-		
-		//Update the server..
-		
 								
 		//Send and split..
-		utility_send(tokenid, balance, USER_ADDRESS, 10, function(resp){
-			console.log("WALLET SPLIT : "+JSON.stringify(resp));
+		utility_send(tokenname, tokenid, balance, USER_ADDRESS, 10, function(resp){
+			//console.log("WALLET SPLIT : "+JSON.stringify(resp));
+			if(resp.status){
+				//Add Log
+				addHistoryLog("SPLIT_COINS","User splits "+tokenname, resp.data.txpowid);	
+			}else{
+				console.log("WALLET SPLIT ERROR : "+JSON.stringify(resp));
+			}		
 		});
 	}
 }
@@ -175,9 +178,16 @@ function splitWalletCoins(tokenname, tokenid){
 /**
  * Utility SEND function that deals
  */
-function utility_send(tokenid, amount, address, split, callback){
+function utility_send(tokenname, tokenid, amount, address, split, callback){
 	//Send
 	MINIMASK.meg.send(amount+"", address, tokenid, USER_ADDRESS, USER_PRIVATEKEY, USER_SCRIPT, USER_KEYUSES, split, function(resp){
+		
+		if(resp.status){
+			//Add Log
+			addHistoryLog("SEND_COINS","User sends "+amount+" "+tokenname+" to "+address, resp.data.txpowid);	
+		}else{
+			console.log("WALLET SEND ERROR : "+JSON.stringify(resp));
+		}	
 		
 		//Update KEY USES
 		USER_KEYUSES++;

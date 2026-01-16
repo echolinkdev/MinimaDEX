@@ -34,7 +34,10 @@ function fetchFullBalance(callback){
 			if(oldbalance != "[]"){
 				
 				//Some thing has changed.. check for a few minutes..
-				autoUpdateBalance();	
+				autoUpdateBalance();
+				
+				//Add a log..
+				addHistoryLog("BALANCE_CHANGE","User balance changes..", "");
 			}
 			
 			//Update the server

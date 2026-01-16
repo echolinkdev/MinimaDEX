@@ -32,6 +32,11 @@ var ALL_ORDERS = {};
 var ALL_MARKETS = [];
 
 /**
+ * All your actions are stored in HISTORY
+ */
+var USER_HISTORY = [];
+
+/**
  * The MxUSD TOKENID! - there is always this market
  */
 var MXUSD_TOKENID = "0xFFEEDDFFEEDD";

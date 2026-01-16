@@ -11,7 +11,7 @@ function setAllMyOrders(){
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Amount</th>";
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Price</th>"; 
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Type</th>";
-	row.insertCell().outerHTML = "<th  class='smalltableheadertext' style='width:0%;'>Action</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext' style='width:0%;'>Action</th>";
 	
 	var old_mkt = "";	
 	
@@ -60,7 +60,5 @@ function setAllMyOrders(){
 		cellprice.innerHTML 	= "&nbsp;"+order.price;
 		celltype.innerHTML 		= "&nbsp;"+order.type; 
 		cellaction.innerHTML 	= "<button class='mybtn' onclick='removeMyOrderAndPost(\""+order.uuid+"\")'>Cancel</button>";
-	}
-	
-	
+	}	
 }
