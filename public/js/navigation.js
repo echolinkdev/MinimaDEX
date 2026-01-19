@@ -47,3 +47,11 @@ function navigate_settings(){
 	navigate_clear();
 	id_view_settings.style.display="block";
 }
+
+function navigate_logout(){
+	
+	if(confirm("Make sure you have a backup of your seed and key uses!")){
+		//Just refresh the page..
+		window.location.reload();	
+	}
+}

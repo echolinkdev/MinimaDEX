@@ -94,18 +94,20 @@
 	</div>
 	
 	<!-- The SEED Panel-->
-	<div id="id_seedphrasepanel" class="centerdiv" style="height:300px;">
+	<div id="id_seedphrasepanel" class="centerdiv" style="height:280px;">
 		
 		<div class="greyrounded">
 			<div class="paddedborder">
 		
 				<b>Seed Phrase</b><br>
 				<br>
-				Here is the seed phrase for your DEX wallet : <br>
+				Seed phrase and key uses for your DEX wallet : <br>
+				<br>
+				Make sure you have a backup of this info..<br>
 				<br>
 				<div id="id_seedphrasedetails">###</div>
 				<br>
-				<div id="id_seedphrase_keyuses">Key Uses : 0</div>
+				<div id="id_seedphrase_keyuses">###</div>
 				<br>
 				<center>
 					<button class="mybtn" onclick="hideSeedPhrase();">Close</button>
@@ -133,6 +135,7 @@
 					
 					<input type="password" id="id_init_password"><br>
 					<br>
+					<button class="mybtn" onclick="init_clearall();">Clear All Data</button>&nbsp;&nbsp;&nbsp;
 					<button class="mybtn" onclick="init_passwordcheck();">Continue</button>
 					
 				</center>
@@ -148,9 +151,11 @@
 		
 				<b>Create Seed</b><br>
 				<br>
-				No details found<br>
+				No details found..<br>
 				<br>
-				Please type in your seed or create  new one..<br>
+				Please type in your seed / key uses or create a new one..<br>
+				<br>
+				MAKE A BACKUP ( ..you can access this info later )<br>
 				<br>
 				<table width=100%>
 					<tr>
@@ -159,7 +164,7 @@
 					</tr>
 					<tr>
 						<td class="alignright">Key Uses : </td>
-						<td><input type="number" id="id_init_keyuses" style="width:90%"></td>
+						<td><input type="number" id="id_init_keyuses" style="width:90%" value=0></td>
 					</tr>
 				</table>
 				<br>
@@ -192,6 +197,7 @@
 								
 								<td style="text-align:right">
 									<button class="menubtn" onclick="navigate_help();">Help</button>
+									<button class="menubtn" onclick="navigate_logout();">Log Out</button>
 									<!-- <button class="menubtn" onclick="navigate_settings();">Settings</button> -->
 								</td>
 							

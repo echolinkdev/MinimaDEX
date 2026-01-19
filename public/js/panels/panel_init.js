@@ -3,7 +3,6 @@
  */
 const init_blakout_panel	= document.getElementById('id_blackoutdiv');
 const init_panel 			= document.getElementById('id_initpanel'); 
-
 const init_create_seed		= document.getElementById('id_createseed_panel');
 
 
@@ -15,6 +14,7 @@ function showInitPanel(){
 function hideInitPanel(){
 	init_blakout_panel.style.display 	= "none";
 	init_panel.style.display 			= "none";
+	init_create_seed.style.display 		= "none";
 }
 
 function init_passwordcheck(){
@@ -31,7 +31,6 @@ function init_passwordcheck(){
 	
 	//Now load the details..
 	var userdetails = STORAGE.getData("**USER_DETAILS**");	
-	
 	
 	//Do they exist..
 	if(userdetails == -1){
@@ -57,6 +56,18 @@ function init_passwordcheck(){
 	}	
 }
 
+function init_clearall(){
+	if(confirm("Are you sure you wish to clear all data ?")){
+		
+		//Clear all Data..
+		STORAGE.clearData();
+		
+		id_init_password.value="";
+		
+		alert("All data wiped..");
+	}
+}
+
 function init_createnew(){
 	
 	//Create a new seed phrase..
@@ -71,8 +82,11 @@ function init_createnew(){
 function init_continueseed(){
 	
 	//Get the details..
-	CREATE_NEW_SEED 	= id_init_seed.value;
-	CREATE_NEW_KEYUSES 	= id_init_keyuses.value;
+	var seed = id_init_seed.value.trim();
+	if(seed == ""){
+		alert("Cannot have a blank seed..");
+		return;
+	}
 	
 	//Now generate full details..
 	MINIMASK.meg.createseed(id_init_seed.value, function(resp){
@@ -87,7 +101,11 @@ function init_continueseed(){
 		
 		//Now STORE this..
 		STORAGE.setData("**USER_DETAILS**", USER_ACCOUNT);
+		
+		//Hide the init panel..
+		hideInitPanel();
 				
+		//Do the startup		
 		postStartupDex();
 	});
 }
