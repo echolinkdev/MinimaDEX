@@ -220,16 +220,4 @@ function setAllOrdersTable(){
 	
 	//Add this totals list
 	addTotalOrdersRows(sqbuys);
-	
-	/*//And add these
-	addAllOrdersRows(sells);
-	
-	//Now the BUY orders
-	var buys=getOrdersOnly("buy");
-	
-	//Now order by price..
-	buys.sort(compareDesc);
-	
-	//And add these
-	addAllOrdersRows(buys);*/
 }

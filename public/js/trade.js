@@ -16,8 +16,10 @@ function startTrade(){
 		}
 		
 		//Ok - we have enough.. find an order / user
+		var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, "sell", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
 		
-	
+		console.log("TRADE : "+JSON.stringify(tradeorder.book));
+		
 	//Or Selling	
 	}else{
 		

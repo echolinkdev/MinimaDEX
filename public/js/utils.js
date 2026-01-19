@@ -65,3 +65,7 @@ function sortMarketsAlphabetically(a,b){
 
 	return 0;
 }
+
+function getRandom(max){
+	return Math.floor(Math.random() * max); 
+}
