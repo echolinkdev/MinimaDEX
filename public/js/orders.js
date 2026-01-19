@@ -111,6 +111,7 @@ function findValidOrder(mktuid, buyorsell, price, amount){
 	for(const key in ALL_ORDERS) {
 		
 		//Get the order book
+		var script  = ALL_ORDERS[key].script;
 		var balance = ALL_ORDERS[key].balance;
 		var book 	= ALL_ORDERS[key].orders;
 		
@@ -134,6 +135,7 @@ function findValidOrder(mktuid, buyorsell, price, amount){
 					
 					//Found a possible..
 					var possible 		= {};
+					possible.script 	= script;
 					possible.balance 	= balance;
 					possible.book 		= book[i];
 					
