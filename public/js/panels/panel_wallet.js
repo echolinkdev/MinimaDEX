@@ -167,7 +167,7 @@ function splitWalletCoins(tokenname, tokenid){
 		setSplitCoinsBalanceZero(tokenid);
 								
 		//Send and split..
-		utility_send(tokenname, tokenid, balance, USER_ADDRESS, 10, function(resp){
+		utility_send(tokenname, tokenid, balance, USER_ACCOUNT.ADDRESS, 10, function(resp){
 			if(resp.status){
 				//Add Log
 				addHistoryLog("SPLIT_COINS","User splits "+tokenname, resp.data.txpowid);	
@@ -185,10 +185,16 @@ function splitWalletCoins(tokenname, tokenid){
  */
 function utility_send(tokenname, tokenid, amount, address, split, callback){
 	//Send
-	MINIMASK.meg.send(amount+"", address, tokenid, USER_ADDRESS, USER_PRIVATEKEY, USER_SCRIPT, USER_KEYUSES, split, function(resp){
+	MINIMASK.meg.send(amount+"", address, tokenid, 
+		USER_ACCOUNT.ADDRESS, USER_ACCOUNT.PRIVATEKEY, 
+		USER_ACCOUNT.SCRIPT, USER_ACCOUNT.KEYUSES, 
+		split, function(resp){
 		
 		//Update KEY USES
-		USER_KEYUSES++;
+		USER_ACCOUNT.KEYUSES = +USER_ACCOUNT.KEYUSES+1;
+		
+		//Save data..
+		saveUserDetails();
 		
 		//And Auto Update the balance..
 		autoUpdateBalance();

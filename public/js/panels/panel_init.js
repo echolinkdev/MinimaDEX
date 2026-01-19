@@ -26,11 +26,40 @@ function init_passwordcheck(){
 		return;
 	}
 	
+	//Is this MY HACK LOGIN.. (for testing 2 users on same machine..)
+	if(password == "hack"){
+		
+		STORAGE.setPassword("hack");
+		STORAGE.hackAdditionText = "user2";
+		
+		//Set the details automaticcally..
+		USER_ACCOUNT = {};
+		
+		//Set these details..
+		USER_ACCOUNT.SEED 			= HACK_USER_SEED;
+		USER_ACCOUNT.ADDRESS 		= HACK_USER_ADDRESS;
+		USER_ACCOUNT.PUBLICKEY 		= HACK_USER_PUBLICKEY;
+		USER_ACCOUNT.PRIVATEKEY 	= HACK_USER_PRIVATEKEY;
+		USER_ACCOUNT.SCRIPT 		= HACK_USER_SCRIPT;
+		USER_ACCOUNT.KEYUSES 		= 0;
+		
+		//Hide the init panel..
+		hideInitPanel();	
+		
+		//Start the DEX up..
+		postStartupDex();
+		
+		alert("HACK User inited..");
+		
+		return;
+	}
+	
+	
 	//Set this for all the storage
 	STORAGE.setPassword(password);
 	
 	//Now load the details..
-	var userdetails = STORAGE.getData("**USER_DETAILS**");	
+	var userdetails = loadUserDetails();	
 	
 	//Do they exist..
 	if(userdetails == -1){
@@ -97,10 +126,10 @@ function init_continueseed(){
 		USER_ACCOUNT.PUBLICKEY 		= resp.data.publickey;
 		USER_ACCOUNT.PRIVATEKEY 	= resp.data.privatekey;
 		USER_ACCOUNT.SCRIPT 		= resp.data.script;
-		USER_ACCOUNT.KEYUSES 		= id_init_keyuses.value;
+		USER_ACCOUNT.KEYUSES 		= +id_init_keyuses.value;
 		
 		//Now STORE this..
-		STORAGE.setData("**USER_DETAILS**", USER_ACCOUNT);
+		saveUserDetails();
 		
 		//Hide the init panel..
 		hideInitPanel();

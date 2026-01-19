@@ -61,3 +61,11 @@ function postStartupDex(){
 		postMyOrdersToServer();
 	});
 }
+
+function loadUserDetails(){
+	return STORAGE.getData("**USER_DETAILS**");
+}
+
+function saveUserDetails(){
+	STORAGE.setData("**USER_DETAILS**", USER_ACCOUNT);
+}

@@ -11,6 +11,11 @@ var STORAGE = {
 	 */
 	mainPassword : "mypassword",
 	
+	/*
+	 * When testing.. I hack this
+ 	 */
+	hackAdditionText : "",
+	
 	/**
 	 * Set the main Password
 	 */
@@ -30,7 +35,7 @@ var STORAGE = {
 		var encrypted = CryptoJS.AES.encrypt(datastr, STORAGE.mainPassword);
 		
 		//Now save this
-		localStorage.setItem(key,encrypted);		
+		localStorage.setItem(STORAGE.hackAdditionText+key,encrypted);		
 	},
 	
 	/**
@@ -39,7 +44,7 @@ var STORAGE = {
 	getData : function(key){
 		
 		//Get the data
-		var encdata = localStorage.getItem(key);
+		var encdata = localStorage.getItem(STORAGE.hackAdditionText+key);
 		
 		//Check Exists
 		if(encdata == null){

@@ -21,11 +21,9 @@ function navigate_wallet(){
 	id_view_wallet.style.display="block";
 	
 	//Reset balance.. will be cached by MiniMask anyway
-	if(typeof MINIMASK !== "undefined"){
-		fetchFullBalance(function(){
-			updateBalancePanel();
-		});
-	}
+	fetchFullBalance(function(){
+		updateBalancePanel();
+	});
 }
 
 function navigate_allorders(){
@@ -50,7 +48,7 @@ function navigate_settings(){
 
 function navigate_logout(){
 	
-	if(confirm("Make sure you have a backup of your seed and key uses!")){
+	if(confirm("You are about to logout ( same as Refresh Page.. )\n\nMake sure you have a backup of your seed and key uses!")){
 		//Just refresh the page..
 		window.location.reload();	
 	}
