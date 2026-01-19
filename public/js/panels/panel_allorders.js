@@ -110,8 +110,6 @@ function addTotalOrdersRows(data){
 			
 			cellaction.innerHTML 	= "<button class='mybtn' onclick='buyAction(\""+order.price+"\", \""+order.maxamount+"\");'>BUY</button>";	
 		}
-			
-		
 	}
 }
 

@@ -9,24 +9,37 @@ mktamount_slider.addEventListener("input", (event) => {
 	setCurrentAmount(event.target.value);
 });
 
-function setCurrentAmount(perc){
-	
-	//Calculate Amount
-	var currentamt = financial(perc * MKT_CURRENT_MAXAMOUNT);
-	mktcurrentamount.innerHTML = currentamt+" "+CURRENT_MARKET.token1.name;
-	
-	//And total
-	var total = financial(currentamt * MKT_CURRENT_PRICE);
-	mkttotal.innerHTML = total+" "+CURRENT_MARKET.token2.name;
-}
+var MKT_BUYSELL 			= "";
 
 var MKT_CURRENT_MAXAMOUNT 	= 0;
 var MKT_CURRENT_PRICE 		= 0;
+
+var MKT_CURRENT_AMOUNT		= 0;
+var MKT_TOTAL_AMOUNT		= 0;
+
+function setCurrentAmount(perc){
+	
+	//Calculate Amount
+	MKT_CURRENT_AMOUNT =financial(perc * MKT_CURRENT_MAXAMOUNT);
+	mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
+	
+	//And total
+	MKT_TOTAL_AMOUNT = financial(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+	mkttotal.innerHTML = MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name;
+}
+
+function resetMKTValues(){
+	MKT_CURRENT_AMOUNT 	= financial(MKT_CURRENT_MAXAMOUNT); 
+	MKT_TOTAL_AMOUNT 	= financial(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+}
 
 function showMktActionPanel(buysell, price, maxamount){
 	
 	MKT_CURRENT_PRICE		= price;
 	MKT_CURRENT_MAXAMOUNT 	= maxamount;
+	MKT_BUYSELL				= buysell;
+	
+	resetMKTValues();
 	
 	//Set the slider
 	mktamount_slider.value = 1;
@@ -49,6 +62,4 @@ function showMktActionPanel(buysell, price, maxamount){
 function hideMktActionPanel(){
 	blakout_panel.style.display = "none";
 	mktaction_panel.style.display = "none";
-	
-	
 }

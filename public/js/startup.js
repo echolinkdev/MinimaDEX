@@ -29,7 +29,7 @@ function initDEX(){
 			
 		}else{
 			console.log("MINIMASK extension not active!");	
-			alert("MiniMask Extensiopn Not Active!\n\nThis applicatgion requires MiniMask");
+			alert("MiniMask Extension Not Active!\n\nThis applicatgion requires MiniMask");
 		}	
 	}
 }

@@ -38,7 +38,7 @@ function sendOrder(buysell){
 		
 	}else if(buysell == "sell"){
 		
-		if(tot > available1){
+		if(amount > available1){
 			var msg = "Insufficient funds.."
 					  +"\n\nYou are trying to SELL "+amount+" "+CURRENT_MARKET.token1.name
 					  +"\n\nYou currently only have "+available1+" available";

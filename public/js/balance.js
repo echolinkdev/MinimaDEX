@@ -135,7 +135,7 @@ function getOrderBookBalance(tokenid){
 		}else if(order.type=="sell" && order.market.token1.tokenid == tokenid){
 			
 			//Add to the total..
-			total += tot;
+			total += amt;
 			
 			//console.log("SELL Order found : "+tokenid+" "+tot+" total:"+total);
 		}
