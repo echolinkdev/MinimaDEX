@@ -62,7 +62,8 @@ var STORAGE = {
 		
 			console.log("Unable to decrypt data.. incorrect password ?");
 			
-			return null;
+			//Exists but password wrong..
+			return -1;
 		}
 	},
 	

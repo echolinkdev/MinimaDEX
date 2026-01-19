@@ -114,6 +114,63 @@
 		</div>
 	</div>
 	
+	<!-- The INIT Panel-->
+	<div id="id_initpanel" class="centerdiv" style="height:300px;">
+		
+		<div class="greyrounded">
+			<div class="paddedborder">
+		
+				<b>Welcome!</b><br>
+				<br>
+				Your wallet details are encrypted with a password<br>
+				<br>
+				Type that in here or choose one now if this is your first time<br>
+				<br>
+				DO NOT FORGET IT<br>
+				<br>
+				
+				<center>
+					
+					<input type="password" id="id_init_password"><br>
+					<br>
+					<button class="mybtn" onclick="init_passwordcheck();">Continue</button>
+					
+				</center>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Create seed -->
+	<div id="id_createseed_panel" class="centerdiv" style="height:300px;">
+		
+		<div class="greyrounded">
+			<div class="paddedborder">
+		
+				<b>Create Seed</b><br>
+				<br>
+				No details found<br>
+				<br>
+				Please type in your seed or create  new one..<br>
+				<br>
+				<table width=100%>
+					<tr>
+						<td class="alignright">Seed Phrase : </td>
+						<td><input type="text" id="id_init_seed" style="width:90%"></td>
+					</tr>
+					<tr>
+						<td class="alignright">Key Uses : </td>
+						<td><input type="number" id="id_init_keyuses" style="width:90%"></td>
+					</tr>
+				</table>
+				<br>
+				<center>
+					<button class="mybtn" onclick="init_createnew();">Create New</button>&nbsp;&nbsp;&nbsp;
+					<button class="mybtn" onclick="init_continueseed();">Continue</button>
+				</center>
+			</div>
+		</div>
+	</div>
+	
 	<table class="fullwidthheight" border=0>
 		
 		<!-- TOP MENU-->
@@ -418,11 +475,10 @@
 														
 														<b>Seed Phrase</b><br>
 														<br>
-														View your current or create a new seed phrase<br> 
+														View your current seed phrase and key uses<br> 
 														<br>
 														<center>
-															<button class=mybtn onclick="showSeedPhrase();">Seed Phrase</button>&nbsp;&nbsp;&nbsp;
-															<button class=mybtn onclick="confirm('Are you SURE ?\n\nThis will delete your OLD wallet.');">Create New</button>
+															<button class=mybtn onclick="showSeedPhrase();">Seed Phrase</button>
 														</center>
 													</div>
 													
@@ -621,13 +677,9 @@
 	<script type="text/javascript" src="./js/panels/panel_wallet.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_markets.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_history.js"></script>
+	<script type="text/javascript" src="./js/panels/panel_init.js"></script>
 		
 	<script type="text/javascript">
-		
-		/*function getStyle(id, name){
-		    var element = document.getElementById(id);
-		    return element.currentStyle ? element.currentStyle[name] : window.getComputedStyle ? window.getComputedStyle(element, null).getPropertyValue(name) : null;
-		}*/
 		
 		//Init the DEX
 		initDEX();

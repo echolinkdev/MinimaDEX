@@ -5,7 +5,7 @@ const seed_show_panel 		= document.getElementById('id_seedphrasepanel');
 function walletInit(){
 	
 	var qrcode = new QRCode("wallet_receiveqr", {
-		    text: USER_ADDRESS,
+		    text: USER_ACCOUNT.ADDRESS,
 		    width: 250,
 		    height: 250,
 		    colorDark : "#000000",
@@ -13,19 +13,18 @@ function walletInit(){
 		    correctLevel : QRCode.CorrectLevel.H
 		});	
 		
-	document.getElementById('id_wallet_address').innerHTML=USER_ADDRESS;
-	
-	document.getElementById('id_seedphrasedetails').innerHTML=USER_SEED;
+	document.getElementById('id_wallet_address').innerHTML		=USER_ACCOUNT.ADDRESS;
+	document.getElementById('id_seedphrasedetails').innerHTML	=USER_ACCOUNT.SEED;
 }
 
 function showSeedPhrase(){
-	seed_blakout_panel.style.display = "block";
-	seed_show_panel.style.display = "block";
+	seed_blakout_panel.style.display 	= "block";
+	seed_show_panel.style.display 		= "block";
 }
 
 function hideSeedPhrase(){
-	seed_blakout_panel.style.display = "none";
-	seed_show_panel.style.display = "none";
+	seed_blakout_panel.style.display 	= "none";
+	seed_show_panel.style.display 		= "none";
 }
 
 function updateBalancePanel(){
