@@ -1,5 +1,15 @@
 
 
+function createEmptyTxn(){
+	
+	var txn 	= {};
+	txn.inputs 	= [];
+	txn.outputs	= [];
+	txn.scripts	= [];
+	
+	return txn;	
+}
+
 function startTrade(){
 
 	console.log("BUYSELL:"+MKT_BUYSELL+" "+MKT_CURRENT_AMOUNT+" of "+CURRENT_MARKET.token1.name);
@@ -20,6 +30,21 @@ function startTrade(){
 		
 		console.log("TRADE : "+JSON.stringify(tradeorder.book));
 		
+		//NOW - create transaction..
+		var txn = createEmptyTxn();
+		
+		//Add MY Coins first..
+		addCoins(txn, USER_BALANCE, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT);
+		
+		//Now add THEIR coins!
+		//..
+		
+		//Now Sign the Transaction..
+		//..
+		
+		//And send it to them to finish!
+		//..
+		
 	//Or Selling	
 	}else{
 		
@@ -30,7 +55,53 @@ function startTrade(){
 			return;
 		}
 		
+	}
+}
+
+/**
+ * Add coins as input and outputs for change
+ */
+function addCoins(txn, balance, tokenid, amount){
+	
+	//First find the token..
+	var len = balance.length;
+	for(var i=0;i<len;i++){
 		
-		
+		var balance = balance[i];
+		if(balance.tokenid == tokenid){
+			
+			//Get coins!
+			var coins 	= balance.coinlist;
+			var coinlen = coins.length; 
+			
+			//Cycle through and add
+			var totaladded = 0;
+			for(var i=0;i<coinlen;i++){
+				
+				//Add the first coin..
+				txn.inputs.push(coins[i].coinid);
+				
+				//Add to the total
+				if(tokenid == "0x00"){
+					totaladded += +coins[i].amount	
+				}else{
+					totaladded += +coins[i].tokenamount
+				}
+				
+				//Have we added enough
+				if(totaladded >= amount){
+					break;
+				}
+			}
+			
+			//Did we add enough ? - if not throw error..
+			//..
+			 
+			//Now add the change..
+			//..
+			
+			//Lets go..
+			break;		
+		}
 	}
 }
