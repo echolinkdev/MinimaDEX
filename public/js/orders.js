@@ -70,6 +70,7 @@ function postMyOrdersToServer(){
 	
 	//Create the OrderBook Details - includes your Balance!
 	var myorderbook 	= {};
+	myorderbook.script 	= USER_ACCOUNT.SCRIPT;
 	myorderbook.balance = USER_BALANCE;
 	myorderbook.orders 	= USER_ORDERS;
 	msg.data = myorderbook;
