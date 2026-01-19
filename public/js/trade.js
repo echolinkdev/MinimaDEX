@@ -76,7 +76,14 @@ function addCoins(txn, balance, tokenid, amount){
 			
 			//Cycle through and add
 			var totaladded = 0;
+			
+			//What is the address
+			var address = "";
+			
 			for(var i=0;i<coinlen;i++){
+				
+				//Store
+				address = coins[i].miniaddress;
 				
 				//Add the first coin..
 				txn.inputs.push(coins[i].coinid);
@@ -98,7 +105,22 @@ function addCoins(txn, balance, tokenid, amount){
 			//..
 			 
 			//Now add the change..
-			//..
+			var change = totaladded - amount;
+			if(change > 0){
+				//Create an output..
+				var outputchange 			= {};
+				outputchange.address		= address;
+				outputchange.amount			= change;
+				outputchange.storestate		= true;
+				outputchange.tokenid		= tokenid;
+				
+				//Add output
+				txn.outputs.push(outputchange);	
+			}
+			
+			//Add the scripts..
+			
+			
 			
 			//Lets go..
 			break;		
