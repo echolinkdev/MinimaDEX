@@ -43,7 +43,7 @@ function startTrade(){
 		//CHECK THEY have enough..
 		//..
 		
-		console.log("FOUND ORDER : "+JSON.stringify(tradeorder));
+		console.log("FOUND SELL ORDER : "+JSON.stringify(tradeorder));
 		
 		//NOW - create transaction..
 		var txn = createEmptyTxn();
@@ -83,10 +83,35 @@ function startTrade(){
 		
 		//Check we have enough..
 		var available = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
-		if(available < MKT_TOTAL_AMOUNT){
+		if(available < MKT_CURRENT_AMOUNT){
 			alert("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
 			return;
 		}
+		
+		//Ok - we have enough.. find an order / user
+		var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
+		
+		console.log("FOUND BUY ORDER : "+JSON.stringify(tradeorder));
+		
+		//NOW - create transaction..
+		var txn = createEmptyTxn();
+		
+		//Add MY Coins first..
+		var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
+		console.log("My BALANCE : "+JSON.stringify(mytokbal));
+		
+		//Send the amount to the User
+		addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
+		
+		//Now add THEIR coins and send to us..
+		addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
+		
+		//Now add both the scripts..
+		txn.scripts.push(USER_ACCOUNT.SCRIPT);
+		txn.scripts.push(tradeorder.script);
+		
+		//PRINT IT OUT
+		console.log("TRADE : "+JSON.stringify(txn));
 		
 	}
 }
@@ -204,12 +229,12 @@ function checkAndSignTrade(tradereq){
 		//If so - Sign and POST!
 		if(valid){
 			
+			//Now Update your Order Book.. as this trade will have used up some of your offering
+			//..
+			
 			//Sign it.. and POST..
 			utility_sign(txndata, true, function(signedrexp){
 				console.log("POSTED : "+JSON.stringify(signedrexp,null,2));
-				
-				//Now Update your Order Book.. as this trade will have used up some of your offering
-				//..
 				
 				//And send msg back to the User - so they know..
 				//..
@@ -228,29 +253,82 @@ function checkAndSignTrade(tradereq){
 
 function getMyInputsAndOutputs(txn){
 	
-	var mycoins 	= {};
-	mycoins.inputs 	= [];
-	mycoins.outputs = [];
+	var mycoins 		= {};
+	
+	//Total Amounts / TokenID
+	mycoins.inputtokenid 	= "xxx";
+	mycoins.inputtotal 		= DECIMAL_ZERO;
+	mycoins.outputtokenid 	= "xxx";
+	mycoins.outputtotal 	= DECIMAL_ZERO;
 	
 	//Cycle Inputs..
 	var ins = txn.inputs.length;
 	for(var i=0;i<ins;i++){
-		//Check the address..				
 		var input = txn.inputs[i];
+		
+		//Only coins that belong to us matter
 		if(input.miniaddress == USER_ACCOUNT.ADDRESS){
-			mycoins.inputs.push(input);
+			
+			//Check is the same as before..	
+			if(mycoins.inputtokenid != "xxx"){
+				if(input.tokenid != mycoins.inputtokenid){
+					throw new Error("TRADE INPUT TOKEN different : "+input.tokenid+" / "+mycoins.inputtokenid);
+				}
+			}				
+			
+			//Add to the total
+			if(input.tokenid == "0x00"){
+				mycoins.inputtotal = mycoins.inputtotal.plus(new Decimal(input.amount));	
+			}else{
+				mycoins.inputtotal = mycoins.inputtotal.plus(new Decimal(input.tokenamount));
+			}
+			
+			//Next check
+			mycoins.inputtokenid = input.tokenid;	
 		}
 	}
+	console.log("Input total : "+mycoins.inputtokenid+" "+mycoins.inputtotal);
 	
 	//Cycle Outputs..
 	var outs = txn.outputs.length;
 	for(var i=0;i<outs;i++){
-		//Check the address..				
+		
+		//Only coins that belong to us matter				
 		var output = txn.outputs[i];
 		if(output.miniaddress == USER_ACCOUNT.ADDRESS){
-			mycoins.outputs.push(output);
+			
+			//Is it the change from the input..
+			if(output.tokenid == mycoins.inputtokenid){
+				console.log("Found change coin output.. ");
+				if(output.tokenid == "0x00"){
+					mycoins.inputtotal = mycoins.inputtotal.minus(new Decimal(output.amount));	
+				}else{
+					mycoins.inputtotal = mycoins.inputtotal.minus(new Decimal(output.tokenamount));
+				}
+				console.log("NEW Input total : "+mycoins.inputtokenid+" "+mycoins.inputtotal);
+			
+			}else{
+				
+				//Check the token..  
+				if(mycoins.outputtokenid != "xxx"){
+					if(output.tokenid != mycoins.outputtokenid){
+						throw new Error("TRADE OUTPUT TOKEN different : "+output.tokenid+" / "+mycoins.outputtokenid);
+					}
+				}				
+				
+				//Add to the total
+				if(output.tokenid == "0x00"){
+					mycoins.outputtotal = mycoins.outputtotal.plus(new Decimal(output.amount));	
+				}else{
+					mycoins.outputtotal = mycoins.outputtotal.plus(new Decimal(output.tokenamount));
+				}
+				
+				//Next check
+				mycoins.outputtokenid = output.tokenid;		
+			}
 		}
 	}
+	console.log("Output total : "+mycoins.outputtokenid+" "+mycoins.outputtotal);
 	
 	return mycoins;
 }
@@ -264,106 +342,42 @@ function checkValid(bookuid, insouts){
 		return false;
 	}
 	
-	//Check all the input coins are the same tokenid
-	var inputtotal = DECIMAL_ZERO;
-	var oldinputtoken = "xxx";
-	var ins = insouts.inputs.length;
-	for(var i=0;i<ins;i++){
-		var input = insouts.inputs[i];
-		
-		//Check the token..
-		if(oldinputtoken != "xxx"){
-			if(input.tokenid != oldinputtoken){
-				console.log("INPUT TOKEN diffrent : "+input.tokenid+" / "+oldinputtoken);
-				return false;
-			}
-		}				
-		
-		//Add to the total
-		if(input.tokenid == "0x00"){
-			inputtotal = inputtotal.plus(new Decimal(input.amount));	
-		}else{
-			inputtotal = inputtotal.plus(new Decimal(input.tokenamount));
-		}
-		
-		//Next check
-		oldinputtoken = input.tokenid;
-	}
-	console.log("Input total : "+oldinputtoken+" "+inputtotal);
-	
-	//Now the outs
-	var outputtotal = DECIMAL_ZERO;
-	
-	oldtoken = "xxx";
-	var outs = insouts.outputs.length;
-	for(var i=0;i<outs;i++){
-		var output = insouts.outputs[i];
-		
-		//Is it the change from the input..
-		if(output.tokenid == oldinputtoken){
-			console.log("Found change coin output.. ");
-			if(output.tokenid == "0x00"){
-				inputtotal = inputtotal.minus(new Decimal(output.amount));	
-			}else{
-				inputtotal = inputtotal.minus(new Decimal(output.tokenamount));
-			}
-			console.log("NEW Input total : "+oldinputtoken+" "+inputtotal);
-		
-		}else{
-			//Check the token.. can be the same OR the same as the 
-			if(oldtoken != "xxx"){
-				if(output.tokenid != oldtoken){
-					console.log("OUTPUT TOKEN different : "+output.tokenid+" / "+oldtoken);
-					return false;
-				}
-			}				
-			
-			//Add to the total
-			if(output.tokenid == "0x00"){
-				outputtotal = outputtotal.plus(new Decimal(output.amount));	
-			}else{
-				outputtotal = outputtotal.plus(new Decimal(output.tokenamount));
-			}
-			
-			//Next check
-			oldtoken = output.tokenid;		
-		}
-	}
-	console.log("Output total : "+oldtoken+" "+outputtotal);
-	
 	//We now have the total put in and the total out.. check this against the book!!
-	//Do we have that much input
 	if(mybook.type == "sell"){
 		
 		//Check the tokenid..
-		if(mybook.market.token1.tokenid != oldinputtoken){
+		if(mybook.market.token1.tokenid != insouts.inputtokenid){
 			console.log("Wrong token1 for sell.."+JSON.stringify(mybook.market));
 			return false;
-		}
 		
-		//Check the tokenid..
-		if(mybook.market.token2.tokenid != oldtoken){
+		}else if(mybook.market.token2.tokenid != insouts.outputtokenid){
 			console.log("Wrong token2 for sell.."+JSON.stringify(mybook.market));
 			return false;
 		}
 		
 		//Check the amount is MORE than requested
 		var bookamount = new Decimal(mybook.amount); 
-		if(bookamount.lessThan(inputtotal)){
+		if(bookamount.lessThan(insouts.inputtotal)){
 			console.log("Amount too large for sell.."+JSON.stringify(mybook.market));
 			return false;
 		}
 		
 		//And now check the price..
 		var bookprice 	= new Decimal(mybook.price);
-		var price 		= outputtotal.dividedBy(inputtotal);
+		var price 		= insouts.outputtotal.dividedBy(insouts.inputtotal);
 		if(!price.eq(bookprice)){
 			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
 			return false;
 		} 
-		
-	} 
 	
+	}else if(mybook.type == "buy"){
+		
+		
+		
+		
+	}else{
+		return false;
+	} 
 	
 	return true;
 }
