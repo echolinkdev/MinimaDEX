@@ -17,6 +17,9 @@ const server = new WebSocketServer({
 const clients 		= new Set();
 const orderbooks 	= {};
 
+//All the Trades
+const alltrades		= [];
+
 //What to do on connections
 server.on('connection', (socket) => {
 	
