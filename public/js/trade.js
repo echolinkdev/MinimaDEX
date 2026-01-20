@@ -258,10 +258,11 @@ function getMyInputsAndOutputs(txn){
 function checkValid(bookuid, insouts){
 	
 	//Get the book
-	//var  = getMyOrder(bookuid);
-	//if(mybook == null){
-	//	return false;
-	//}
+	var mybook = getMyOrder(bookuid);
+	if(mybook == null){
+		console.log("Could not find my order book : "+bookuid);
+		return false;
+	}
 	
 	//Check all the input coins are the same tokenid
 	var inputtotal = DECIMAL_ZERO;
@@ -288,36 +289,81 @@ function checkValid(bookuid, insouts){
 		//Next check
 		oldinputtoken = input.tokenid;
 	}
+	console.log("Input total : "+oldinputtoken+" "+inputtotal);
 	
 	//Now the outs
 	var outputtotal = DECIMAL_ZERO;
+	
 	oldtoken = "xxx";
 	var outs = insouts.outputs.length;
 	for(var i=0;i<outs;i++){
 		var output = insouts.outputs[i];
 		
-		//Check the token..
-		if(oldtoken != "xxx"){
-			if(output.tokenid != oldtoken){
-				console.log("OUTPUT TOKEN different : "+output.tokenid+" / "+oldtoken);
-				return false;
+		//Is it the change from the input..
+		if(output.tokenid == oldinputtoken){
+			console.log("Found change coin output.. ");
+			if(output.tokenid == "0x00"){
+				inputtotal = inputtotal.minus(new Decimal(output.amount));	
+			}else{
+				inputtotal = inputtotal.minus(new Decimal(output.tokenamount));
 			}
-		}				
+			console.log("NEW Input total : "+oldinputtoken+" "+inputtotal);
 		
-		//Add to the total
-		if(output.tokenid == "0x00"){
-			outputtotal = outputtotal.plus(new Decimal(output.amount));	
 		}else{
-			outputtotal = outputtotal.plus(new Decimal(output.tokenamount));
+			//Check the token.. can be the same OR the same as the 
+			if(oldtoken != "xxx"){
+				if(output.tokenid != oldtoken){
+					console.log("OUTPUT TOKEN different : "+output.tokenid+" / "+oldtoken);
+					return false;
+				}
+			}				
+			
+			//Add to the total
+			if(output.tokenid == "0x00"){
+				outputtotal = outputtotal.plus(new Decimal(output.amount));	
+			}else{
+				outputtotal = outputtotal.plus(new Decimal(output.tokenamount));
+			}
+			
+			//Next check
+			oldtoken = output.tokenid;		
+		}
+	}
+	console.log("Output total : "+oldtoken+" "+outputtotal);
+	
+	//We now have the total put in and the total out.. check this against the book!!
+	//Do we have that much input
+	if(mybook.type == "sell"){
+		
+		//Check the tokenid..
+		if(mybook.market.token1.tokenid != oldinputtoken){
+			console.log("Wrong token1 for sell.."+JSON.stringify(mybook.market));
+			return false;
 		}
 		
-		//Next check
-		oldtoken = output.tokenid;
-	}
+		//Check the tokenid..
+		if(mybook.market.token2.tokenid != oldtoken){
+			console.log("Wrong token2 for sell.."+JSON.stringify(mybook.market));
+			return false;
+		}
+		
+		//Check the amount is MORE than requested
+		var bookamount = new Decimal(mybook.amount); 
+		if(bookamount.lessThan(inputtotal)){
+			console.log("Amount too large for sell.."+JSON.stringify(mybook.market));
+			return false;
+		}
+		
+		//And now check the price..
+		var bookprice 	= new Decimal(mybook.price);
+		var price 		= outputtotal.dividedBy(inputtotal);
+		if(!price.eq(bookprice)){
+			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
+			return false;
+		} 
+		
+	} 
 	
-	console.log("Check coins all the saem tokenid : "+oldtoken);
-	console.log("Input total : "+oldinputtoken+" "+inputtotal);
-	console.log("Output total : "+oldtoken+" "+outputtotal);
 	
 	return true;
 }
