@@ -397,6 +397,7 @@ function checkValid(bookuid, insouts){
 		}
 		
 	}else{
+		console.log("ERRO book entry type "+JSON.stringify(mybook));
 		return false;
 	} 
 	
