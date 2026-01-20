@@ -221,9 +221,8 @@ function checkAndSignTrade(tradereq){
 		//Check thisis valid given this mktuid..
 		var valid = checkValid(tradereq.bookuid, insouts);
 		
-		console.log("VALID:"+valid);
-		
-		return;
+		//console.log("VALID:"+valid);
+		//return;
 		
 		//If so - Sign and POST!
 		if(valid){
@@ -232,11 +231,20 @@ function checkAndSignTrade(tradereq){
 			//..
 			
 			//Sign it.. and POST..
-			utility_sign(txndata, true, function(signedrexp){
+			utility_sign(tradereq.txndata, true, function(signedrexp){
 				console.log("POSTED : "+JSON.stringify(signedrexp,null,2));
 				
-				//And send msg back to the User - so they know..
-				//..
+				if(!signedrexp.status){
+					//Something went wrong..
+					console.log(signedrexp.error);
+				}else{
+					
+					//Get the txpowid..
+					var txpowid = signedrexp.data.txpow.txpowid;	
+				
+				}
+				
+				//And notify
 				
 			});
 			
