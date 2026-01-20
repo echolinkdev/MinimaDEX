@@ -70,7 +70,7 @@ function startTrade(){
 				console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
 				
 				//And send it to them to finish!
-				postTradeToUser(tradeorder.userid, CURRENT_MARKET.mktuid, signedrexp.data.data);	
+				//postTradeToUser(tradeorder.userid, CURRENT_MARKET.mktuid, signedrexp.data.data);	
 			});	
 		});
 		
@@ -90,6 +90,7 @@ function startTrade(){
 /**
  * Add coins as input and outputs for change
  */
+var DECIMAL_ZERO = new Decimal(0);
 function addCoins(txn, balance, tokenid, amount, toaddress){
 	
 	//Cycle through and add
@@ -138,7 +139,10 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 	 
 	//Now add the change..
 	var change = totaladded.minus(addamount);
-	if(change > 0){
+	if(change.greaterThan(DECIMAL_ZERO)){
+		
+		console.log("Change : "+change+" "+tokenid);
+		
 		//Create an output..
 		var outputchange 			= {};
 		outputchange.address		= ""+address;
