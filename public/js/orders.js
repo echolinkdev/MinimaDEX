@@ -45,6 +45,17 @@ function removeMyOrderAndPost(uuid){
 	updateMyOrders();
 }
 
+function getMyOrder(uuid){
+	var len = USER_ORDERS.length;
+	for(var i=0;i<len;i++) {
+		if(USER_ORDERS[i].uuid == uuid){
+			return USER_ORDERS[i];
+		}
+	}
+	
+	return null;
+}
+
 function updateMyOrders(){
 	
 	//Store this locally..

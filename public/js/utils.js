@@ -1,6 +1,8 @@
 /**
  * Utility Funcions
  */
+var DECIMAL_ZERO = new Decimal(0);
+
 function getRandomHexString() {
     const hex = '0123456789ABCDEF';
     let output = '';

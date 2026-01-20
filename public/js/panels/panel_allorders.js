@@ -20,24 +20,7 @@ function allordersInit(){
 			updateAllMarkets();
 						
 			//Set the table
-			setAllOrdersTable();
-						
-		}else if(msg.type=="init_orderbooks"){
-			
-			//Store this..
-			ALL_ORDERS = msg.data;
-			
-			//Update the markets 
-			updateAllMarkets();
-						
-			//Set the Table
-			setAllOrdersTable();
-			
-			//Set My Orders - need the markets setup..
-			setMyOrdersTable();
-			
-			//Set ALL my orders table
-			setAllMyOrders();
+			setAllOrdersTable();					
 		}
 	});	
 }

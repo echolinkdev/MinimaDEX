@@ -39,19 +39,49 @@ function mainListenerLoop(){
 	//Add yourself to thew conversation
 	wsAddListener(function(msg){
 		
-		//Is it a trade message
-		if(msg.type=="message"){
+		//First start up message
+		if(msg.type=="init_orderbooks"){
+			
+			//Tells us who we are
+			USER_UUID = msg.uuid;
+					
+			//Store this..
+			ALL_ORDERS = msg.data;
+			
+			//Update the markets 
+			updateAllMarkets();
+						
+			//Set the Table
+			setAllOrdersTable();
+			
+			//Set My Orders - need the markets setup..
+			setMyOrdersTable();
+			
+			//Set ALL my orders table
+			setAllMyOrders();
+		
+		}else if(msg.type=="message"){
 			console.log("REC MESSAGE : "+JSON.stringify(msg));
 			
 			var recmsg = msg.data;
 			if(recmsg.type=="trade"){
-				
 				//Check this Txn..!
-				checkAndSignTrade(recmsg.data.mktuid, recmsg.data.txndata);	
+				checkAndSignTrade(recmsg.data);	
 			}
+		
+		}else if(msg.type=="closed"){
+			console.log("UUID CLOSED : "+JSON.stringify(msg));
+			
+			//Remove this user from All orders..
+			delete ALL_ORDERS[msg.uuid];
+			
+			//Update the markets 
+			updateAllMarkets();
+						
+			//Set the table
+			setAllOrdersTable();
 		}
 	});
-	
 }
 
 

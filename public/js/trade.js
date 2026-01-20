@@ -1,5 +1,7 @@
 
-
+/**
+ * Create a tmp empty txn
+ */
 function createEmptyTxn(){
 	
 	var txn 	= {};
@@ -11,6 +13,9 @@ function createEmptyTxn(){
 	return txn;	
 }
 
+/**
+ * When you accept a trade from the frontend..
+ */
 function startTrade(){
 
 	console.log("BUYSELL:"+MKT_BUYSELL+" "+MKT_CURRENT_AMOUNT+" of "+CURRENT_MARKET.token1.name);
@@ -64,14 +69,13 @@ function startTrade(){
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
 			console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
 			
-			
 			//Now Sign the Transaction..
 			utility_sign(rawresp.data.data, false, function(signedrexp){
 				console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
 				
 				//And send it to them to finish!
-				//postTradeToUser(tradeorder.userid, CURRENT_MARKET.mktuid, signedrexp.data.data);	
-			});	
+				postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);	
+			});
 		});
 		
 	//Or Selling	
@@ -90,7 +94,6 @@ function startTrade(){
 /**
  * Add coins as input and outputs for change
  */
-var DECIMAL_ZERO = new Decimal(0);
 function addCoins(txn, balance, tokenid, amount, toaddress){
 	
 	//Cycle through and add
@@ -158,13 +161,13 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 /**
  * Post your orders to the server
  */
-function postTradeToUser(userid, mktuid, txndata){
+function postTradeToUser(userid, bookuid, txndata){
 	
 	//This is the message for the User
 	var msg  			= {};
 	msg.type 			= "trade";
 	msg.data			= {};
-	msg.data.mktuid 	= mktuid;
+	msg.data.bookuid 	= bookuid;
 	msg.data.txndata 	= txndata;
 	
 	//This is the message sent to the server
@@ -181,17 +184,22 @@ function postTradeToUser(userid, mktuid, txndata){
 /**
  * Check Trade Transaction you have received..
  */
-function checkAndSignTrade(mktuid, txndata){
-	
+function checkAndSignTrade(tradereq){
+		
 	//First convert to a readable format
-	MINIMASK.meg.viewtxn(txndata, function(viewresp){
-		console.log("CHECK TRADE : "+mktuid+"\n"+JSON.stringify(viewresp,null,2));
+	MINIMASK.meg.viewtxn(tradereq.txndata, function(viewresp){
+		console.log("CHECK TRADE bookuid:"+tradereq.bookuid+"\n"+JSON.stringify(viewresp,null,2));
 		
 		//Get the inputs and outputs and CHECK they are a valid trade you will accept..
 		var insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
+		console.log("insouts:"+JSON.stringify(insouts,null,2));
 		
 		//Check thisis valid given this mktuid..
-		var valid = checkValid(mktuid, insouts);
+		var valid = checkValid(tradereq.bookuid, insouts);
+		
+		console.log("VALID:"+valid);
+		
+		return;
 		
 		//If so - Sign and POST!
 		if(valid){
@@ -220,15 +228,96 @@ function checkAndSignTrade(mktuid, txndata){
 
 function getMyInputsAndOutputs(txn){
 	
-	var mycoins = {};
+	var mycoins 	= {};
+	mycoins.inputs 	= [];
+	mycoins.outputs = [];
 	
 	//Cycle Inputs..
+	var ins = txn.inputs.length;
+	for(var i=0;i<ins;i++){
+		//Check the address..				
+		var input = txn.inputs[i];
+		if(input.miniaddress == USER_ACCOUNT.ADDRESS){
+			mycoins.inputs.push(input);
+		}
+	}
 	
 	//Cycle Outputs..
+	var outs = txn.outputs.length;
+	for(var i=0;i<outs;i++){
+		//Check the address..				
+		var output = txn.outputs[i];
+		if(output.miniaddress == USER_ACCOUNT.ADDRESS){
+			mycoins.outputs.push(output);
+		}
+	}
 	
 	return mycoins;
 }
 
-function checkValid(mktuid, insouts){
+function checkValid(bookuid, insouts){
+	
+	//Get the book
+	//var  = getMyOrder(bookuid);
+	//if(mybook == null){
+	//	return false;
+	//}
+	
+	//Check all the input coins are the same tokenid
+	var inputtotal = DECIMAL_ZERO;
+	var oldinputtoken = "xxx";
+	var ins = insouts.inputs.length;
+	for(var i=0;i<ins;i++){
+		var input = insouts.inputs[i];
+		
+		//Check the token..
+		if(oldinputtoken != "xxx"){
+			if(input.tokenid != oldinputtoken){
+				console.log("INPUT TOKEN diffrent : "+input.tokenid+" / "+oldinputtoken);
+				return false;
+			}
+		}				
+		
+		//Add to the total
+		if(input.tokenid == "0x00"){
+			inputtotal = inputtotal.plus(new Decimal(input.amount));	
+		}else{
+			inputtotal = inputtotal.plus(new Decimal(input.tokenamount));
+		}
+		
+		//Next check
+		oldinputtoken = input.tokenid;
+	}
+	
+	//Now the outs
+	var outputtotal = DECIMAL_ZERO;
+	oldtoken = "xxx";
+	var outs = insouts.outputs.length;
+	for(var i=0;i<outs;i++){
+		var output = insouts.outputs[i];
+		
+		//Check the token..
+		if(oldtoken != "xxx"){
+			if(output.tokenid != oldtoken){
+				console.log("OUTPUT TOKEN different : "+output.tokenid+" / "+oldtoken);
+				return false;
+			}
+		}				
+		
+		//Add to the total
+		if(output.tokenid == "0x00"){
+			outputtotal = outputtotal.plus(new Decimal(output.amount));	
+		}else{
+			outputtotal = outputtotal.plus(new Decimal(output.tokenamount));
+		}
+		
+		//Next check
+		oldtoken = output.tokenid;
+	}
+	
+	console.log("Check coins all the saem tokenid : "+oldtoken);
+	console.log("Input total : "+oldinputtoken+" "+inputtotal);
+	console.log("Output total : "+oldtoken+" "+outputtotal);
+	
 	return true;
 }
