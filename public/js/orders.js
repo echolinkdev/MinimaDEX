@@ -70,12 +70,14 @@ function postMyOrdersToServer(){
 	
 	//Create the OrderBook Details - includes your Balance!
 	var myorderbook 	= {};
+	myorderbook.address	= USER_ACCOUNT.ADDRESS;
 	myorderbook.script 	= USER_ACCOUNT.SCRIPT;
 	myorderbook.balance = USER_BALANCE;
 	myorderbook.orders 	= USER_ORDERS;
+	
+	//Send this
 	msg.data = myorderbook;
 	
-	//Will update table when I receive the server message
 	wsPostToServer(msg);
 }
 
@@ -101,7 +103,7 @@ function loadMyOrders(){
 /**
  * Search Orders
  */
-function findValidOrder(mktuid, buyorsell, price, amount){
+function findValidOrder(mktuid, tokenid, buyorsell, price, amount){
 	
 	//console.log("findValidOrder : "+mktuid+" "+buyorsell+" "+price+" "+amount);
 	
@@ -110,20 +112,21 @@ function findValidOrder(mktuid, buyorsell, price, amount){
 	//Cycle throuigh ALL_ORDERS users
 	for(const key in ALL_ORDERS) {
 		
-		//Get the order book
-		var script  = ALL_ORDERS[key].script;
-		var balance = ALL_ORDERS[key].balance;
-		var book 	= ALL_ORDERS[key].orders;
+		//Get this users complete book
+		var compbook = ALL_ORDERS[key];
 		
-		//Cycle through the book
-		var len = book.length;
-		for(var i=0;i<len;i++) {
-			
-			//console.log("possible : "+JSON.stringify(book[i]));
-			//console.log("mktuid : "+(book[i].market.mktuid == mktuid));
-			//console.log("type : "+(book[i].type == buyorsell));
-			//console.log("price : "+(+book[i].price == +price));
-			//console.log("amount : "+(+book[i].amount >= +amount));
+		//The script
+		var script  = compbook.script;
+		
+		//The address
+		var address  = compbook.address;
+				
+		//The balance - just for the token..
+		var balance = getTokenBalance(tokenid,compbook.balance);
+		
+		//Get the order book
+		var book = compbook.orders;
+		for(var i=0;i<book.length;i++) {
 			
 			//Is it the right Market and right type..
 			if(	book[i].market.mktuid == mktuid && 
@@ -131,10 +134,10 @@ function findValidOrder(mktuid, buyorsell, price, amount){
 				+book[i].price == +price &&
 				+book[i].amount >= +amount){
 					
-					//console.log("FOUND POSSIBLE : "+JSON.stringify(book[i]));
-					
 					//Found a possible..
 					var possible 		= {};
+					possible.userid		= key;
+					possible.address 	= address;
 					possible.script 	= script;
 					possible.balance 	= balance;
 					possible.book 		= book[i];

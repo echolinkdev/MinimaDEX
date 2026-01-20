@@ -34,6 +34,26 @@ function initDEX(){
 	}
 }
 
+function mainListenerLoop(){
+	
+	//Add yourself to thew conversation
+	wsAddListener(function(msg){
+		
+		//Is it a trade message
+		if(msg.type=="message"){
+			console.log("REC MESSAGE : "+JSON.stringify(msg));
+			
+			var recmsg = msg.data;
+			if(recmsg.type=="trade"){
+				
+				//Check this Txn..!
+				checkAndSignTrade(recmsg.data.mktuid, recmsg.data.txndata);	
+			}
+		}
+	});
+	
+}
+
 
 function postStartupDex(){
 	
@@ -54,6 +74,9 @@ function postStartupDex(){
 		navigate_dex();	
 	});
 	
+	//Listen for messages..
+	mainListenerLoop();
+						
 	//Now connect to server
 	wsInitSocket(function(){
 		

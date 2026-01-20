@@ -76,17 +76,6 @@ server.on('connection', (socket) => {
 				//Get the User..
 				sendToUser(socket.id, msgjson.data.uuid, msgjson.data.message);
 				
-			
-			}else if(msgjson.type=="trade"){
-				
-				//Get the txpowid..
-				//..
-				
-				//Store in REDIS ?
-				//..
-				
-				//Broadcast to all users
-				//..	
 			}else{
 				console.log("Unknown message type :"+msgjson.type+" msg:"+strmsg);
 			}

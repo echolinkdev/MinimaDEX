@@ -181,7 +181,7 @@ function splitWalletCoins(tokenname, tokenid){
 }
 
 /**
- * Utility SEND function that deals
+ * Utility SEND function
  */
 function utility_send(tokenname, tokenid, amount, address, split, callback){
 	//Send
@@ -198,6 +198,25 @@ function utility_send(tokenname, tokenid, amount, address, split, callback){
 		
 		//And Auto Update the balance..
 		autoUpdateBalance();
+					
+		//Callback
+		callback(resp);
+	});
+}
+
+/**
+ * Utility Sign function - do we POST ?
+ */
+function utility_sign(rawtxn, post, callback){
+	
+	//Send
+	MINIMASK.meg.signtxn(rawtxn,  USER_ACCOUNT.PRIVATEKEY, USER_ACCOUNT.KEYUSES, post, function(resp){
+		
+		//Update KEY USES
+		USER_ACCOUNT.KEYUSES = +USER_ACCOUNT.KEYUSES+1;
+		
+		//Save data..
+		saveUserDetails();
 					
 		//Callback
 		callback(resp);

@@ -91,6 +91,21 @@ function autoUpdateBalance(){
 }
 
 /**
+ * Get the balance for a specific token
+ */
+function getTokenBalance(tokenid, fullbalance){
+	var len = fullbalance.length;
+	for(var i=0;i<len;i++){
+		var balance = fullbalance[i];
+		if(balance.tokenid == tokenid){
+			return balance;		
+		}
+	}
+	
+	return null;
+}
+
+/**
  * Check available balance for a tokenid
  */
 

@@ -10,6 +10,10 @@ function getRandomHexString() {
     return "0x"+output;
 }
 
+function getRandom(max){
+	return Math.floor(Math.random() * max); 
+}
+
 function financial(x) {
   return new Decimal(x).toDecimalPlaces(4, Decimal.ROUND_DOWN).toNumber();		
   //return +Number.parseFloat(x).toFixed(4);
@@ -66,6 +70,3 @@ function sortMarketsAlphabetically(a,b){
 	return 0;
 }
 
-function getRandom(max){
-	return Math.floor(Math.random() * max); 
-}
