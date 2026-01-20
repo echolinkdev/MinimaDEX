@@ -27,6 +27,9 @@ function startTrade(){
 		return;
 	}
 	
+	//Create transaction..
+	var txn = createEmptyTxn();
+	
 	//Are we buying..
 	if(MKT_BUYSELL){
 		
@@ -45,9 +48,6 @@ function startTrade(){
 		
 		console.log("FOUND SELL ORDER : "+JSON.stringify(tradeorder));
 		
-		//NOW - create transaction..
-		var txn = createEmptyTxn();
-		
 		//Add MY Coins first..
 		var mytokbal = getTokenBalance(CURRENT_MARKET.token2.tokenid, USER_BALANCE);
 		console.log("My BALANCE : "+JSON.stringify(mytokbal));
@@ -65,26 +65,15 @@ function startTrade(){
 		//PRINT IT OUT
 		console.log("TRADE : "+JSON.stringify(txn));
 		
-		//Create a RAW Txn..
-		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
-			console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
-			
-			//Now Sign the Transaction..
-			utility_sign(rawresp.data.data, false, function(signedrexp){
-				console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
-				
-				//And send it to them to finish!
-				postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);	
-			});
-		});
-		
 	//Or Selling	
 	}else{
 		
 		//Check we have enough..
 		var available = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
 		if(available < MKT_CURRENT_AMOUNT){
-			alert("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
+			alert("Insufficient funds..\n\n"
+				+"You are trying to sell "+MKT_CURRENT_AMOUNT+"\n\n"
+				+"You only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
 			return;
 		}
 		
@@ -93,18 +82,16 @@ function startTrade(){
 		
 		console.log("FOUND BUY ORDER : "+JSON.stringify(tradeorder));
 		
-		//NOW - create transaction..
-		var txn = createEmptyTxn();
 		
 		//Add MY Coins first..
 		var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
 		console.log("My BALANCE : "+JSON.stringify(mytokbal));
 		
 		//Send the amount to the User
-		addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
+		addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
 		
 		//Now add THEIR coins and send to us..
-		addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
+		addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
 		
 		//Now add both the scripts..
 		txn.scripts.push(USER_ACCOUNT.SCRIPT);
@@ -112,8 +99,20 @@ function startTrade(){
 		
 		//PRINT IT OUT
 		console.log("TRADE : "+JSON.stringify(txn));
-		
 	}
+	
+	//Create a RAW Txn..
+	MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
+		console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
+		
+		//Now Sign the Transaction..
+		utility_sign(rawresp.data.data, false, function(signedrexp){
+			console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
+			
+			//And send it to them to finish!
+			postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);	
+		});
+	});
 }
 
 /**
@@ -355,6 +354,14 @@ function checkValid(bookuid, insouts){
 			return false;
 		}
 		
+		//Check the price..
+		var bookprice 	= new Decimal(mybook.price);
+		var price 		= insouts.outputtotal.dividedBy(insouts.inputtotal);
+		if(!price.eq(bookprice)){
+			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
+			return false;
+		}
+		
 		//Check the amount is MORE than requested
 		var bookamount = new Decimal(mybook.amount); 
 		if(bookamount.lessThan(insouts.inputtotal)){
@@ -362,18 +369,32 @@ function checkValid(bookuid, insouts){
 			return false;
 		}
 		
-		//And now check the price..
-		var bookprice 	= new Decimal(mybook.price);
-		var price 		= insouts.outputtotal.dividedBy(insouts.inputtotal);
-		if(!price.eq(bookprice)){
-			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
-			return false;
-		} 
-	
 	}else if(mybook.type == "buy"){
 		
+		//Check the tokenid..
+		if(mybook.market.token2.tokenid != insouts.inputtokenid){
+			console.log("Wrong token2 for buy.."+JSON.stringify(mybook.market));
+			return false;
 		
+		}else if(mybook.market.token1.tokenid != insouts.outputtokenid){
+			console.log("Wrong token1 for buy.."+JSON.stringify(mybook.market));
+			return false;
+		}
 		
+		//Check the price..
+		var bookprice 	= new Decimal(mybook.price);
+		var price 		= insouts.inputtotal.dividedBy(insouts.outputtotal);
+		if(!price.eq(bookprice)){
+			console.log("Wrong price for buy.."+price+" / "+JSON.stringify(mybook.market));
+			return false;
+		}
+		
+		//Check the amount is MORE than requested
+		var bookamount = new Decimal(mybook.amount); 
+		if(bookamount.lessThan(insouts.outputtotal)){
+			console.log("Amount too large for buy.."+JSON.stringify(mybook.market));
+			return false;
+		}
 		
 	}else{
 		return false;
