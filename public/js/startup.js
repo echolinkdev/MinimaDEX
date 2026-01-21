@@ -61,16 +61,26 @@ function mainListenerLoop(){
 			setAllMyOrders();
 		
 		}else if(msg.type=="message"){
-			console.log("REC MESSAGE : "+JSON.stringify(msg));
 			
 			var recmsg = msg.data;
-			if(recmsg.type=="trade"){
+			if(recmsg.type=="trade_request"){
+				
 				//Check this Txn..!
-				checkAndSignTrade(recmsg.data);	
+				checkAndSignTrade(msg.uuid, recmsg.data);
+					
+			}else if(recmsg.type=="trade_complete"){
+				
+				//Just finished a trade
+				tradeComplete(recmsg.data);	
 			}
+			
+		}else if(msg.type=="trade"){
 		
+			console.log("NEW TRADE : "+JSON.stringify(msg));
+			
+					
 		}else if(msg.type=="closed"){
-			console.log("UUID CLOSED : "+JSON.stringify(msg));
+			//console.log("UUID CLOSED : "+JSON.stringify(msg));
 			
 			//Remove this user from All orders..
 			delete ALL_ORDERS[msg.uuid];

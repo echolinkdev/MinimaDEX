@@ -1,25 +1,30 @@
 
-/**
- * Create a tmp empty txn
- */
-function createEmptyTxn(){
-	
-	var txn 	= {};
-	txn.inputs 	= [];
-	txn.outputs	= [];
-	txn.scripts	= [];
-	txn.state	= {};
-	
-	return txn;	
+const trade_blakout_panel	= document.getElementById('id_blackoutdiv');
+const tradeinfo_panel 		= document.getElementById('id_tradeinfo_panel');
+const tradeinfo_text 		= document.getElementById('id_tradeinfo_textarea');
+
+function showTradeInfoPanel(){
+	tradeinfo_text.value="";
+	trade_blakout_panel.style.display 	= "block";
+	tradeinfo_panel.style.display 		= "block";
 }
+
+function hideTradeInfoPanel(){
+	trade_blakout_panel.style.display 	= "none";
+	tradeinfo_panel.style.display 		= "none";
+}
+
+function addTextTradeInfo(msg){
+	tradeinfo_text.value += msg+"\n";
+}
+
 
 /**
  * When you accept a trade from the frontend..
  */
-function startTrade(){
+var CURRENT_TRADE_STATS = "";
 
-	console.log("BUYSELL:"+MKT_BUYSELL+" "+MKT_CURRENT_AMOUNT+" of "+CURRENT_MARKET.token1.name);
-	console.log("TOTAL : "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name);
+function startTrade(){
 	
 	//MUST be > 0
 	if(MKT_TOTAL_AMOUNT <= 0){
@@ -27,99 +32,133 @@ function startTrade(){
 		return;
 	}
 	
+	//Hide trade choose window
+	hideMktActionPanel()
+	
+	//Show main window
+	showTradeInfoPanel();
+	
 	//Create transaction..
-	var txn = createEmptyTxn();
+	var txn 	= {};
+	txn.inputs 	= [];
+	txn.outputs	= [];
+	txn.scripts	= [];
+	txn.state	= {};
 	
 	try{
 		
 		//Are we buying..
 		if(MKT_BUYSELL){
 			
+			//Store for later
+			CURRENT_TRADE_STATS = "BUY "+MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name
+							+" FOR "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name+" @ "+MKT_CURRENT_PRICE;
+			
+			//Info
+			addTextTradeInfo(CURRENT_TRADE_STATS);
+				
 			//Check we have enough..
 			var available = getAvailableBalance(CURRENT_MARKET.token2.tokenid);
 			if(available < MKT_TOTAL_AMOUNT){
-				alert("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token2.name+" available..");
+				addTextTradeInfo("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token2.name+" available..");
 				return;
 			}
 			
 			//Ok - we have enough.. find an order / user
 			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token1.tokenid, "sell", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
+			if(tradeorder == null){
+				addTextTradeInfo("Error.. could not find valid order.. ?");
+				return;
+			}
+			
 			
 			//CHECK THEY have enough..
 			//..
 			
-			console.log("FOUND SELL ORDER : "+JSON.stringify(tradeorder));
-			
 			//Add MY Coins first..
+			addTextTradeInfo("Create trade transaction..");
 			var mytokbal = getTokenBalance(CURRENT_MARKET.token2.tokenid, USER_BALANCE);
-			console.log("My BALANCE : "+JSON.stringify(mytokbal));
 			
 			//Send the amount to the User
 			addCoins(txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
+			addTextTradeInfo("Your coins added..");
 			
 			//Now add THEIR coins and send to us..
 			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
+			addTextTradeInfo("Counter-party coins added..");
 			
 			//Now add both the scripts..
 			txn.scripts.push(USER_ACCOUNT.SCRIPT);
 			txn.scripts.push(tradeorder.script);
-			
-			//PRINT IT OUT
-			console.log("TRADE : "+JSON.stringify(txn));
+			addTextTradeInfo("Scripts added..");
 			
 		//Or Selling	
 		}else{
 			
+			//Store for later
+			CURRENT_TRADE_STATS ="SELL "+MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name
+							+" FOR "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name+" @ "+MKT_CURRENT_PRICE;
+						
+										
+			//Info
+			addTextTradeInfo(CURRENT_TRADE_STATS);
+						
+							
 			//Check we have enough..
 			var available = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
 			if(available < MKT_CURRENT_AMOUNT){
-				alert("Insufficient funds..\n\n"
-					+"You are trying to sell "+MKT_CURRENT_AMOUNT+"\n\n"
-					+"You only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
+				addTextTradeInfo("Insufficient funds..\n\n"
+								+"You are trying to sell "+MKT_CURRENT_AMOUNT+"\n\n"
+								+"You only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
 				return;
 			}
 			
 			//Ok - we have enough.. find an order / user
 			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
 			
-			console.log("FOUND BUY ORDER : "+JSON.stringify(tradeorder));
 			
 			//Add MY Coins first..
+			addTextTradeInfo("Create trade transaction..");
 			var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
-			console.log("My BALANCE : "+JSON.stringify(mytokbal));
+			//console.log("My BALANCE : "+JSON.stringify(mytokbal));
 			
 			//Send the amount to the User
 			addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
+			addTextTradeInfo("Your coins added..");
 			
 			//Now add THEIR coins and send to us..
 			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
+			addTextTradeInfo("Counter-party coins added..");
 			
 			//Now add both the scripts..
 			txn.scripts.push(USER_ACCOUNT.SCRIPT);
 			txn.scripts.push(tradeorder.script);
-			
-			//PRINT IT OUT
-			console.log("TRADE : "+JSON.stringify(txn));
+			addTextTradeInfo("Scripts added..");
 		}
 		
 		//Create a RAW Txn..
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
-			console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
+			//console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
+			
+			addTextTradeInfo("Signing transaction..");
 			
 			//Now Sign the Transaction..
 			utility_sign(rawresp.data.data, false, function(signedrexp){
-				console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
+				//console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
 				
 				//And send it to them to finish!
-				postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
+				var msg = postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
 				
+				addTextTradeInfo("Sending transaction to counter-party to sign.. uuid:"+msg.data.tradeuuid);
+								
 				//Start auto balance refresh..
 				autoUpdateBalance();	
 			});
 		});	
 		
 	}catch(Error){
-		alert("ERROR trade : "+Error);
+		//Something wqent wrong..
+		addTextTradeInfo("ERROR : "+Error);
 		return;
 	}
 }
@@ -162,7 +201,7 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 	
 	//Did we add enough ? - if not throw error..
 	if(totaladded.lessThan(addamount)){
-		throw new Error("Could not add required amount.. "+amount);
+		throw new Error("Could not add required amount.. pls try again..\n\n"+amount);
 	}
 	
 	//Now add the output to the User..
@@ -194,16 +233,46 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 }
 
 /**
- * Post your orders to the server
+ * Post your orders to the user
  */
+var CURRENT_TRADE_UUID = ""; 
 function postTradeToUser(userid, bookuid, txndata){
 	
 	//This is the message for the User
 	var msg  			= {};
-	msg.type 			= "trade";
+	msg.type 			= "trade_request";
 	msg.data			= {};
 	msg.data.bookuid 	= bookuid;
 	msg.data.txndata 	= txndata;
+	
+	msg.data.tradeuuid 	= getRandomHexString();
+	CURRENT_TRADE_UUID	= msg.data.tradeuuid; 
+	
+	//This is the message sent to the server
+	var servermsg 			= {};
+	servermsg.type			= "message";
+	servermsg.data			= {};
+	servermsg.data.uuid		= userid;
+	servermsg.data.message	= msg;
+	
+	//Post to server
+	wsPostToServer(servermsg);
+	
+	return msg;
+}
+
+/**
+ * Post your orders to the user
+ */
+function postResultToUser(userid, status, txpowid, tradeuuid){
+	
+	//This is the message for the User
+	var msg  			= {};
+	msg.type 			= "trade_complete";
+	msg.data			= {};
+	msg.data.status 	= status;
+	msg.data.txpowid 	= txpowid;
+	msg.data.tradeuuid 	= tradeuuid;
 	
 	//This is the message sent to the server
 	var servermsg 			= {};
@@ -217,23 +286,75 @@ function postTradeToUser(userid, bookuid, txndata){
 }
 
 /**
+ * When you rec a tyrade_complete message
+ */
+function tradeComplete(msg){
+	if(msg.status && msg.tradeuuid == CURRENT_TRADE_UUID){
+		addTextTradeInfo("Trade Success! "+msg.txpowid);
+		
+		//Add a history log..!
+		addHistoryLog("TRADE", CURRENT_TRADE_STATS, msg.txpowid);
+			
+	}else if(msg.tradeuuid == CURRENT_TRADE_UUID){
+		console.log("ERROR TRADE COMPLETE "+JSON.stringify(msg));
+		
+		addTextTradeInfo("Something went wrong.. "+msg.txpowid);
+	}
+}
+
+/**
+ * Post your orders to the server
+ */
+function postFinishedTrade(orderbook, insouts, txpowid){
+	
+	var trade = {};
+	trade.txpowid 	= txpowid;
+	trade.market 	= orderbook.market;
+	trade.price  	= orderbook.price;
+	
+	//OK - Let's work out the trade
+	if(orderbook.type=="buy"){
+		
+		//TAKER WAS A SELL
+		trade.type	 		= "sell";
+		trade.amount 		= insouts.outputtotal;
+		trade.amounttoken 	= insouts.outputtokenid;
+		trade.total	 		= insouts.inputtotal;
+		trade.totaltoken	= insouts.inputtokenid;
+		
+	}else{
+		
+		//TAKER WAS A BUY
+		trade.type	 		= "buy";
+		trade.amount 		= insouts.inputtotal;
+		trade.amounttoken 	= insouts.inputtokenid;
+		trade.total	 		= insouts.outputtotal;
+		trade.totaltoken	= insouts.outputtokenid;
+	}
+	
+	//This is the message sent to the server
+	var servermsg 			= {};
+	servermsg.type			= "trade";
+	servermsg.data			= trade;
+	
+	//Post to server
+	wsPostToServer(servermsg);
+}
+
+/**
  * Check Trade Transaction you have received..
  */
-function checkAndSignTrade(tradereq){
+function checkAndSignTrade(fromuser, tradereq){
 		
 	//First convert to a readable format
 	MINIMASK.meg.viewtxn(tradereq.txndata, function(viewresp){
-		console.log("CHECK TRADE bookuid:"+tradereq.bookuid+"\n"+JSON.stringify(viewresp,null,2));
+		//console.log("CHECK TRADE bookuid:"+tradereq.bookuid+"\n"+JSON.stringify(viewresp,null,2));
 		
 		//Get the inputs and outputs and CHECK they are a valid trade you will accept..
 		var insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
-		console.log("insouts:"+JSON.stringify(insouts,null,2));
 		
 		//Check thisis valid given this mktuid..
 		var valid = checkValid(tradereq.bookuid, insouts);
-		
-		//console.log("VALID:"+valid);
-		//return;
 		
 		//If so - Sign and POST!
 		if(valid){
@@ -246,20 +367,26 @@ function checkAndSignTrade(tradereq){
 						
 			//Sign it.. and POST..
 			utility_sign(tradereq.txndata, true, function(signedrexp){
-				console.log("POSTED : "+JSON.stringify(signedrexp,null,2));
+				//console.log("POSTED : "+JSON.stringify(signedrexp,null,2));
 				
 				if(!signedrexp.status){
 					//Something went wrong..
-					console.log(signedrexp.error);
+					console.log("ERROR TRADE : "+signedrexp.error);
 					
+					//Tell the User
+					postResultToUser(fromuser, false, "",tradereq.tradeuuid);
+									
 					return;
 				}
 				
 				//Get the txpowid..
 				var txpowid = signedrexp.data.txpow.txpowid;	
 				
-				//And notify
-				//..
+				//Tell the User
+				postResultToUser(fromuser, true, txpowid, tradereq.tradeuuid);
+				
+				//And notify the rest - the TAKER TRADE
+				postFinishedTrade(mytradebook, insouts, txpowid);
 				
 				//Start auto balance refresh..
 				autoUpdateBalance();

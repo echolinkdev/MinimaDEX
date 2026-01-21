@@ -79,6 +79,17 @@ server.on('connection', (socket) => {
 				//Get the User..
 				sendToUser(socket.id, msgjson.data.uuid, msgjson.data.message);
 				
+			}else if(msgjson.type=="trade"){
+				
+				//There has been a trade
+				var trade = msgjson.data;
+				
+				//Add it to our list
+				addTrade(trade);
+				
+				//Broadcast
+				broadcast(createCustomMsg("0x00","trade",trade));	
+				
 			}else{
 				console.log("Unknown message type :"+msgjson.type+" msg:"+strmsg);
 			}
@@ -163,6 +174,15 @@ function sendToUser(from, to, data){
 	if(!found){
 		console.log("Error user not found:"+id);	
 	}
+}
+
+/**
+ * Add a trade = only keep the last X many
+ */
+function addTrade(trade){
+	
+	
+	
 }
 
 //Create any message

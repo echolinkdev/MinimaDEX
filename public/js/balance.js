@@ -37,7 +37,7 @@ function fetchFullBalance(callback){
 				autoUpdateBalance();
 				
 				//Add a log..
-				addHistoryLog("BALANCE_CHANGE","User balance changes..", "");
+				//addHistoryLog("BALANCE_CHANGE","User balance changes..", "");
 			}
 			
 			//Update the server
@@ -77,13 +77,13 @@ function autoUpdateBalance(){
 	//Start a new one..
 	AUTO_BALANCE_INTERVALID = setInterval(function(){
 	
-		console.log("Auto-Balance checker Called!! "+AUTO_BALANCE_INTERVAL_COUNTER);	
+		//console.log("Auto-Balance checker Called!! "+AUTO_BALANCE_INTERVAL_COUNTER);	
 		
 		fetchFullBalance();
 		
 		//Do we stop!!
 		AUTO_BALANCE_INTERVAL_COUNTER++;
-		if(AUTO_BALANCE_INTERVAL_COUNTER > 10){
+		if(AUTO_BALANCE_INTERVAL_COUNTER > 20){
 			clearInterval(AUTO_BALANCE_INTERVALID);
 			console.log("END Balance auto checker");
 			
@@ -144,18 +144,9 @@ function getOrderBookBalance(tokenid){
 		
 		//Is it a BUY order
 		if(order.type=="buy" && order.market.token2.tokenid == tokenid){
-			
-			//Add to the total..
 			total += tot;		
-		
-			//console.log("BUY Order found : "+tokenid+" "+tot+" total:"+total);
-			
 		}else if(order.type=="sell" && order.market.token1.tokenid == tokenid){
-			
-			//Add to the total..
 			total += amt;
-			
-			//console.log("SELL Order found : "+tokenid+" "+tot+" total:"+total);
 		}
 	}
 	
