@@ -11,69 +11,77 @@ function tradesInit(){
 	
 	wsAddListener(function(msg){
 		//Is it a chat message
-		if(msg.type=="update_orderbook"){
-			console.log("My Orders : "+JSON.stringify(msg));
+		if(msg.type=="trade"){
+			console.log("New Trade : "+JSON.stringify(msg));
 			
-			myordersSetTable();
+			//Add the trade..
+			ALL_TRADES.push(msg.data);
+			
+			//Reset the table..
+			setTradesTable();
 		}
 	});	
+	
+	var testtrade = {"txpowid":"0x000086C5340B6AEA19334A1358551E265D8DAFC1F7DB408DD5F3EEF9B014D27E",
+		"market":{"mktname":"aaa / Minima","mktuid":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC / 0x00","token1":{"name":"aaa","tokenid":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC"},"token2":{"name":"Minima","tokenid":"0x00"}},
+		"price":"2","type":"sell",
+		"amount":"0.0363","amounttoken":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC",
+		"total":"0.0726","totaltoken":"0x00", "date":0}
+
+	ALL_TRADES.push(testtrade);
+	
+	setTradesTable();
 }
 
-function _rmorder(uuid){
-	
-	//First remove the ortder..
-	removeMyOrder(uuid);
-	
-	//Now send updated book to server
-	var msg  = {};
-	msg.type = "update_orderbook";
-	msg.data = USER_ORDERS;
-	
-	//Will update table when I receive the server message
-	wsPostToServer(msg);
-}
-
-function myordersSetTable(){
+function setTradesTable(){
 	
 	//Clear Table
-	myorderstable.innerHTML = "";
+	tradestable.innerHTML = "";
 	
 	//Set the Headers
-	var row   = myorderstable.insertRow(0);
-	row.insertCell(0).outerHTML = "<th>Amount</th>";
-	row.insertCell(1).outerHTML = "<th>Price</th>"; 
-	row.insertCell(2).outerHTML = "<th>Type</th>";
-	row.insertCell(3).outerHTML = "<th style='width:0%;'>Action</th>";
+	var row   = tradestable.insertRow(0);
+	row.insertCell().outerHTML = "<th>Type</th>";
+	row.insertCell().outerHTML = "<th>Amount</th>"; 
+	row.insertCell().outerHTML = "<th>Price</th>";
+	row.insertCell().outerHTML = "<th>Total</th>";
+	row.insertCell().outerHTML = "<th style='width:0%;'>Date</th>";
 		
 	//Get my Orders
-	var len = USER_ORDERS.length;
+	var len = ALL_TRADES.length;
 	for(var i=0;i<len;i++) {
 		
-		var order=USER_ORDERS[i];
+		var trade=ALL_TRADES[i];
 		
 		//Insert row
-		var row = myorderstable.insertRow();
+		var row = tradestable.insertRow();
 		
+		var celltype 	= row.insertCell();
 		var cellamount 	= row.insertCell();
 		var cellprice 	= row.insertCell();
-		var celltype 	= row.insertCell();
-		var cellaction 	= row.insertCell();
-		
+		var celltotal 	= row.insertCell();
+		var celldate 	= row.insertCell();
+		celldate.style.fontSize = "0.7em";
+		//celldate.style.color 	= "grey";
+				
 		//Set row color
-		if(order.type == "buy"){
+		if(trade.type == "buy"){
 			cellamount.className 	= "buyorder";
 			cellprice.className 	= "buyorder";
 			celltype.className 		= "buyorder";
-			
+			celltotal.className 	= "buyorder";
+			celldate.className 		= "buyorder";	
 		}else{
 			cellamount.className 	= "sellorder";
 			cellprice.className 	= "sellorder";
-			celltype.className 		= "sellorder";	
+			celltype.className 		= "sellorder";
+			celltotal.className 	= "sellorder";
+			celldate.className 		= "sellorder";	
 		}
 		
-		cellamount.innerHTML 	= "&nbsp;"+order.amount;
-		cellprice.innerHTML 	= "&nbsp;"+order.price;
-		celltype.innerHTML 		= "&nbsp;"+order.type; 
-		cellaction.innerHTML 	= "<button class='mybtn' onclick='_rmorder(\""+order.uuid+"\")'>Cancel</button>";
+		celltype.innerHTML 		= "&nbsp;"+trade.type; 
+		cellamount.innerHTML 	= "&nbsp;"+trade.amount;
+		cellprice.innerHTML 	= "&nbsp;"+trade.price;
+		celltotal.innerHTML 	= "&nbsp;"+trade.total;
+		celldate.innerHTML 		= "&nbsp;"+getTimeStr(trade.date)+"&nbsp;";
 	}
 }

@@ -42,6 +42,11 @@ var ALL_ORDERS = {};
  */
 var ALL_MARKETS = [];
 
+/**
+ * List of all the trades!
+ */
+var ALL_TRADES = [];
+
 
 /**
  * The MxUSD TOKENID! - there is always this market

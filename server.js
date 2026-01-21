@@ -5,7 +5,7 @@ import { WebSocketServer } from 'ws';
 //console.log("Random:"+clientjs.getRandomHexString()+" "+clientjs.tester());
 
 //Are we logging..
-var DEBUG_LOGS 	= true;
+var DEBUG_LOGS 	= false;
 var SERVER_PORT = 8081;
 
 //Create a WebSocket Server

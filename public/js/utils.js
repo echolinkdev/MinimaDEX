@@ -31,6 +31,16 @@ function getTimeMilli(){
 	return recdate.getTime();
 }
 
+function getTimeStr(timemilli){
+	var dd = new Date(timemilli);
+	var dateString = dd.getUTCHours()+":"+dd.getUTCMinutes()+":"+dd.getUTCSeconds()+" " 
+					+dd.getUTCDate()+"/"
+ 					+(dd.getUTCMonth()+1)+"/"
+ 					+dd.getUTCFullYear()
+ 						 				 
+	return dateString;
+}
+
 function sortUserOrdersAlphabetically(a,b){
 	var nameA = a.market.mktname.toLowerCase(); 
 	var nameB = b.market.mktname.toLowerCase(); 

@@ -308,6 +308,7 @@ function tradeComplete(msg){
 function postFinishedTrade(orderbook, insouts, txpowid){
 	
 	var trade = {};
+	trade.date 		= getTimeMilli();
 	trade.txpowid 	= txpowid;
 	trade.market 	= orderbook.market;
 	trade.price  	= orderbook.price;

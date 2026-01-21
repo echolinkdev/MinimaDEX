@@ -27,12 +27,7 @@ function showHistory(){
 		var cellaction 		= row.insertCell();
 		var celldetails 	= row.insertCell();
 		
-		var dd = new Date(history.time);
-		var dateString = dd.getUTCDate()+"/"
-						 + (dd.getUTCMonth()+1)+"/"
-						 + dd.getUTCFullYear()+" "
-						 + dd.getUTCHours() 
-						 + ":"+dd.getUTCMinutes()+":"+dd.getUTCSeconds();
+		var dateString 		= getTimeStr(history.time);
 		
 		celltime.innerHTML 		= "&nbsp;"+dateString
 		cellaction.innerHTML 	= "&nbsp;"+history.action;

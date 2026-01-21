@@ -76,7 +76,7 @@ function mainListenerLoop(){
 			
 		}else if(msg.type=="trade"){
 		
-			console.log("NEW TRADE : "+JSON.stringify(msg));
+			//console.log("NEW TRADE : "+JSON.stringify(msg));
 			
 					
 		}else if(msg.type=="closed"){
@@ -109,6 +109,9 @@ function postStartupDex(){
 	
 	//Init History
 	initHistory();
+	
+	//Init trade panel
+	tradesInit();
 	
 	fetchFullBalance(function(){
 		navigate_dex();	
