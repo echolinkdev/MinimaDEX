@@ -8,10 +8,10 @@ function sendOrder(buysell){
 	
 	//Get the available balance..
 	var available1 = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
-	//console.log("Available "+CURRENT_MARKET.token1.name+":"+available1);
+	console.log("Available "+CURRENT_MARKET.token1.name+":"+available1);
 	
 	var available2 = getAvailableBalance(CURRENT_MARKET.token2.tokenid);
-	//console.log("Available "+CURRENT_MARKET.token2.name+":"+available2);
+	console.log("Available "+CURRENT_MARKET.token2.name+":"+available2);
 	
 	//Check values positive..
 	var amount 	= financial(createamount.value);
@@ -53,15 +53,30 @@ function sendOrder(buysell){
 	} 
 	
 	//Check cnfirm
-	/*if(!confirm(confmsg)){
+	if(!confirm(confmsg)){
 		return;
-	}*/
-		
-	//Create the order
-	var order = createMyOrder(buysell, amount, price);
+	}
 	
-	//Add to our list and post to server
-	addMyOrderAndPost(order);
+	//Do we already have an order like this..
+	var prevorder = findMyOrder(buysell, price);
+	if(prevorder != null){
+		
+		//Add to existing order
+		var pamt = new Decimal(prevorder.amount);
+		var namt = new Decimal(amount);
+		
+		prevorder.amount = ""+pamt.plus(namt);
+		
+		//Update all relevant
+		updateMyOrders();
+			
+	}else{
+		//Create the order
+		var order = createMyOrder(buysell, amount, price);
+		
+		//Add to our list and post to server
+		addMyOrderAndPost(order);	
+	}
 }
 
 //Set up the chat room buttons..

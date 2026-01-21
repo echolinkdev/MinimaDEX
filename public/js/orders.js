@@ -56,14 +56,26 @@ function getMyOrder(uuid){
 	return null;
 }
 
+function findMyOrder(buysell, price){
+	var len = USER_ORDERS.length;
+	for(var i=0;i<len;i++) {
+		if(USER_ORDERS[i].market.mktuid == CURRENT_MARKET.mktuid &&
+		   USER_ORDERS[i].type  == buysell &&
+		   +USER_ORDERS[i].price == +price){
+			return USER_ORDERS[i];
+		}
+	}
+	
+	return null;
+}
+
+
 /**
  * We know the trade is valid.. update the book..
  */
 function updateOrderAfterTrade(bookuid, tradecoins){
 	
 	var order = getMyOrder(bookuid);
-	
-	console.log("Update Order : "+JSON.stringify(order)+" "+JSON.stringify(tradecoins))
 	
 	//The current order amount
 	var decamt = new Decimal(order.amount);
