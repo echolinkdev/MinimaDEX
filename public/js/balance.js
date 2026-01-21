@@ -122,7 +122,7 @@ function getConfirmedBalance(tokenid){
 		if(balance.tokenid == tokenid){
 		
 			//Get the confirmed balane..
-			return financial(balance.confirmed);		
+			return balance.confirmed;		
 		}
 	}
 	
@@ -156,7 +156,7 @@ function getOrderBookBalance(tokenid){
 function getAvailableBalance(tokenid){
 	
 	//First get the confirmed balance..
-	var confirmed = getConfirmedBalance(tokenid);
+	var confirmed = financial(getConfirmedBalance(tokenid));
 	
 	//How much is in the orderbook
 	var book = getOrderBookBalance(tokenid);
