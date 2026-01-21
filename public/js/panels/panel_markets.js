@@ -29,6 +29,9 @@ market_select.onchange = function (e) {
 	
 	//Set the market tokenid
 	setMarketTokenID();
+	
+	//Set the trades
+	setTradesTable();
 }
 
 function setMarketSelect(){

@@ -52,6 +52,11 @@ function setTradesTable(){
 		
 		var trade=ALL_TRADES[i];
 		
+		//Is it the right market
+		if(trade.market.mktuid != CURRENT_MARKET.mktuid){
+			continue;
+		}
+		
 		//Insert row
 		var row = tradestable.insertRow();
 		
