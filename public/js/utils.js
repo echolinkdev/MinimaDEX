@@ -1,7 +1,8 @@
 /**
  * Utility Funcions
  */
-var DECIMAL_ZERO = new Decimal(0);
+var DECIMAL_ZERO 	= new Decimal(0);
+const MAX_DECIMAL 	= 4;
 
 function getRandomHexString() {
     const hex = '0123456789ABCDEF';
@@ -17,8 +18,11 @@ function getRandom(max){
 }
 
 function financial(x) {
-  return new Decimal(x).toDecimalPlaces(4, Decimal.ROUND_DOWN).toNumber();		
-  //return +Number.parseFloat(x).toFixed(4);
+  return financialDecimal(new Decimal(x));		
+}
+
+function financialDecimal(x) {
+  return x.toDecimalPlaces(MAX_DECIMAL, Decimal.ROUND_DOWN).toNumber();		
 }
 
 function getTimeMilli(){

@@ -56,6 +56,47 @@ function getMyOrder(uuid){
 	return null;
 }
 
+/**
+ * We know the trade is valid.. update the book..
+ */
+function updateOrderAfterTrade(bookuid, tradecoins){
+	
+	var order = getMyOrder(bookuid);
+	
+	console.log("Update Order : "+JSON.stringify(order)+" "+JSON.stringify(tradecoins))
+	
+	//The current order amount
+	var decamt = new Decimal(order.amount);
+	
+	//Have I bought some..
+	var tradeamt = DECIMAL_ZERO;
+	
+	//Buying or selling
+	if(order.type=="buy"){
+		tradeamt = tradecoins.outputtotal;
+		
+	}else if(order.type=="sell"){
+		tradeamt = tradecoins.inputtotal;
+	}
+	
+	//Whats left
+	var newamt = decamt.minus(tradeamt);
+	if(newamt.greaterThan(DECIMAL_ZERO)){
+		order.amount = financialDecimal(newamt); 
+		
+		//Update all relevant
+		updateMyOrders();
+	
+		console.log("Updated Order : "+JSON.stringify(order));
+			
+	}else{
+		console.log(" Order removed ");
+
+				//remove order completely
+		removeMyOrderAndPost(bookuid);
+	}
+}
+
 function updateMyOrders(){
 	
 	//Store this locally..

@@ -30,89 +30,98 @@ function startTrade(){
 	//Create transaction..
 	var txn = createEmptyTxn();
 	
-	//Are we buying..
-	if(MKT_BUYSELL){
+	try{
 		
-		//Check we have enough..
-		var available = getAvailableBalance(CURRENT_MARKET.token2.tokenid);
-		if(available < MKT_TOTAL_AMOUNT){
-			alert("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token2.name+" available..");
-			return;
-		}
-		
-		//Ok - we have enough.. find an order / user
-		var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token1.tokenid, "sell", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
-		
-		//CHECK THEY have enough..
-		//..
-		
-		console.log("FOUND SELL ORDER : "+JSON.stringify(tradeorder));
-		
-		//Add MY Coins first..
-		var mytokbal = getTokenBalance(CURRENT_MARKET.token2.tokenid, USER_BALANCE);
-		console.log("My BALANCE : "+JSON.stringify(mytokbal));
-		
-		//Send the amount to the User
-		addCoins(txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
-		
-		//Now add THEIR coins and send to us..
-		addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
-		
-		//Now add both the scripts..
-		txn.scripts.push(USER_ACCOUNT.SCRIPT);
-		txn.scripts.push(tradeorder.script);
-		
-		//PRINT IT OUT
-		console.log("TRADE : "+JSON.stringify(txn));
-		
-	//Or Selling	
-	}else{
-		
-		//Check we have enough..
-		var available = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
-		if(available < MKT_CURRENT_AMOUNT){
-			alert("Insufficient funds..\n\n"
-				+"You are trying to sell "+MKT_CURRENT_AMOUNT+"\n\n"
-				+"You only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
-			return;
-		}
-		
-		//Ok - we have enough.. find an order / user
-		var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
-		
-		console.log("FOUND BUY ORDER : "+JSON.stringify(tradeorder));
-		
-		
-		//Add MY Coins first..
-		var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
-		console.log("My BALANCE : "+JSON.stringify(mytokbal));
-		
-		//Send the amount to the User
-		addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
-		
-		//Now add THEIR coins and send to us..
-		addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
-		
-		//Now add both the scripts..
-		txn.scripts.push(USER_ACCOUNT.SCRIPT);
-		txn.scripts.push(tradeorder.script);
-		
-		//PRINT IT OUT
-		console.log("TRADE : "+JSON.stringify(txn));
-	}
-	
-	//Create a RAW Txn..
-	MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
-		console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
-		
-		//Now Sign the Transaction..
-		utility_sign(rawresp.data.data, false, function(signedrexp){
-			console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
+		//Are we buying..
+		if(MKT_BUYSELL){
 			
-			//And send it to them to finish!
-			postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);	
-		});
-	});
+			//Check we have enough..
+			var available = getAvailableBalance(CURRENT_MARKET.token2.tokenid);
+			if(available < MKT_TOTAL_AMOUNT){
+				alert("Insufficient funds..\n\nYou only have "+available+" "+CURRENT_MARKET.token2.name+" available..");
+				return;
+			}
+			
+			//Ok - we have enough.. find an order / user
+			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token1.tokenid, "sell", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
+			
+			//CHECK THEY have enough..
+			//..
+			
+			console.log("FOUND SELL ORDER : "+JSON.stringify(tradeorder));
+			
+			//Add MY Coins first..
+			var mytokbal = getTokenBalance(CURRENT_MARKET.token2.tokenid, USER_BALANCE);
+			console.log("My BALANCE : "+JSON.stringify(mytokbal));
+			
+			//Send the amount to the User
+			addCoins(txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
+			
+			//Now add THEIR coins and send to us..
+			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
+			
+			//Now add both the scripts..
+			txn.scripts.push(USER_ACCOUNT.SCRIPT);
+			txn.scripts.push(tradeorder.script);
+			
+			//PRINT IT OUT
+			console.log("TRADE : "+JSON.stringify(txn));
+			
+		//Or Selling	
+		}else{
+			
+			//Check we have enough..
+			var available = getAvailableBalance(CURRENT_MARKET.token1.tokenid);
+			if(available < MKT_CURRENT_AMOUNT){
+				alert("Insufficient funds..\n\n"
+					+"You are trying to sell "+MKT_CURRENT_AMOUNT+"\n\n"
+					+"You only have "+available+" "+CURRENT_MARKET.token1.name+" available..");
+				return;
+			}
+			
+			//Ok - we have enough.. find an order / user
+			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
+			
+			console.log("FOUND BUY ORDER : "+JSON.stringify(tradeorder));
+			
+			//Add MY Coins first..
+			var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
+			console.log("My BALANCE : "+JSON.stringify(mytokbal));
+			
+			//Send the amount to the User
+			addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
+			
+			//Now add THEIR coins and send to us..
+			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
+			
+			//Now add both the scripts..
+			txn.scripts.push(USER_ACCOUNT.SCRIPT);
+			txn.scripts.push(tradeorder.script);
+			
+			//PRINT IT OUT
+			console.log("TRADE : "+JSON.stringify(txn));
+		}
+		
+		//Create a RAW Txn..
+		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
+			console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
+			
+			//Now Sign the Transaction..
+			utility_sign(rawresp.data.data, false, function(signedrexp){
+				console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
+				
+				//And send it to them to finish!
+				postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
+				
+				//Start auto balance refresh..
+				autoUpdateBalance();	
+			});
+		});	
+		
+	}catch(Error){
+		alert("ERROR trade : "+Error);
+		return;
+	}
 }
 
 /**
@@ -152,7 +161,9 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 	}
 	
 	//Did we add enough ? - if not throw error..
-	//..
+	if(totaladded.lessThan(addamount)){
+		throw new Error("Could not add required amount.. "+amount);
+	}
 	
 	//Now add the output to the User..
 	var mainoutput 			= {};
@@ -226,10 +237,13 @@ function checkAndSignTrade(tradereq){
 		
 		//If so - Sign and POST!
 		if(valid){
-			
+		
+			//Get the book - before update/removed..
+			var mytradebook = getMyOrder(tradereq.bookuid);
+				
 			//Now Update your Order Book.. as this trade will have used up some of your offering
-			//..
-			
+			updateOrderAfterTrade(tradereq.bookuid, insouts);
+						
 			//Sign it.. and POST..
 			utility_sign(tradereq.txndata, true, function(signedrexp){
 				console.log("POSTED : "+JSON.stringify(signedrexp,null,2));
@@ -237,15 +251,21 @@ function checkAndSignTrade(tradereq){
 				if(!signedrexp.status){
 					//Something went wrong..
 					console.log(signedrexp.error);
-				}else{
 					
-					//Get the txpowid..
-					var txpowid = signedrexp.data.txpow.txpowid;	
-				
+					return;
 				}
 				
-				//And notify
+				//Get the txpowid..
+				var txpowid = signedrexp.data.txpow.txpowid;	
 				
+				//And notify
+				//..
+				
+				//Start auto balance refresh..
+				autoUpdateBalance();
+				
+				//Add History log
+				addTradeHistoryLog(mytradebook, insouts, txpowid);
 			});
 			
 		}else{
@@ -256,6 +276,21 @@ function checkAndSignTrade(tradereq){
 			//..
 		}
 	}); 
+}
+
+function addTradeHistoryLog(order, insouts, txpowid){
+	
+	var histlog  = "";
+	if(order.type=="buy"){
+		histlog = "BUY "+insouts.outputtotal+" "+order.market.token1.name
+				+" FOR "+insouts.inputtotal+" "+order.market.token2.name+" @ "+order.price;
+		
+	}else{
+		histlog = "SELL "+insouts.inputtotal+" "+order.market.token1.name
+				+" FOR "+insouts.outputtotal+" "+order.market.token2.name+" @ "+order.price;
+	}
+	
+	addHistoryLog("TRADE", histlog, txpowid);
 }
 
 function getMyInputsAndOutputs(txn){
