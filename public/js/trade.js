@@ -527,7 +527,7 @@ function checkValid(bookuid, insouts){
 		
 		//Check the price..
 		var bookprice 	= new Decimal(mybook.price);
-		var price 		= decimalRUp(insouts.outputtotal.dividedBy(insouts.inputtotal));
+		var price 		= decimalRDown(insouts.outputtotal.dividedBy(insouts.inputtotal));
 		if(!price.greaterThanOrEqualTo(bookprice)){
 			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
 			return false;
@@ -554,7 +554,7 @@ function checkValid(bookuid, insouts){
 		
 		//Check the price..
 		var bookprice 	= new Decimal(mybook.price);
-		var price 		= decimalRDown(insouts.inputtotal.dividedBy(insouts.outputtotal));
+		var price 		= decimalRUp(insouts.inputtotal.dividedBy(insouts.outputtotal));
 		if(!price.lessThanOrEqualTo(bookprice)){
 			console.log("Wrong price for buy.."+price+" / "+JSON.stringify(mybook.market));
 			return false;
