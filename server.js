@@ -1,5 +1,7 @@
 import { WebSocketServer } from 'ws';
 
+import fs from 'fs';
+
 //TEST STUFF
 //import * as clientjs from "./client.cjs";
 //console.log("Random:"+clientjs.getRandomHexString()+" "+clientjs.tester());
@@ -14,13 +16,32 @@ const server = new WebSocketServer({
 });
 
 //The set of all clients
-const clients 		= new Set();
+const clients 	= new Set();
 
 //All the Client orderbooks
-const orderbooks 	= {};
+var orderbooks 	= {};
 
 //All the Trades
-const alltrades		= [];
+var alltrades	= [];
+
+//Read in the trades..
+try {
+  	// Read file synchronously
+  	const data = fs.readFileSync('trades.json', 'utf8');
+  
+  	//Convert
+  	alltrades = JSON.parse(data);
+  
+  	if(DEBUG_LOGS){
+		console.log('Trades Loaded : ', data);
+	}
+  
+} catch (err) {
+  	//File not found.. first time running..
+	if(DEBUG_LOGS){
+		console.error('Error reading file :', err);
+	}
+}
 
 //What to do on connections
 server.on('connection', (socket) => {
@@ -190,6 +211,18 @@ function addTrade(trade){
 	
 	//Push to our list..
 	alltrades.push(trade);
+	
+	//Max number of trades
+	if(alltrades.length > 1000){
+		alltrades.shift();
+	}
+
+	//Try and write this..
+	try{
+		fs.writeFileSync('trades.json', JSON.stringify(alltrades));	
+	}catch(Error){
+		console.log("Error write file.. : "+Error)
+	}	
 }
 
 //Create any message
