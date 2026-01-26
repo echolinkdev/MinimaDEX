@@ -32,6 +32,9 @@ market_select.onchange = function (e) {
 	
 	//Set the trades
 	setTradesTable();
+	
+	//Update the price chart..
+	updatePriceChart();
 }
 
 function setMarketSelect(){

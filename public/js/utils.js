@@ -22,7 +22,8 @@ function financial(x) {
 }
 
 function financialDecimal(x) {
-  return x.toDecimalPlaces(MAX_DECIMAL, Decimal.ROUND_DOWN).toNumber();		
+  //return x.toDecimalPlaces(MAX_DECIMAL, Decimal.ROUND_DOWN).toNumber();
+  return x.toDecimalPlaces(MAX_DECIMAL, Decimal.ROUND_UP).toNumber();		
 }
 
 function getTimeMilli(){

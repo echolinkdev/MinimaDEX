@@ -62,6 +62,9 @@ function mainListenerLoop(){
 			
 			//Set ALL my orders table
 			setAllMyOrders();
+			
+			//Update the price chart
+			updatePriceChart();
 		
 		}else if(msg.type=="message"){
 			
@@ -116,6 +119,8 @@ function postStartupDex(){
 	//Init trade panel
 	tradesInit();
 	
+	initPriceChart();
+	
 	fetchFullBalance(function(){
 		navigate_dex();	
 	});
@@ -125,6 +130,8 @@ function postStartupDex(){
 						
 	//Now connect to server
 	connectToServer();
+	
+	
 	
 	/*wsInitSocket(function(){
 		

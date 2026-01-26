@@ -7,7 +7,6 @@ canv.style.width='100%';
 canv.style.height='100%';
 canv.width  = canv.offsetWidth;
 canv.height = canv.offsetHeight;
-  
 
 var ctx = document.getElementById('chartgraph').getContext('2d');
 //ctx.canvas.width = 1000;
