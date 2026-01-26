@@ -398,7 +398,7 @@ function checkAndSignTrade(fromuser, tradereq){
 			
 		}else{
 			//Invalid..
-			console.log("Invalid Trade.. "+mktuid);
+			console.log("Invalid Trade.. ");
 			
 			//Tell User..
 			//..
@@ -418,7 +418,7 @@ function addTradeHistoryLog(order, insouts, txpowid){
 				+" FOR "+insouts.outputtotal+" "+order.market.token2.name+" @ "+order.price;
 	}
 	
-	addHistoryLog("TRADE", histlog, txpowid);
+	addHistoryLog("TRADE_BOOK", histlog, txpowid);
 }
 
 function getMyInputsAndOutputs(txn){
@@ -528,7 +528,7 @@ function checkValid(bookuid, insouts){
 		//Check the price..
 		var bookprice 	= new Decimal(mybook.price);
 		var price 		= insouts.outputtotal.dividedBy(insouts.inputtotal);
-		if(!price.eq(bookprice)){
+		if(!price.greaterThanOrEqualTo(bookprice)){
 			console.log("Wrong price for sell.."+price+" / "+JSON.stringify(mybook.market));
 			return false;
 		}
@@ -555,7 +555,7 @@ function checkValid(bookuid, insouts){
 		//Check the price..
 		var bookprice 	= new Decimal(mybook.price);
 		var price 		= insouts.inputtotal.dividedBy(insouts.outputtotal);
-		if(!price.eq(bookprice)){
+		if(!price.lessThanOrEqualTo(bookprice)){
 			console.log("Wrong price for buy.."+price+" / "+JSON.stringify(mybook.market));
 			return false;
 		}
