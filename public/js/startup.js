@@ -47,6 +47,9 @@ function mainListenerLoop(){
 			
 			//Get all the Trades
 			ALL_TRADES = msg.data.trades;
+			
+			//Order inverse
+			ALL_TRADES.sort(sortTradesByTime);
 				
 			//Store this..
 			ALL_ORDERS = msg.data.orderbooks;

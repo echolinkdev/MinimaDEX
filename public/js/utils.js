@@ -102,3 +102,14 @@ function sortMarketsAlphabetically(a,b){
 	return 0;
 }
 
+function sortTradesByTime(a,b){
+	if (a.date < b.date) {
+	  return 1;
+	}
+	if (a.date > b.date) {
+	  return -1;
+	}	
+
+	return 0;
+}
+

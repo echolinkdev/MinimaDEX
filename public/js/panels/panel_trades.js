@@ -17,6 +17,9 @@ function tradesInit(){
 			//Add the trade..
 			ALL_TRADES.push(msg.data);
 			
+			//Order inverse
+			ALL_TRADES.sort(sortTradesByTime);
+						
 			//Reset the table..
 			setTradesTable();
 		}
