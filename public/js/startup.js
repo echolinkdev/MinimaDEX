@@ -40,13 +40,16 @@ function mainListenerLoop(){
 	wsAddListener(function(msg){
 		
 		//First start up message
-		if(msg.type=="init_orderbooks"){
+		if(msg.type=="init_dex"){
 			
 			//Tells us who we are
 			USER_UUID = msg.uuid;
-					
+			
+			//Get all the Trades
+			ALL_TRADES = msg.data.trades;
+				
 			//Store this..
-			ALL_ORDERS = msg.data;
+			ALL_ORDERS = msg.data.orderbooks;
 			
 			//Update the markets 
 			updateAllMarkets();
@@ -121,11 +124,13 @@ function postStartupDex(){
 	mainListenerLoop();
 						
 	//Now connect to server
-	wsInitSocket(function(){
+	connectToServer();
+	
+	/*wsInitSocket(function(){
 		
 		//Have connected to server - post your orders to it..
 		postMyOrdersToServer();
-	});
+	});*/
 }
 
 function loadUserDetails(){

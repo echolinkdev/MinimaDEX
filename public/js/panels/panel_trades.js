@@ -22,13 +22,14 @@ function tradesInit(){
 		}
 	});	
 	
-	var testtrade = {"txpowid":"0x000086C5340B6AEA19334A1358551E265D8DAFC1F7DB408DD5F3EEF9B014D27E",
+	/*var testtrade = {"txpowid":"0x000086C5340B6AEA19334A1358551E265D8DAFC1F7DB408DD5F3EEF9B014D27E",
 		"market":{"mktname":"aaa / Minima","mktuid":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC / 0x00","token1":{"name":"aaa","tokenid":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC"},"token2":{"name":"Minima","tokenid":"0x00"}},
 		"price":"2","type":"sell",
 		"amount":"0.0363","amounttoken":"0x375BA788DDD5F6631681FF9A276CAECC22CDF6458B9EA1D09CBAE6D3A9BA41EC",
 		"total":"0.0726","totaltoken":"0x00", "date":0}
 
 	ALL_TRADES.push(testtrade);
+	*/
 	
 	setTradesTable();
 }
@@ -50,43 +51,48 @@ function setTradesTable(){
 	var len = ALL_TRADES.length;
 	for(var i=0;i<len;i++) {
 		
-		var trade=ALL_TRADES[i];
-		
-		//Is it the right market
-		if(trade.market.mktuid != CURRENT_MARKET.mktuid){
-			continue;
+		try{
+			var trade=ALL_TRADES[i];
+					
+			//Is it the right market
+			if(trade.market.mktuid != CURRENT_MARKET.mktuid){
+				continue;
+			}
+			
+			//Insert row
+			var row = tradestable.insertRow();
+			
+			var celltype 	= row.insertCell();
+			var cellamount 	= row.insertCell();
+			var cellprice 	= row.insertCell();
+			var celltotal 	= row.insertCell();
+			var celldate 	= row.insertCell();
+			celldate.style.fontSize = "0.7em";
+			//celldate.style.color 	= "grey";
+					
+			//Set row color
+			if(trade.type == "buy"){
+				cellamount.className 	= "buyorder";
+				cellprice.className 	= "buyorder";
+				celltype.className 		= "buyorder";
+				celltotal.className 	= "buyorder";
+				celldate.className 		= "buyorder";	
+			}else{
+				cellamount.className 	= "sellorder";
+				cellprice.className 	= "sellorder";
+				celltype.className 		= "sellorder";
+				celltotal.className 	= "sellorder";
+				celldate.className 		= "sellorder";	
+			}
+			
+			celltype.innerHTML 		= "&nbsp;"+trade.type; 
+			cellamount.innerHTML 	= "&nbsp;"+trade.amount;
+			cellprice.innerHTML 	= "&nbsp;"+trade.price;
+			celltotal.innerHTML 	= "&nbsp;"+trade.total;
+			celldate.innerHTML 		= "&nbsp;"+getTimeStr(trade.date)+"&nbsp;";	
+			
+		}catch(Error){
+			console.log("TRADE error : "+Error);
 		}
-		
-		//Insert row
-		var row = tradestable.insertRow();
-		
-		var celltype 	= row.insertCell();
-		var cellamount 	= row.insertCell();
-		var cellprice 	= row.insertCell();
-		var celltotal 	= row.insertCell();
-		var celldate 	= row.insertCell();
-		celldate.style.fontSize = "0.7em";
-		//celldate.style.color 	= "grey";
-				
-		//Set row color
-		if(trade.type == "buy"){
-			cellamount.className 	= "buyorder";
-			cellprice.className 	= "buyorder";
-			celltype.className 		= "buyorder";
-			celltotal.className 	= "buyorder";
-			celldate.className 		= "buyorder";	
-		}else{
-			cellamount.className 	= "sellorder";
-			cellprice.className 	= "sellorder";
-			celltype.className 		= "sellorder";
-			celltotal.className 	= "sellorder";
-			celldate.className 		= "sellorder";	
-		}
-		
-		celltype.innerHTML 		= "&nbsp;"+trade.type; 
-		cellamount.innerHTML 	= "&nbsp;"+trade.amount;
-		cellprice.innerHTML 	= "&nbsp;"+trade.price;
-		celltotal.innerHTML 	= "&nbsp;"+trade.total;
-		celldate.innerHTML 		= "&nbsp;"+getTimeStr(trade.date)+"&nbsp;";
 	}
 }

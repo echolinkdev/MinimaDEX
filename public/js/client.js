@@ -4,12 +4,33 @@ const MESSAGE_LISTENERS = [];
 
 var LOGGING_ENABLED = false;
 
+var ERROR_CONNECT_RECONNECT = false;
+
+const dex_state	= document.getElementById('id_dex_state');
+function setDexState(str){
+	dex_state.innerHTML = str;
+}
+
+function connectToServer(){
+	//Connect to server
+	wsInitSocket(function(){
+		
+		//Have connected to server - post your orders to it..
+		postMyOrdersToServer();
+	});
+}
+
 function wsInitSocket(initcallback){
 	
+	setDexState("Connecting..");
+	
+	//Try and connect
 	WEB_SOCKET = new WebSocket(DEX_SERVER);
-
+	
 	WEB_SOCKET.onopen = () => {
 	    console.log('Connected to server');
+		setDexState("");
+		ERROR_CONNECT_RECONNECT = false;
 		
 		if(initcallback){
 			initcallback();
@@ -30,7 +51,27 @@ function wsInitSocket(initcallback){
 	};
 
 	WEB_SOCKET.onclose = () => {
-	    console.log('Disconnected from server');
+		
+		//Are we already reconnecting..
+		if(ERROR_CONNECT_RECONNECT){
+			return;
+		}
+		
+		setDexState("Diconnected.. reconnecting in 10s");
+		console.log('Disconnected from server.. reconnect in 10 seconds..');
+		
+		//Reconnect attempt in 10 seconds..
+		setTimeout(function(){connectToServer();}, 10000);
+	};
+	
+	WEB_SOCKET.onerror = () => {
+		setDexState("Error.. reconnecting in 10s");
+		console.log('Error connecting to server');
+		
+		ERROR_CONNECT_RECONNECT = true;
+		
+		//Reconnect attempt in 10 seconds..
+		setTimeout(function(){connectToServer();}, 10000);
 	};
 }
 
@@ -39,6 +80,13 @@ function wsAddListener(listener){
 }
 
 function wsPostToServer(jsonmsg){
+	
+	//Is the Socket OPEN
+	if (WEB_SOCKET.readyState !== WebSocket.OPEN) {
+		console.log("WS closed.. not sending message ");
+		return;
+	}
+	
 	var strmsg = JSON.stringify(jsonmsg);
 	
 	if(LOGGING_ENABLED){

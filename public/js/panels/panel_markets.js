@@ -16,7 +16,7 @@ market_select.onchange = function (e) {
 	//Set the current market
 	CURRENT_MARKET = ALL_MARKETS[selectedValue];
 	
-	//console.log("Market Change : "+JSON.stringify(CURRENT_MARKET));
+	console.log("Market Change : "+JSON.stringify(CURRENT_MARKET));
 	
 	//Reload all orders
 	setAllOrdersTable();
@@ -108,8 +108,17 @@ function createMinimaMarket(userbal){
  * Initialise Market Panel
  */
 function updateAllMarkets(){
-	console.log("updateAllMarkets");
 	
+	var mktcheck = JSON.stringify(ALL_ORDERS);
+	
+	//Is it Blank
+	if(mktcheck == "{}"){
+		console.log("No Markets to update.. : ");
+		return	
+	}
+	
+	console.log("updateAllMarkets");
+		
 	//Find all unique tokens - except Minima and MxUSD
 	var unique_tokenid 	= new Set();
 	unique_tokenid.add("0x00");

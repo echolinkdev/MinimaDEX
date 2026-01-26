@@ -11,8 +11,6 @@ function initHistory(){
 		USER_HISTORY = [];
 	}
 	
-	console.log("LOAD HISTORY : "+JSON.stringify(USER_HISTORY));
-	
 	//Reset the view..
 	showHistory();
 }

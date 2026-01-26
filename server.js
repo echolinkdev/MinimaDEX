@@ -15,6 +15,8 @@ const server = new WebSocketServer({
 
 //The set of all clients
 const clients 		= new Set();
+
+//All the Client orderbooks
 const orderbooks 	= {};
 
 //All the Trades
@@ -32,8 +34,13 @@ server.on('connection', (socket) => {
 	//Add client to our list
 	clients.add(socket);
 	
+	//Create an init message
+	var init 		= {};
+	init.trades 	= alltrades;
+	init.orderbooks = orderbooks;
+	
 	//Tell the user their uuid and the current orderbooks
-	socket.send(createCustomMsg(socket.id,"init_orderbooks",orderbooks));
+	socket.send(createCustomMsg(socket.id,"init_dex",init));
 	
 	//On receive message
     socket.on('message', (message) => {
@@ -181,8 +188,8 @@ function sendToUser(from, to, data){
  */
 function addTrade(trade){
 	
-	
-	
+	//Push to our list..
+	alltrades.push(trade);
 }
 
 //Create any message
