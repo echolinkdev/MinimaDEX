@@ -43,8 +43,14 @@ function setCurrentAmount(perc){
 }
 
 function resetMKTValues(){
-	MKT_CURRENT_AMOUNT 	= financial(MKT_CURRENT_MAXAMOUNT); 
-	MKT_TOTAL_AMOUNT 	= financial(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+	
+	if(MKT_BUYSELL){
+		MKT_CURRENT_AMOUNT 	= financial(MKT_CURRENT_MAXAMOUNT); 
+		MKT_TOTAL_AMOUNT 	= financial(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+	}else{
+		MKT_CURRENT_AMOUNT 	= financialRDown(MKT_CURRENT_MAXAMOUNT); 
+		MKT_TOTAL_AMOUNT 	= financialRDown(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+	}
 }
 
 function showMktActionPanel(buysell, price, maxamount){
