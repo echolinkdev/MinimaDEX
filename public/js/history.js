@@ -11,6 +11,9 @@ function initHistory(){
 		USER_HISTORY = [];
 	}
 	
+	//Order inverse
+	USER_HISTORY.sort(sortHistoryByTime);
+	
 	//Reset the view..
 	showHistory();
 }

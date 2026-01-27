@@ -49,7 +49,22 @@ function getTimeMilli(){
 
 function getTimeStr(timemilli){
 	var dd = new Date(timemilli);
-	var dateString = dd.getUTCHours()+":"+dd.getUTCMinutes()+":"+dd.getUTCSeconds()+" " 
+	
+	var hour = dd.getUTCHours();
+	
+	var min  = dd.getUTCMinutes();
+	var strmin = min+"";  
+	if(min<10){
+		strmin="0"+min; 
+	}
+	
+	var secs = dd.getUTCSeconds()
+	var strsecs = ""+secs;
+	if(secs<10){
+		strsecs="0"+secs; 
+	}
+	
+	var dateString = hour+":"+strmin+":"+strsecs+" " 
 					+dd.getUTCDate()+"/"
  					+(dd.getUTCMonth()+1)+"/"
  					+dd.getUTCFullYear()
@@ -107,6 +122,17 @@ function sortTradesByTime(a,b){
 	  return 1;
 	}
 	if (a.date > b.date) {
+	  return -1;
+	}	
+
+	return 0;
+}
+
+function sortHistoryByTime(a,b){
+	if (a.time < b.time) {
+	  return 1;
+	}
+	if (a.time > b.time) {
 	  return -1;
 	}	
 
