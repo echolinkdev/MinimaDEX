@@ -414,6 +414,9 @@ function checkAndSignTrade(fromuser, tradereq){
 			//Invalid..
 			console.log("Invalid Trade.. ");
 			
+			//Tell the User
+			postResultToUser(fromuser, false, "",tradereq.tradeuuid);
+			
 			//Tell User..
 			//..
 		}
