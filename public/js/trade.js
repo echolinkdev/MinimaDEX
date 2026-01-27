@@ -540,6 +540,8 @@ function checkValid(bookuid, insouts){
 			return false;
 		}
 		
+		console.log("Valid SELL order @ "+price+" / "+bookprice);
+		
 	}else if(mybook.type == "buy"){
 		
 		//Check the tokenid..
@@ -566,6 +568,8 @@ function checkValid(bookuid, insouts){
 			console.log("Amount too large for buy.."+JSON.stringify(mybook.market));
 			return false;
 		}
+		
+		console.log("Valid BUY order @ "+price+" / "+bookprice);
 		
 	}else{
 		console.log("ERROR book entry type "+JSON.stringify(mybook));
