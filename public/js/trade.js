@@ -352,7 +352,21 @@ function checkAndSignTrade(fromuser, tradereq){
 		//console.log("CHECK TRADE bookuid:"+tradereq.bookuid+"\n"+JSON.stringify(viewresp,null,2));
 		
 		//Get the inputs and outputs and CHECK they are a valid trade you will accept..
-		var insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
+		var insouts = {};
+		try{
+			insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
+		}catch(Error){
+			
+			//Something went wrong..
+			console.log("ERROR TRADE : "+Error);
+			
+			//Tell the User
+			postResultToUser(fromuser, false, "",tradereq.tradeuuid);
+							
+			return;
+		}
+		
+		//var insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
 		
 		//Check thisis valid given this mktuid..
 		var valid = checkValid(tradereq.bookuid, insouts);
