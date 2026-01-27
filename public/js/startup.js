@@ -69,18 +69,25 @@ function mainListenerLoop(){
 			//Update the price chart
 			updatePriceChart();
 		
+			//Set the trades table..
+			setTradesTable();
+			
 		}else if(msg.type=="message"){
 			
-			var recmsg = msg.data;
-			if(recmsg.type=="trade_request"){
-				
-				//Check this Txn..!
-				checkAndSignTrade(msg.uuid, recmsg.data);
+			try{
+				var recmsg = msg.data;
+				if(recmsg.type=="trade_request"){
 					
-			}else if(recmsg.type=="trade_complete"){
-				
-				//Just finished a trade
-				tradeComplete(recmsg.data);	
+					//Check this Txn..!
+					checkAndSignTrade(msg.uuid, recmsg.data);
+						
+				}else if(recmsg.type=="trade_complete"){
+					
+					//Just finished a trade
+					tradeComplete(recmsg.data);	
+				}	
+			}catch(Error){
+				console.log("Message REC error : "+Error);
 			}
 			
 		}else if(msg.type=="trade"){
@@ -133,8 +140,6 @@ function postStartupDex(){
 						
 	//Now connect to server
 	connectToServer();
-	
-	
 	
 	/*wsInitSocket(function(){
 		

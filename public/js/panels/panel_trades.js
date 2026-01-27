@@ -39,6 +39,8 @@ function tradesInit(){
 
 function setTradesTable(){
 	
+	console.log("Set Trades : "+CURRENT_MARKET.mktname);
+	
 	//Clear Table
 	tradestable.innerHTML = "";
 	
