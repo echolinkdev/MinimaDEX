@@ -63,7 +63,7 @@ function autoUpdateBalance(){
 	console.log("START Balance auto checker");
 	
 	//Do a check at start
-	fetchFullBalance();
+	//fetchFullBalance();
 	
 	//Disable the refresh button
 	id_refreshbalance.disabled=true;

@@ -129,7 +129,7 @@ function updateAllMarkets(){
 	
 	//Add the MxUSD Market
 	var markets = [];
-	markets.push(MXUSD_MARKET);
+	//markets.push(MXUSD_MARKET);
 	
 	//Cycle through ALL_ORDERS
 	for(const key in ALL_ORDERS) {

@@ -19,7 +19,7 @@ function saveHistory(){
 	//Store!
 	STORAGE.setData("**USER_HISTORY**",USER_HISTORY);
 	
-	console.log("SAVE HISTORY : "+JSON.stringify(USER_HISTORY));
+	//console.log("SAVE HISTORY : "+JSON.stringify(USER_HISTORY));
 }
 
 function clearHistory(){
