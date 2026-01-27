@@ -71,7 +71,6 @@ function startTrade(){
 				return;
 			}
 			
-			
 			//CHECK THEY have enough..
 			//..
 			
@@ -83,14 +82,31 @@ function startTrade(){
 			addCoins(txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
 			addTextTradeInfo("Your coins added..");
 			
+			var my = {};
+			my.addamount 	= txn.addamount;
+			my.totaladded 	= txn.totaladded;
+			my.change 		= txn.change;
+			
 			//Now add THEIR coins and send to us..
 			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
 			addTextTradeInfo("Counter-party coins added..");
+			
+			var their = {};
+			their.addamount 	= txn.addamount;
+			their.totaladded 	= txn.totaladded;
+			their.change 		= txn.change;
 			
 			//Now add both the scripts..
 			txn.scripts.push(USER_ACCOUNT.SCRIPT);
 			txn.scripts.push(tradeorder.script);
 			addTextTradeInfo("Scripts added..");
+			
+			//Logs..
+			console.log("MY : "+JSON.stringify(my));
+			console.log("TH : "+JSON.stringify(their));
+			console.log("CPRICE : "+MKT_CURRENT_PRICE);
+			var checkprice = decimalRDown(new Decimal(my.addamount).dividedBy(new Decimal(their.addamount)));
+			console.log("CHECK : "+checkprice);
 			
 		//Or Selling	
 		}else{
@@ -98,7 +114,6 @@ function startTrade(){
 			//Store for later
 			CURRENT_TRADE_STATS ="SELL "+MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name
 							+" FOR "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name+" @ "+MKT_CURRENT_PRICE;
-						
 										
 			//Info
 			addTextTradeInfo(CURRENT_TRADE_STATS);
@@ -116,7 +131,6 @@ function startTrade(){
 			//Ok - we have enough.. find an order / user
 			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
 			
-			
 			//Add MY Coins first..
 			addTextTradeInfo("Create trade transaction..");
 			var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
@@ -126,15 +140,35 @@ function startTrade(){
 			addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
 			addTextTradeInfo("Your coins added..");
 			
+			var my = {};
+			my.addamount 	= txn.addamount;
+			my.totaladded 	= txn.totaladded;
+			my.change 		= txn.change;
+			
 			//Now add THEIR coins and send to us..
 			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
 			addTextTradeInfo("Counter-party coins added..");
+			
+			var their = {};
+			their.addamount 	= txn.addamount;
+			their.totaladded 	= txn.totaladded;
+			their.change 		= txn.change;
 			
 			//Now add both the scripts..
 			txn.scripts.push(USER_ACCOUNT.SCRIPT);
 			txn.scripts.push(tradeorder.script);
 			addTextTradeInfo("Scripts added..");
+			
+			//Logs..
+			console.log("MY : "+JSON.stringify(my));
+			console.log("TH : "+JSON.stringify(their));
+			console.log("CPRICE : "+MKT_CURRENT_PRICE);
+			var checkprice = decimalRUp(new Decimal(their.addamount).dividedBy(new Decimal(my.addamount)));
+			console.log("CHECK : "+checkprice);
 		}
+		
+		//console.log("HACK STOP");
+		//return;
 		
 		//Create a RAW Txn..
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
@@ -218,8 +252,6 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 	var change = totaladded.minus(addamount);
 	if(change.greaterThan(DECIMAL_ZERO)){
 		
-		console.log("Change : "+change+" "+tokenid);
-		
 		//Create an output..
 		var outputchange 			= {};
 		outputchange.address		= ""+address;
@@ -230,6 +262,11 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 		//Add output
 		txn.outputs.push(outputchange);	
 	}
+	
+	//Store for now..
+	txn.addamount  	= addamount;
+	txn.totaladded 	= totaladded;
+	txn.change 		= change;
 }
 
 /**
@@ -286,7 +323,7 @@ function postResultToUser(userid, status, txpowid, tradeuuid){
 }
 
 /**
- * When you rec a tyrade_complete message
+ * When you rec a trade_complete message
  */
 function tradeComplete(msg){
 	if(msg.status && msg.tradeuuid == CURRENT_TRADE_UUID){
@@ -365,8 +402,6 @@ function checkAndSignTrade(fromuser, tradereq){
 							
 			return;
 		}
-		
-		//var insouts = getMyInputsAndOutputs(viewresp.data.transaction);	
 		
 		//Check thisis valid given this mktuid..
 		var valid = checkValid(tradereq.bookuid, insouts);

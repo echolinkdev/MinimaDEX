@@ -212,7 +212,7 @@ function findValidOrder(mktuid, tokenid, buyorsell, price, amount){
 		}
 	}
 	
-	console.log("TOTAL POSSIBLE FOUND : "+list.length);
+	//console.log("TOTAL POSSIBLE ORDERS FOUND : "+list.length);
 	
 	//Get a random one 
 	return list[getRandom(list.length)];

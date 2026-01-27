@@ -19,48 +19,28 @@ var MKT_TOTAL_AMOUNT		= 0;
 
 function setCurrentAmount(perc){
 	
+	//Calculate Amount - ROUND UP
+	MKT_CURRENT_AMOUNT =financial(perc * MKT_CURRENT_MAXAMOUNT);
+	mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
+	
+	//Calculate 
+	var decmktamount 	= new Decimal(MKT_CURRENT_AMOUNT);
+	var decmktprice 	= new Decimal(MKT_CURRENT_PRICE);
+	var decmkttotal		= decmktamount.times(decmktprice);
+	
 	//Make Sure you round UP or DOWN depending on the sale type..
 	if(MKT_BUYSELL){
 		
-		//Calculate Amount - ROUND UP
-		MKT_CURRENT_AMOUNT =financial(perc * MKT_CURRENT_MAXAMOUNT);
-		mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
-		
-		//And total
-		MKT_TOTAL_AMOUNT = financial(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+		//Round UP				
+		MKT_TOTAL_AMOUNT = financialDecimal(decmkttotal);
 		mkttotal.innerHTML = MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name;	
 		
 	}else{
 		
-		//Rownd Down Maths
-		MKT_CURRENT_AMOUNT =financialRDown(perc * MKT_CURRENT_MAXAMOUNT);
-		mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
-		
-		//And total
-		MKT_TOTAL_AMOUNT = financialRDown(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
+		//Rownd DOWN			
+		MKT_TOTAL_AMOUNT = financialDecimalRDown(decmkttotal);
 		mkttotal.innerHTML = MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name;
 	}
-	
-	/*if(MKT_BUYSELL){
-			
-		//Calculate Amount - ROUND UP
-		MKT_CURRENT_AMOUNT=financial(perc * MKT_CURRENT_MAXAMOUNT);
-		mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
-		
-		//And total
-		MKT_TOTAL_AMOUNT = financialRDown(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
-		mkttotal.innerHTML = MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name;	
-		
-	}else{
-		
-		//Rownd Down Maths
-		MKT_CURRENT_AMOUNT =financial(perc * MKT_CURRENT_MAXAMOUNT);
-		mktcurrentamount.innerHTML = MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name;
-		
-		//And total
-		MKT_TOTAL_AMOUNT = financialRDown(MKT_CURRENT_AMOUNT * MKT_CURRENT_PRICE);
-		mkttotal.innerHTML = MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name;
-	}*/
 }
 
 function resetMKTValues(){

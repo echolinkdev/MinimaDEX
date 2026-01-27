@@ -48,6 +48,9 @@ function addHistoryLog(action, details, extra){
 	
 	USER_HISTORY.push(history);
 	
+	//Order inverse
+	USER_HISTORY.sort(sortHistoryByTime);
+		
 	//Save it for later
 	saveHistory();
 	
