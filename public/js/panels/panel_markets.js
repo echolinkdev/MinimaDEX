@@ -120,7 +120,7 @@ function updateAllMarkets(){
 		return	
 	}
 	
-	console.log("updateAllMarkets");
+	//console.log("updateAllMarkets");
 		
 	//Find all unique tokens - except Minima and MxUSD
 	var unique_tokenid 	= new Set();

@@ -32,7 +32,6 @@ function hideSeedPhrase(){
 }
 
 function updateBalancePanel(){
-	console.log("Update balance display..");
 	
 	var baltable 	= document.getElementById('id_balance_table');
 	var tokenselect	= document.getElementById('id_wallet_tokenselect');

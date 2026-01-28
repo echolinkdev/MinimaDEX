@@ -62,11 +62,6 @@ var AUTO_BALANCE_ENABLED 			= false;
 
 function autoUpdateBalance(){
 	
-	console.log("START Balance auto checker");
-	
-	//Do a check at start
-	//fetchFullBalance();
-	
 	//Disable the refresh button
 	id_refreshbalance.disabled	= true;
 	
@@ -91,10 +86,10 @@ function autoUpdateBalance(){
 		AUTO_BALANCE_INTERVAL_COUNTER++;
 		if(AUTO_BALANCE_INTERVAL_COUNTER > 20){
 			clearInterval(AUTO_BALANCE_INTERVALID);
-			console.log("END Balance auto checker");
 			
 			id_refreshbalance.disabled	= false;
-			AUTO_BALANCE_ENABLED 		= false;	
+			AUTO_BALANCE_ENABLED 		= false;
+			updateBalancePanel();	
 		}
 		
 	}, 10000);
