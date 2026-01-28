@@ -84,7 +84,12 @@ function updateBalancePanel(){
 		
 		cellcoins.innerHTML = tokenbal.coins;
 		
-		cellsplt.innerHTML 	= "<button class=mybtn onclick='splitWalletCoins(\""+tokenname+"\",\""+tokenbal.tokenid+"\");'>Split Coins</button>";
+		if(AUTO_BALANCE_ENABLED){
+			cellsplt.innerHTML 	= "<button class=mybtn onclick='splitWalletCoins(\""+tokenname+"\",\""+tokenbal.tokenid+"\");' disabled>Split Coins</button>";
+		}else{
+			cellsplt.innerHTML 	= "<button class=mybtn onclick='splitWalletCoins(\""+tokenname+"\",\""+tokenbal.tokenid+"\");'>Split Coins</button>";	
+		}
+		
 		
 		//Insert row
 		var rowid 				= baltable.insertRow();

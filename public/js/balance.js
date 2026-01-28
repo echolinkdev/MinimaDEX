@@ -58,6 +58,8 @@ function fetchFullBalance(callback){
  */
 var AUTO_BALANCE_INTERVALID 		= 0;
 var AUTO_BALANCE_INTERVAL_COUNTER 	= 0;
+var AUTO_BALANCE_ENABLED 			= false;
+
 function autoUpdateBalance(){
 	
 	console.log("START Balance auto checker");
@@ -66,7 +68,11 @@ function autoUpdateBalance(){
 	//fetchFullBalance();
 	
 	//Disable the refresh button
-	id_refreshbalance.disabled=true;
+	id_refreshbalance.disabled	= true;
+	
+	//Hide the spli functions..
+	AUTO_BALANCE_ENABLED 		= true;
+	updateBalancePanel();
 	
 	//Clear the old
 	clearInterval(AUTO_BALANCE_INTERVALID);
@@ -87,7 +93,8 @@ function autoUpdateBalance(){
 			clearInterval(AUTO_BALANCE_INTERVALID);
 			console.log("END Balance auto checker");
 			
-			id_refreshbalance.disabled=false;	
+			id_refreshbalance.disabled	= false;
+			AUTO_BALANCE_ENABLED 		= false;	
 		}
 		
 	}, 10000);
