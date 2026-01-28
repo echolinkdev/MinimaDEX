@@ -56,6 +56,7 @@ function updateBalancePanel(){
 		
 		//Insert row
 		var row = baltable.insertRow();
+		row.style.fontSize 	= "0.8em";
 		
 		var celltoken 		= row.insertCell();
 		var cellavailable 	= row.insertCell();

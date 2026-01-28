@@ -23,6 +23,8 @@ function addTextTradeInfo(msg){
  * When you accept a trade from the frontend..
  */
 var CURRENT_TRADE_STATS = "";
+var CURRENT_TRADE_UUID  = "";
+var CURRENT_TRADE_COINS = [];
 
 function createBlankTransaction(){
 	var txn 	= {};
@@ -92,8 +94,8 @@ function startTrade(){
 			var tradlen = tradeorders.length;
 			for(var i=0;i<tradlen;i++){
 				
-				//Reset success
-				success = false;
+				//No coins added yet
+				CURRENT_TRADE_COINS = [];
 				
 				//Get the order
 				var tradeorder = tradeorders[i]; 
@@ -112,7 +114,7 @@ function startTrade(){
 				
 				//Add My Coins
 				try{
-					addCoins(txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
+					addCoins(true, txn, mytokbal, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, tradeorder.address);
 					addTextTradeInfo("Your coins added..");	
 					
 				}catch(Error){
@@ -120,10 +122,11 @@ function startTrade(){
 					continue;
 				}
 				
-				//Now add THEIR coins and send to us..
+				//Now add THEIR coins
 				try{
-					addCoins(txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
-					addTextTradeInfo("Counter-party coins added..");	
+					addCoins(false, txn, tradeorder.balance, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, USER_ACCOUNT.ADDRESS);
+					addTextTradeInfo("Counter-party coins added..");
+					
 				}catch(Error){
 					addTextTradeInfo(Error);
 					continue;
@@ -180,8 +183,8 @@ function startTrade(){
 			var tradlen = tradeorders.length;
 			for(var i=0;i<tradlen;i++){
 				
-				//Reset success
-				success = false;
+				//No coins added yet
+				CURRENT_TRADE_COINS = [];
 				
 				//Get the order
 				var tradeorder = tradeorders[i]; 
@@ -200,7 +203,7 @@ function startTrade(){
 				
 				//Add My Coins
 				try{
-					addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
+					addCoins(true, txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
 					addTextTradeInfo("Your coins added..");	
 					
 				}catch(Error){
@@ -208,9 +211,9 @@ function startTrade(){
 					continue;
 				}
 				
-				//Now add THEIR coins and send to us..
+				//Now add THEIR coins
 				try{
-					addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
+					addCoins(false, txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
 					addTextTradeInfo("Counter-party coins added..");	
 				}catch(Error){
 					addTextTradeInfo(Error);
@@ -235,6 +238,9 @@ function startTrade(){
 			return;
 		}
 		
+		//Which coins did you use..
+		console.log("Coins used : "+JSON.stringify(CURRENT_TRADE_COINS));
+		
 		//Create a RAW Txn..
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
 			
@@ -257,10 +263,7 @@ function startTrade(){
 				//And send it to them to finish!
 				var msg = postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
 				
-				addTextTradeInfo("Sending transaction to counter-party to sign.. uuid:"+msg.data.tradeuuid);
-								
-				//Start auto balance refresh..
-				autoUpdateBalance();	
+				addTextTradeInfo("Sending transaction to counter-party to sign.. uuid:"+msg.data.tradeuuid);	
 			});
 		});	
 		
@@ -277,7 +280,7 @@ function startTrade(){
 /**
  * Add coins as input and outputs for change
  */
-function addCoins(txn, balance, tokenid, amount, toaddress){
+function addCoins(mycoins, txn, balance, tokenid, amount, toaddress){
 	
 	//Cycle through and add
 	var addamount 	= new Decimal(amount); 
@@ -296,6 +299,11 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 		
 		//Add the first coin..
 		txn.inputs.push(coins[i].coinid);
+		
+		//Do we need to store this to remove later
+		if(mycoins){
+			CURRENT_TRADE_COINS.push(coins[i].coinid);
+		}
 		
 		//Add to the total
 		if(tokenid == "0x00"){
@@ -349,8 +357,7 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 
 /**
  * Post your orders to the user
- */
-var CURRENT_TRADE_UUID = ""; 
+ */ 
 function postTradeToUser(userid, bookuid, txndata){
 	
 	//This is the message for the User
@@ -407,9 +414,15 @@ function tradeComplete(msg){
 	if(msg.status && msg.tradeuuid == CURRENT_TRADE_UUID){
 		addTextTradeInfo("Trade Success! "+msg.txpowid);
 		
+		//Remove these 
+		removeCoinsFromBalance(CURRENT_TRADE_COINS);
+		
 		//Add a history log..!
 		addHistoryLog("TRADE", CURRENT_TRADE_STATS, msg.txpowid);
-			
+		
+		//Start auto balance refresh..
+		autoUpdateBalance();
+							
 	}else if(msg.tradeuuid == CURRENT_TRADE_UUID){
 		console.log("ERROR TRADE COMPLETE "+JSON.stringify(msg));
 		

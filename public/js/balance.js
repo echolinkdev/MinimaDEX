@@ -198,3 +198,74 @@ function setSplitCoinsBalanceZero(tokenid){
 		}
 	}
 }
+
+function removeCoinsFromBalance(coinsremove){
+
+	//How many coins..
+	var coinremlen = coinsremove.length;
+	
+	//Cycle through the tokens..
+	var len = USER_BALANCE.length;
+	for(var i=0;i<len;i++){
+		
+		//Get this token balance..
+		var balance = USER_BALANCE[i];
+		
+		//Get this tokens coinlist
+		var coinlist 	= balance.coinlist; 
+		var newcoinlist = [];
+		
+		//console.log("START Coins remove "+balance.tokenid+" "+balance.coinlist.length);
+				
+		//Do we remove it..
+		var coinlen = coinlist.length;
+		for(var j=0;j<coinlen;j++){
+			var coin = coinlist[j];
+			
+			var found = false;
+			for(var k=0;k<coinremlen;k++){
+				var coinrem = coinsremove[k];
+				
+				//Do we keep it..
+				if(coinrem == coin.coinid){
+					//console.log("Coin Remove found : "+coinrem);
+					
+					found = true;
+					break;
+				}
+			}
+			
+			//Did we find it..
+			if(!found){
+				newcoinlist.push(coin);
+			}
+		}
+		
+		//Reassign this list
+		balance.coinlist = newcoinlist;
+		//console.log("END Coins remove "+balance.tokenid+" "+balance.coinlist.length);
+		
+		//Now recalculate confirmed balance..
+		var oldbal  = balance.confirmed;
+		var coinlen = balance.coinlist.length;
+		var tot = DECIMAL_ZERO;
+		for(var j=0;j<coinlen;j++){
+			if(balance.coinlist[j].tokenid == "0x00"){
+				tot = tot.plus(new Decimal(balance.coinlist[j].amount));	
+			}else{
+				tot = tot.plus(new Decimal(balance.coinlist[j].tokenamount));
+			}
+		}
+		balance.confirmed = tot.toString();
+		//console.log("END Coins confirmed "+balance.tokenid+" "+tot+" / "+oldbal);
+	}
+	
+	//Don't update for 1 minute..
+	SPLIT_COIN_STOP_UPDATE = getTimeMilli();
+	
+	//Update the server
+	postMyOrdersToServer();
+	
+	//Update the Panel
+	updateBalancePanel();
+}
