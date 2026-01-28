@@ -30,6 +30,7 @@ function setMyOrdersTable(){
 		
 		//Insert row
 		var row = myorderstable.insertRow();
+		row.style.fontSize = "0.8em";
 		
 		var cellamount 	= row.insertCell();
 		var cellprice 	= row.insertCell();

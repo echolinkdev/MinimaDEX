@@ -65,6 +65,7 @@ function addTotalOrdersRows(data){
 		
 		//Insert row
 		var row = allorderstable.insertRow();
+		row.style.fontSize = "0.8em";
 		
 		var cellorders 		= row.insertCell();
 		var celltotal 		= row.insertCell();

@@ -66,14 +66,13 @@ function setTradesTable(){
 			
 			//Insert row
 			var row = tradestable.insertRow();
+			row.style.fontSize = "0.8em";
 			
 			var celltype 	= row.insertCell();
 			var cellamount 	= row.insertCell();
 			var cellprice 	= row.insertCell();
 			var celltotal 	= row.insertCell();
 			var celldate 	= row.insertCell();
-			celldate.style.fontSize = "0.7em";
-			//celldate.style.color 	= "grey";
 					
 			//Set row color
 			if(trade.type == "buy"){

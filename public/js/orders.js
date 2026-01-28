@@ -8,6 +8,7 @@ function createMyOrder(buysell, amount, price){
 	order.amount	= ""+amount;
 	order.price		= ""+price;
 	order.uuid		= getRandomHexString();
+	order.address	= USER_ACCOUNT.ADDRESS;
 	return order;
 }
 
@@ -212,9 +213,7 @@ function findValidOrder(mktuid, tokenid, buyorsell, price, amount){
 		}
 	}
 	
-	//console.log("TOTAL POSSIBLE ORDERS FOUND : "+list.length);
-	
 	//Get a random one 
-	return list[getRandom(list.length)];
+	return list;
 }
 	

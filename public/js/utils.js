@@ -2,7 +2,7 @@
  * Utility Funcions
  */
 var DECIMAL_ZERO 	= new Decimal(0);
-const MAX_DECIMAL 	= 4;
+const MAX_DECIMAL 	= 8;
 
 function getRandomHexString() {
     const hex = '0123456789ABCDEF';

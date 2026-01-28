@@ -128,47 +128,72 @@ function startTrade(){
 				return;
 			}
 			
-			//Ok - we have enough.. find an order / user
-			var tradeorder = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
+			//Ok - we have enough.. find an array of order / user
+			var tradeorders = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
 			
-			//Add MY Coins first..
-			addTextTradeInfo("Create trade transaction..");
-			var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
-			//console.log("My BALANCE : "+JSON.stringify(mytokbal));
 			
-			//Send the amount to the User
-			addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
-			addTextTradeInfo("Your coins added..");
-			
-			var my = {};
-			my.addamount 	= txn.addamount;
-			my.totaladded 	= txn.totaladded;
-			my.change 		= txn.change;
-			
-			//Now add THEIR coins and send to us..
-			addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
-			addTextTradeInfo("Counter-party coins added..");
-			
-			var their = {};
-			their.addamount 	= txn.addamount;
-			their.totaladded 	= txn.totaladded;
-			their.change 		= txn.change;
-			
-			//Now add both the scripts..
-			txn.scripts.push(USER_ACCOUNT.SCRIPT);
-			txn.scripts.push(tradeorder.script);
-			addTextTradeInfo("Scripts added..");
-			
-			//Logs..
-			console.log("MY : "+JSON.stringify(my));
-			console.log("TH : "+JSON.stringify(their));
-			console.log("CPRICE : "+MKT_CURRENT_PRICE);
-			var checkprice = decimalRUp(new Decimal(their.addamount).dividedBy(new Decimal(my.addamount)));
-			console.log("CHECK : "+checkprice);
+			//Now cycle through t the orders checking..
+			var tradlen = tradeorders.length;
+			for(var i=0;i<tradlen;i++){
+				
+				//Get the order
+				var tradeorder = tradeorders[i]; 
+				
+				//Notify User..				
+				addTextTradeInfo("Order found.. checking..");
+				
+				//Get the USER - check not trading with yourself..
+				if(tradeorder.address == USER_ACCOUNT.ADDRESS){
+					addTextTradeInfo("Cannot trade with yourtself..");
+					return;
+				}
+				
+				//Add MY Coins first..
+				addTextTradeInfo("Create trade transaction..");
+				var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
+				//console.log("My BALANCE : "+JSON.stringify(mytokbal));
+				
+				//Send the amount to the User
+				addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
+				addTextTradeInfo("Your coins added..");
+				
+				var my = {};
+				my.addamount 	= txn.addamount;
+				my.totaladded 	= txn.totaladded;
+				my.change 		= txn.change;
+				
+				//Now add THEIR coins and send to us..
+				addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
+				addTextTradeInfo("Counter-party coins added..");
+				
+				var their = {};
+				their.addamount 	= txn.addamount;
+				their.totaladded 	= txn.totaladded;
+				their.change 		= txn.change;
+				
+				//Now add both the scripts..
+				txn.scripts.push(USER_ACCOUNT.SCRIPT);
+				txn.scripts.push(tradeorder.script);
+				addTextTradeInfo("Scripts added..");
+				
+				addTextTradeInfo("Attempting trade..");
+				
+				//OK - we good..
+				break;
+				
+				//Logs..
+				console.log("MY : "+JSON.stringify(my));
+				console.log("TH : "+JSON.stringify(their));
+				console.log("CPRICE : "+MKT_CURRENT_PRICE);
+				var checkprice = decimalRUp(new Decimal(their.addamount).dividedBy(new Decimal(my.addamount)));
+				console.log("CHECK : "+checkprice);	
+				
+				
+			}
 		}
 		
-		//console.log("HACK STOP");
-		//return;
+		console.log("HACK STOP");
+		return;
 		
 		//Create a RAW Txn..
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){

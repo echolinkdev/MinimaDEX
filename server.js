@@ -24,25 +24,6 @@ var orderbooks 	= {};
 //All the Trades
 var alltrades	= [];
 
-//Read in the trades..
-try {
-  	// Read file synchronously
-  	const data = fs.readFileSync('trades.json', 'utf8');
-  
-  	//Convert
-  	alltrades = JSON.parse(data);
-  
-  	if(DEBUG_LOGS){
-		console.log('Trades Loaded : ', data);
-	}
-  
-} catch (err) {
-  	//File not found.. first time running..
-	if(DEBUG_LOGS){
-		console.error('Error reading file :', err);
-	}
-}
-
 //What to do on connections
 server.on('connection', (socket) => {
 	
@@ -152,6 +133,23 @@ server.on('connection', (socket) => {
 });
 
 console.log('DEX server is running on ws://localhost:'+SERVER_PORT);
+
+//Read in the trades..
+try {
+  	// Read file synchronously
+  	const data = fs.readFileSync('trades.json', 'utf8');
+  
+  	//Convert
+  	alltrades = JSON.parse(data);
+  
+  	if(DEBUG_LOGS){
+		console.log('Trades Loaded : ', data);
+	}
+  
+} catch (err) {
+  	//File not found.. first time running..
+	console.error('No Trades found.. yet..');
+}
 
 /**
  * UTILITY FUNCTIONS
