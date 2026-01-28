@@ -189,8 +189,8 @@ function squashListTotals(data){
 			
 			//Add the old..
 			var newrow 			= {};
-			newrow.total 		= total.toString();
-			newrow.maxamount	= cmax.toString();
+			newrow.total 		= decimalRDown(total);
+			newrow.maxamount	= decimalRDown(cmax);
 			newrow.price		= oldorder.price;
 			newrow.type			= oldorder.type; 
 			newrow.orders 		= orders;
@@ -208,8 +208,8 @@ function squashListTotals(data){
 	
 	//Push the last order
 	var newrow 			= {};
-	newrow.total 		= total.toString();
-	newrow.maxamount	= cmax.toString();
+	newrow.total 		= decimalRDown(total);
+	newrow.maxamount	= decimalRDown(cmax);
 	newrow.price		= oldorder.price; 
 	newrow.type			= oldorder.type;
 	newrow.orders 		= orders;
