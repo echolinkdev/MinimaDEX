@@ -263,7 +263,7 @@ function startTrade(){
 				//And send it to them to finish!
 				var msg = postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
 				
-				addTextTradeInfo("Sending transaction to counter-party to sign.. uuid:"+msg.data.tradeuuid);	
+				addTextTradeInfo("Sending transaction to counter-party to sign..");	
 			});
 		});	
 		
@@ -529,6 +529,9 @@ function checkAndSignTrade(fromuser, tradereq){
 				//And notify the rest - the TAKER TRADE
 				postFinishedTrade(mytradebook, insouts, txpowid);
 				
+				//Remove those coins from my balance..
+				removeCoinsFromBalance(insouts.inputcoinid);
+				
 				//Start auto balance refresh..
 				autoUpdateBalance();
 				
@@ -571,6 +574,7 @@ function getMyInputsAndOutputs(txn){
 	//Total Amounts / TokenID
 	mycoins.inputtokenid 	= "xxx";
 	mycoins.inputtotal 		= DECIMAL_ZERO;
+	mycoins.inputcoinid		= [];
 	mycoins.outputtokenid 	= "xxx";
 	mycoins.outputtotal 	= DECIMAL_ZERO;
 	
@@ -595,6 +599,9 @@ function getMyInputsAndOutputs(txn){
 			}else{
 				mycoins.inputtotal = mycoins.inputtotal.plus(new Decimal(input.tokenamount));
 			}
+			
+			//Store for later
+			mycoins.inputcoinid.push(input.coinid);
 			
 			//Next check
 			mycoins.inputtokenid = input.tokenid;	

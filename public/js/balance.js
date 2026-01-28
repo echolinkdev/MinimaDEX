@@ -257,7 +257,7 @@ function removeCoinsFromBalance(coinsremove){
 			}
 		}
 		balance.confirmed = tot.toString();
-		//console.log("END Coins confirmed "+balance.tokenid+" "+tot+" / "+oldbal);
+		console.log("END Coins confirmed "+balance.tokenid+" "+tot+" / "+oldbal);
 	}
 	
 	//Don't update for 1 minute..
