@@ -97,7 +97,7 @@ function addTotalOrdersRows(data){
 	}
 }
 
-function squashListTotals(data){
+/*function squashListTotals(data){
 	
 	var list 	= [];
 	var len 	= data.length;
@@ -155,10 +155,84 @@ function squashListTotals(data){
 	list.push(newrow);
 	
 	return list;
+}*/
+
+function squashListTotals(data){
+	
+	var list 	= [];
+	var len 	= data.length;
+	if(len == 0){
+		return list;
+	}
+	
+	var oldorder 	= data[0];
+	var total 		= DECIMAL_ZERO;
+	var cmax 		= DECIMAL_ZERO;
+	var orders		= 0;
+	
+	for(var i=0;i<len;i++) {
+		var order=data[i];
+		
+		var decamount = new Decimal(order.amount);
+		
+		//Is it the same price.. 
+		if(order.price == oldorder.price){
+			total = total.plus(decamount);
+			
+			if(decamount.greaterThan(cmax)){
+				cmax = decamount;
+			}
+			
+			orders++;
+			
+		}else{
+			
+			//Add the old..
+			var newrow 			= {};
+			newrow.total 		= total.toString();
+			newrow.maxamount	= cmax.toString();
+			newrow.price		= oldorder.price;
+			newrow.type			= oldorder.type; 
+			newrow.orders 		= orders;
+			
+			list.push(newrow);
+			
+			//And reset
+			total 	= decamount;
+			cmax  	= decamount;
+			orders 	= 1;
+		}
+		
+		oldorder = order;
+	}
+	
+	//Push the last order
+	var newrow 			= {};
+	newrow.total 		= total.toString();
+	newrow.maxamount	= cmax.toString();
+	newrow.price		= oldorder.price; 
+	newrow.type			= oldorder.type;
+	newrow.orders 		= orders;
+	
+	list.push(newrow);
+	
+	return list;
 }
 
 function compareDesc(a,b){
-	return b.price-a.price;
+	
+	var deca = new Decimal(a.price);
+	var decb = new Decimal(b.price);
+	
+	if(deca.lessThan(decb)){
+		return 1;
+	}
+	
+	if(decb.lessThan(deca)){
+		return -1;
+	}
+	
+	return 0;
 }
 
 function setAllOrdersTable(){
