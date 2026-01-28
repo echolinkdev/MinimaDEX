@@ -143,6 +143,22 @@ function sortTradesByTime(a,b){
 	return 0;
 }
 
+function compareDesc(a,b){
+	
+	var deca = new Decimal(a.price);
+	var decb = new Decimal(b.price);
+	
+	if(deca.lessThan(decb)){
+		return 1;
+	}
+	
+	if(decb.lessThan(deca)){
+		return -1;
+	}
+	
+	return 0;
+}
+
 function sortHistoryByTime(a,b){
 	if (a.time < b.time) {
 	  return 1;
