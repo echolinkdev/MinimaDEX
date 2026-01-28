@@ -8,7 +8,6 @@ function createMyOrder(buysell, amount, price){
 	order.amount	= ""+amount;
 	order.price		= ""+price;
 	order.uuid		= getRandomHexString();
-	order.address	= USER_ACCOUNT.ADDRESS;
 	return order;
 }
 
@@ -103,9 +102,9 @@ function updateOrderAfterTrade(bookuid, tradecoins){
 		console.log("Updated Order : "+JSON.stringify(order));
 			
 	}else{
-		console.log(" Order removed ");
+		console.log("Order removed");
 
-				//remove order completely
+		//remove order completely
 		removeMyOrderAndPost(bookuid);
 	}
 }

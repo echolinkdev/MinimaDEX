@@ -24,6 +24,16 @@ function addTextTradeInfo(msg){
  */
 var CURRENT_TRADE_STATS = "";
 
+function createBlankTransaction(){
+	var txn 	= {};
+	txn.inputs 	= [];
+	txn.outputs	= [];
+	txn.scripts	= [];
+	txn.state	= {};
+	
+	return txn;
+}
+
 function startTrade(){
 	
 	//MUST be > 0
@@ -39,11 +49,7 @@ function startTrade(){
 	showTradeInfoPanel();
 	
 	//Create transaction..
-	var txn 	= {};
-	txn.inputs 	= [];
-	txn.outputs	= [];
-	txn.scripts	= [];
-	txn.state	= {};
+	var txn = {};
 	
 	try{
 		
@@ -52,7 +58,8 @@ function startTrade(){
 			
 			//Store for later
 			CURRENT_TRADE_STATS = "BUY "+MKT_CURRENT_AMOUNT+" "+CURRENT_MARKET.token1.name
-							+" FOR "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name+" @ "+MKT_CURRENT_PRICE;
+							+" FOR "+MKT_TOTAL_AMOUNT+" "+CURRENT_MARKET.token2.name
+							+" @ "+MKT_CURRENT_PRICE;
 			
 			//Info
 			addTextTradeInfo(CURRENT_TRADE_STATS);
@@ -131,79 +138,96 @@ function startTrade(){
 			//Ok - we have enough.. find an array of order / user
 			var tradeorders = findValidOrder(CURRENT_MARKET.mktuid, CURRENT_MARKET.token2.tokenid, "buy", MKT_CURRENT_PRICE, MKT_CURRENT_AMOUNT);
 			
+			//Shuffle them!
+			shuffle(tradeorders);
+			
+			if(tradeorders.length == 0){
+				addTextTradeInfo("No valid orders found..");
+				return;
+			}else{
+				addTextTradeInfo("Found "+tradeorders.length+" orders");	
+			}
+			
+			//Get your balance for that token
+			var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
 			
 			//Now cycle through t the orders checking..
+			var success = false;
 			var tradlen = tradeorders.length;
 			for(var i=0;i<tradlen;i++){
+				
+				//Reset success
+				success = false;
 				
 				//Get the order
 				var tradeorder = tradeorders[i]; 
 				
 				//Notify User..				
-				addTextTradeInfo("Order found.. checking..");
-				
+				addTextTradeInfo("Checking order.. "+i+" "+tradeorder.book.uuid);
+								
 				//Get the USER - check not trading with yourself..
 				if(tradeorder.address == USER_ACCOUNT.ADDRESS){
-					addTextTradeInfo("Cannot trade with yourtself..");
-					return;
+					addTextTradeInfo("Cannot trade with yourself..");
+					continue;
 				}
 				
-				//Add MY Coins first..
-				addTextTradeInfo("Create trade transaction..");
-				var mytokbal = getTokenBalance(CURRENT_MARKET.token1.tokenid, USER_BALANCE);
-				//console.log("My BALANCE : "+JSON.stringify(mytokbal));
+				//Create balnk transaction
+				txn = createBlankTransaction();
 				
-				//Send the amount to the User
-				addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
-				addTextTradeInfo("Your coins added..");
-				
-				var my = {};
-				my.addamount 	= txn.addamount;
-				my.totaladded 	= txn.totaladded;
-				my.change 		= txn.change;
+				//Add My Coins
+				try{
+					addCoins(txn, mytokbal, CURRENT_MARKET.token1.tokenid, MKT_CURRENT_AMOUNT, tradeorder.address);
+					addTextTradeInfo("Your coins added..");	
+					
+				}catch(Error){
+					addTextTradeInfo(Error);
+					continue;
+				}
 				
 				//Now add THEIR coins and send to us..
-				addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
-				addTextTradeInfo("Counter-party coins added..");
-				
-				var their = {};
-				their.addamount 	= txn.addamount;
-				their.totaladded 	= txn.totaladded;
-				their.change 		= txn.change;
+				try{
+					addCoins(txn, tradeorder.balance, CURRENT_MARKET.token2.tokenid, MKT_TOTAL_AMOUNT, USER_ACCOUNT.ADDRESS);
+					addTextTradeInfo("Counter-party coins added..");	
+				}catch(Error){
+					addTextTradeInfo(Error);
+					continue;
+				}
 				
 				//Now add both the scripts..
 				txn.scripts.push(USER_ACCOUNT.SCRIPT);
 				txn.scripts.push(tradeorder.script);
 				addTextTradeInfo("Scripts added..");
 				
-				addTextTradeInfo("Attempting trade..");
-				
 				//OK - we good..
+				success = true;
 				break;
-				
-				//Logs..
-				console.log("MY : "+JSON.stringify(my));
-				console.log("TH : "+JSON.stringify(their));
-				console.log("CPRICE : "+MKT_CURRENT_PRICE);
-				var checkprice = decimalRUp(new Decimal(their.addamount).dividedBy(new Decimal(my.addamount)));
-				console.log("CHECK : "+checkprice);	
-				
-				
 			}
 		}
 		
-		console.log("HACK STOP");
-		return;
+		//Did we find one..
+		if(!success){
+			addTextTradeInfo("Cound not find valid trade..");
+			return;
+		}
 		
 		//Create a RAW Txn..
 		MINIMASK.meg.rawtxn(txn.inputs, txn.outputs, txn.scripts, txn.state, function(rawresp){
-			//console.log("RAWTXN : "+JSON.stringify(rawresp,null,2));
 			
-			addTextTradeInfo("Signing transaction..");
+			//Did it work
+			if(!rawresp.status){
+				addTextTradeInfo("Error : "+rawresp.error);
+				return;
+			}
 			
 			//Now Sign the Transaction..
+			addTextTradeInfo("Signing transaction..");	
 			utility_sign(rawresp.data.data, false, function(signedrexp){
-				//console.log("SIGNTXN : "+JSON.stringify(signedrexp,null,2));
+				if(!signedrexp){
+					addTextTradeInfo("Error : "+rawresp.error);
+					return;	
+				}
+				
+				addTextTradeInfo("Transaction signed..");
 				
 				//And send it to them to finish!
 				var msg = postTradeToUser(tradeorder.userid, tradeorder.book.uuid, signedrexp.data.data);
@@ -216,10 +240,13 @@ function startTrade(){
 		});	
 		
 	}catch(Error){
+		
 		//Something wqent wrong..
-		addTextTradeInfo("ERROR : "+Error);
+		addTextTradeInfo(Error);
+		
 		return;
 	}
+
 }
 
 /**
@@ -260,7 +287,8 @@ function addCoins(txn, balance, tokenid, amount, toaddress){
 	
 	//Did we add enough ? - if not throw error..
 	if(totaladded.lessThan(addamount)){
-		throw new Error("Could not add required amount.. pls try again..\n\n"+amount);
+		throw new Error("Could not add required amount.. pls try again.."
+						+"\n\nAdded"+ totaladded+" / "+addamount);
 	}
 	
 	//Now add the output to the User..
