@@ -111,52 +111,76 @@ function updateAllMarkets(){
 	
 	var mktcheck = JSON.stringify(ALL_ORDERS);
 	
-	//Is it Blank
+	//Is it Blank - startup
 	if(mktcheck == "{}"){
-		console.log("No Markets to update.. : ");
+		//console.log("No Markets to update.. : ");
 		return	
 	}
 	
-	//console.log("updateAllMarkets");
-		
 	//Find all unique tokens - except Minima and MxUSD
 	var unique_tokenid 	= new Set();
 	unique_tokenid.add("0x00");
-	unique_tokenid.add(MXUSD_TOKENID);
 	
-	//Add the MxUSD Market
-	var markets = [];
-	//markets.push(MXUSD_MARKET);
+	//Do we add a preset list oif tokens.. 
+	var premarkets = [];
+	if(DEX_ADD_PRESET_PAIRS){
+		
+		var len = DEX_PRESET_PAIRS.length;
+		for(var i=0;i<len;i++){
+			
+			var pair = DEX_PRESET_PAIRS[i];
+			
+			//Add these tokens
+			unique_tokenid.add(pair.token1.tokenid);
+			unique_tokenid.add(pair.token2.tokenid);
+			
+			//And add the Market
+			premarkets.push(pair);
+		}
+	} 
 	
-	//Cycle through ALL_ORDERS
-	for(const key in ALL_ORDERS) {
+	//Do we allow User Pairs
+	var usermarkets = [];
+	if(DEX_ADD_USER_TOKENS){
 		
-		//Get the Users balance
-		var balance = ALL_ORDERS[key].balance;
-		
-		//Cycle through the balance
-		var len = balance.length;
-		for(var i=0;i<len;i++) {
+		//Cycle through ALL_ORDERS
+		for(const key in ALL_ORDERS) {
 			
-			var baltok = balance[i];
+			//Get the Users balance
+			var balance = ALL_ORDERS[key].balance;
 			
-			//Is it in the set.. ONLTY TOKENS.. Minima is the base 
-			if(!unique_tokenid.has(baltok.tokenid)){
+			//Cycle through the balance
+			var len = balance.length;
+			for(var i=0;i<len;i++) {
 				
-				//Add it!
-				unique_tokenid.add(baltok.tokenid);
+				var baltok = balance[i];
 				
-				//Create that market
-				markets.push(createMinimaMarket(baltok));
+				//Is it in the set.. ONLY TOKENS.. Minima is the base 
+				if(!unique_tokenid.has(baltok.tokenid)){
+					
+					//Add it!
+					unique_tokenid.add(baltok.tokenid);
+					
+					//Create that market
+					usermarkets.push(createMinimaMarket(baltok));
+				}
 			}
 		}
+		
+		//Order the User Markets..!
+		usermarkets.sort(sortMarketsAlphabetically);	
 	}
 	
-	//Order the Markets..!
-	markets.sort(sortMarketsAlphabetically);
+	//Now add all the markets..
+	ALL_MARKETS = [];
+	for(var i=0;i<premarkets.length;i++){
+		ALL_MARKETS.push(premarkets[i]);
+	}
 	
-	//Set this..
-	ALL_MARKETS = markets;
+	for(var i=0;i<usermarkets.length;i++){
+		ALL_MARKETS.push(usermarkets[i]);
+	}
 	
+	//Set the markets
 	setMarketSelect();
 }

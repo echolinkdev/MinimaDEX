@@ -1,10 +1,10 @@
 /**
  * User Variables
  */
-var USER_NAME 	= "paddy";
-var USER_UUID 	= "0x00";
+var USER_NAME 	= "";
+var USER_UUID 	= "";
 
-//When I test.. 
+//When I test locally (use 'hack' as the password).. 
 var HACK_USER_SEED 			= "GRIEF KITTEN WOOL HARSH RESCUE VALID SLIM SECTION SHOE CLIENT LEGAL SETTLE ALONE RETREAT LINK SHIVER ILLEGAL GIRL CHAPTER MEDAL PET GENIUS WEIRD REVEAL";
 var HACK_USER_ADDRESS 		= "MxG0839DENQ2AF05JPSAG6H5B9H5JBD2SZACUR5TQUAQN0RQH7CB243DK3QHWJ5";
 var HACK_USER_PUBLICKEY 	= "0x0C0DF0C87BE757DE9444113014B109473CB7BE0940774DB2AED1CC5C2B956078";
@@ -42,29 +42,11 @@ var ALL_ORDERS = {};
  */
 var ALL_MARKETS = [];
 
+
 /**
  * List of all the trades!
  */
 var ALL_TRADES = [];
-
-
-/**
- * The MxUSD TOKENID! - there is always this market
- */
-var MXUSD_TOKENID = "0xFFEEDDFFEEDD";
-
-/**
- * MxUSD Market
- */
-const MXUSD_MARKET = {};
-MXUSD_MARKET.mktname			= "Minima / MxUSD";
-MXUSD_MARKET.mktuid				= "0x00 / "+MXUSD_TOKENID;
-MXUSD_MARKET.token1 			= {};
-MXUSD_MARKET.token1.name 		= "Minima";
-MXUSD_MARKET.token1.tokenid 	= "0x00";
-MXUSD_MARKET.token2 			= {};
-MXUSD_MARKET.token2.name 		= "MxUSD";
-MXUSD_MARKET.token2.tokenid 	= MXUSD_TOKENID;
 
 /**
  * NULL Market

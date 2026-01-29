@@ -1,4 +1,3 @@
-const DEX_SERVER = "ws://localhost:8081";
 var WEB_SOCKET;
 const MESSAGE_LISTENERS = [];
 
@@ -66,7 +65,7 @@ function wsInitSocket(initcallback){
 	};
 	
 	WEB_SOCKET.onerror = () => {
-		setDexState("Error.. reconnecting in 10s");
+		setDexState("Error.. reconnecting in 30s");
 		console.log('Error connecting to server');
 		
 		ERROR_CONNECT_RECONNECT = true;
