@@ -8,7 +8,11 @@ import fs from 'fs';
 //console.log("Random:"+clientjs.getRandomHexString()+" "+clientjs.tester());
 
 //Are we logging..
-var DEBUG_LOGS 	= false;
+var DEBUG_LOGS 	= true;
+if(DEBUG_LOGS){
+	console.log("Debug logs enabled..");
+}
+
 var SERVER_PORT = 8081;
 
 //How many trades to keep in history log
@@ -105,6 +109,13 @@ server.on('connection', (socket) => {
 				
 				//Broadcast
 				broadcast(createCustomMsg("0x00","trade",trade));	
+			
+			}else if(msgjson.type=="ping"){
+				
+				var pong = createCustomMsg("0x00","pong",{});
+				
+				//Send back a pong message
+				socket.send(pong);		
 				
 			}else{
 				console.log("Unknown message type :"+msgjson.type+" msg:"+strmsg);

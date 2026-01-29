@@ -6,6 +6,8 @@ var LOGGING_ENABLED = false;
 var ERROR_CONNECT_RECONNECT = false;
 var RECONNECT_TIMER 		= 30000;
 
+var AUTO_CLIENT_PINGID 		= 0;
+
 const dex_state	= document.getElementById('id_dex_state');
 function setDexState(str){
 	dex_state.innerHTML = str;
@@ -14,10 +16,6 @@ function setDexState(str){
 function connectToServer(){
 	//Connect to server
 	wsInitSocket(function(){
-		
-		//Once connected..
-		
-		
 		
 		//Have connected to server - post your orders to it..
 		postMyOrdersToServer();
@@ -28,6 +26,9 @@ function wsInitSocket(initcallback){
 	
 	setDexState("Connecting..");
 	
+	//Clear the old
+	clearInterval(AUTO_CLIENT_PINGID);
+	
 	//Try and connect
 	WEB_SOCKET = new WebSocket(DEX_SERVER);
 	
@@ -35,6 +36,14 @@ function wsInitSocket(initcallback){
 	    console.log('Connected to server');
 		setDexState("");
 		ERROR_CONNECT_RECONNECT = false;
+		
+		//Start a new one..
+		AUTO_CLIENT_PINGID = setInterval(function(){
+			
+			//Send a PING message
+			pingMessage();
+			
+		}, 10000);
 		
 		if(initcallback){
 			initcallback();
@@ -81,6 +90,14 @@ function wsInitSocket(initcallback){
 
 function wsAddListener(listener){
 	MESSAGE_LISTENERS.push(listener);
+}
+
+function pingMessage(){
+	var msg  	= {};
+	msg.type	= "ping";
+	msg.data	= {};
+	
+	wsPostToServer(msg);
 }
 
 function wsPostToServer(jsonmsg){

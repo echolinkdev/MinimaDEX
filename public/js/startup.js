@@ -87,11 +87,9 @@ function mainListenerLoop(){
 				console.log("Message REC error : "+Error);
 			}
 			
-		}else if(msg.type=="trade"){
-		
-			//console.log("NEW TRADE : "+JSON.stringify(msg));
-			
-					
+		}else if(msg.type=="pong"){
+			console.log("Received PONG : ");
+						
 		}else if(msg.type=="closed"){
 			//console.log("UUID CLOSED : "+JSON.stringify(msg));
 			
