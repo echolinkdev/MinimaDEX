@@ -137,12 +137,6 @@ function postStartupDex(){
 						
 	//Now connect to server
 	connectToServer();
-	
-	/*wsInitSocket(function(){
-		
-		//Have connected to server - post your orders to it..
-		postMyOrdersToServer();
-	});*/
 }
 
 function loadUserDetails(){

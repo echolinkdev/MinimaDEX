@@ -15,6 +15,10 @@ function connectToServer(){
 	//Connect to server
 	wsInitSocket(function(){
 		
+		//Once connected..
+		
+		
+		
 		//Have connected to server - post your orders to it..
 		postMyOrdersToServer();
 	});
