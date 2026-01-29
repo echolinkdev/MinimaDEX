@@ -25,9 +25,9 @@ var DEX_PRESET_PAIRS = [];
 DEX_PRESET_PAIRS.push(MXUSD_MARKET);
 
 /**
- * Do we add a PRE_SET pair to the exchange ?
+ * Do we add PRESET pairs to the exchange ?
  */
-var DEX_ADD_PRESET_PAIRS = false;
+var DEX_ADD_PRESET_PAIRS = true;
 
 /**
  * Do we allow OTHER tokens made up from all tokens of users connected ?
