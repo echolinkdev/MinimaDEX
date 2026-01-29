@@ -30,6 +30,6 @@ DEX_PRESET_PAIRS.push(MXUSD_MARKET);
 var DEX_ADD_PRESET_PAIRS = true;
 
 /**
- * Do we allow OTHER tokens made up from all tokens of users connected ?
+ * Do we allow OTHER Minima markets made up from all tokens of users connected ?
  */
 var DEX_ADD_USER_TOKENS = true;
