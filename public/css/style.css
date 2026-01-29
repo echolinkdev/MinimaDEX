@@ -81,8 +81,9 @@ td {
 	padding:8px;
 }
 
-.buyorder{background-color: #88ff88;} 
-.sellorder{background-color: #ff8888;} 
+.buyorder{background-color: #aaffaa;} 
+.sellorder{background-color: #ffaaaa;} 
+.otherorder{background-color: #aaaaff;} 
 
 /* Normal buttons */
 .mybtn {

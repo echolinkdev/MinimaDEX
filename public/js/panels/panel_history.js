@@ -14,6 +14,7 @@ function showHistory(){
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Action</th>"; 
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Details</th>";
 	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Extra</th>";
+	row.insertCell().outerHTML = "<th class='smalltableheadertext'>Check</th>";
 	
 	//Get my Orders
 	var len = USER_HISTORY.length;
@@ -28,7 +29,8 @@ function showHistory(){
 		var cellaction 		= row.insertCell();
 		var celldetails 	= row.insertCell();
 		var cellextra 		= row.insertCell();
-		
+		var cellcheck 		= row.insertCell();
+				
 		var dateString 		= getTimeStr(history.time);
 		
 		celltime.innerHTML 		= "&nbsp;"+dateString
@@ -41,27 +43,27 @@ function showHistory(){
 		}
 		
 		if(history.extra.startsWith("0x")){
-			cellextra.innerHTML 	= "&nbsp;<a target='history_txpowid' href='https://minimask.org/block/txpow.html?txpowid="+history.extra+"'>"+history.extra+"</a>";	
+			cellextra.innerHTML 		= "&nbsp;<a target='history_txpowid' href='https://minimask.org/block/txpow.html?txpowid="+history.extra+"'>"+history.extra+"</a>";	
+			cellextra.style.fontSize 	= "0.7em";
+			
+			//Put a check button..
+			cellcheck.innerHTML 	= "<button class=mybtn style='font-size:10px;padding: 4px 6px' onclick='checkTxPow(\""+history.extra+"\");'>Check</button>";
+			
 		}else{
 			cellextra.innerHTML 	= "&nbsp;"+history.extra;	
 		}
-		 
-		//Insert 1 row for the TxPoWID
-		/*if(history.extra != ""){
-			var extrarow 		= history_table.insertRow();
-			var cellextra 		= extrarow.insertCell();
-			cellextra.colSpan 	= "3";
-			
-			if(history.extra.startsWith("0x")){
-				cellextra.innerHTML 	= "&nbsp;<a target='history_txpowid' href='https://minimask.org/block/txpow.html?txpowid="+history.extra+"'>"+history.extra+"</a>";	
-			}else{
-				cellextra.innerHTML 	= "&nbsp;"+history.extra;
-			}	
-		}*/
-		
-		//Final gap
-		//var rowgap 	= history_table.insertRow();
-		//var rowgap 	= rowgap.insertCell();
-		//rowgap.innerHTML = "&nbsp;";
 	}	
 }
+
+function checkTxPow(txpowid){
+	showTradeInfoPanel();
+	
+	addTextTradeInfo("Checking status of TxPoW..");
+	
+	MINIMASK.meg.checktxpow(txpowid, function(resp){
+		addTextTradeInfo( JSON.stringify(resp.data, null, 2));	
+	});
+	
+	
+}
+
