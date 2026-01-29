@@ -109,14 +109,6 @@ function createMinimaMarket(userbal){
  */
 function updateAllMarkets(){
 	
-	var mktcheck = JSON.stringify(ALL_ORDERS);
-	
-	//Is it Blank - startup
-	if(mktcheck == "{}"){
-		//console.log("No Markets to update.. : ");
-		return	
-	}
-	
 	//Find all unique tokens - except Minima and MxUSD
 	var unique_tokenid 	= new Set();
 	unique_tokenid.add("0x00");
