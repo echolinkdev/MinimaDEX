@@ -81,13 +81,13 @@ function wsAddListener(listener){
 
 function wsPostToServer(jsonmsg){
 	
+	var strmsg = JSON.stringify(jsonmsg);
+	
 	//Is the Socket OPEN
 	if (WEB_SOCKET.readyState !== WebSocket.OPEN) {
-		console.log("WS closed.. not sending message ");
+		console.log("WS closed.. not sending message "+strmsg);
 		return;
 	}
-	
-	var strmsg = JSON.stringify(jsonmsg);
 	
 	if(LOGGING_ENABLED){
 		console.log("Post to server : "+strmsg);
