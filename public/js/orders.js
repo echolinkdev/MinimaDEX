@@ -30,19 +30,23 @@ function addMyOrderAndPost(order){
  * Remove an order from Your OrderBook
  */
 function removeMyOrderAndPost(uuid){
-	var neworders = [];
-	var len = USER_ORDERS.length;
-	for(var i=0;i<len;i++) {
-		if(USER_ORDERS[i].uuid != uuid){
-			neworders.push(USER_ORDERS[i]);
+	
+	if(confirm("Are you sure you wish to remove this order ? ")){
+		
+		var neworders = [];
+		var len = USER_ORDERS.length;
+		for(var i=0;i<len;i++) {
+			if(USER_ORDERS[i].uuid != uuid){
+				neworders.push(USER_ORDERS[i]);
+			}
 		}
+		
+		//Reset User Orders
+		USER_ORDERS = neworders;
+		
+		//Update all relevant
+		updateMyOrders();	
 	}
-	
-	//Reset User Orders
-	USER_ORDERS = neworders;
-	
-	//Update all relevant
-	updateMyOrders();
 }
 
 function getMyOrder(uuid){
