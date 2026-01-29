@@ -13,6 +13,9 @@ var SERVER_PORT = 8081;
 //How many trades to keep in history log
 var MAX_TRADES 	= 10000;
 
+//What file are the trades storeed in
+var TRADES_FILE = "/home/spartacusrex/dextrades.json";
+
 //Create a WebSocket Server
 const server = new WebSocketServer({ 
     port: SERVER_PORT 
@@ -140,7 +143,7 @@ console.log('DEX server is running on ws://localhost:'+SERVER_PORT);
 //Read in the trades..
 try {
   	// Read file synchronously
-  	const data = fs.readFileSync('trades.json', 'utf8');
+  	const data = fs.readFileSync(TRADES_FILE, 'utf8');
   
   	//Convert
   	alltrades = JSON.parse(data);
@@ -220,7 +223,7 @@ function addTrade(trade){
 
 	//Try and write this..
 	try{
-		fs.writeFileSync('trades.json', JSON.stringify(alltrades));	
+		fs.writeFileSync(TRADES_FILE, JSON.stringify(alltrades));	
 	}catch(Error){
 		console.log("Error write file.. : "+Error)
 	}	
