@@ -28,6 +28,14 @@ function showHistory(){
 		var celltime 		= row.insertCell();
 		var cellaction 		= row.insertCell();
 		var celldetails 	= row.insertCell();
+		if(history.details.toLowerCase().startsWith("buy")){
+			celldetails.className = "buyorder";
+		}else if(history.details.toLowerCase().startsWith("sell")){
+			celldetails.className = "sellorder";
+		}else{
+			celldetails.className = "otherorder";
+		}
+		
 		var cellextra 		= row.insertCell();
 		var cellcheck 		= row.insertCell();
 				
@@ -47,7 +55,7 @@ function showHistory(){
 			cellextra.style.fontSize 	= "0.7em";
 			
 			//Put a check button..
-			cellcheck.innerHTML 	= "<button class=mybtn style='font-size:10px;padding: 4px 6px' onclick='checkTxPow(\""+history.extra+"\");'>Check</button>";
+			cellcheck.innerHTML 	= "&nbsp;<button class=mybtn style='font-size:10px;padding: 4px 6px' onclick='checkTxPow(\""+history.extra+"\");'>Check</button>";
 			
 		}else{
 			cellextra.innerHTML 	= "&nbsp;"+history.extra;	
