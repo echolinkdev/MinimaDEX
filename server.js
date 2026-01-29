@@ -1,4 +1,5 @@
 import { WebSocketServer } from 'ws';
+import { WebSocket } from 'ws';
 
 import fs from 'fs';
 
