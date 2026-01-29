@@ -22,6 +22,11 @@ td {
 	white-space: nowrap;
 }
 
+p {
+    word-break: normal;
+    white-space: normal;
+}
+
 .smallgreytext{
 	font-size : 10px;
 	color:grey;
