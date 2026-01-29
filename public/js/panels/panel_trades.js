@@ -39,7 +39,8 @@ function tradesInit(){
 
 function setTradesTable(){
 	
-	console.log("Set Trades : "+CURRENT_MARKET.mktname);
+	//Update the price graph
+	updatePriceChart();
 	
 	//Clear Table
 	tradestable.innerHTML = "";

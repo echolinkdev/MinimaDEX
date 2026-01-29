@@ -10,6 +10,9 @@ import fs from 'fs';
 var DEBUG_LOGS 	= false;
 var SERVER_PORT = 8081;
 
+//How many trades to keep in history log
+var MAX_TRADES 	= 10000;
+
 //Create a WebSocket Server
 const server = new WebSocketServer({ 
     port: SERVER_PORT 
@@ -211,7 +214,7 @@ function addTrade(trade){
 	alltrades.push(trade);
 	
 	//Max number of trades
-	if(alltrades.length > 1000){
+	if(alltrades.length > MAX_TRADES){
 		alltrades.shift();
 	}
 

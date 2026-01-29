@@ -10,8 +10,16 @@ var CHART_CONTEXT = CHART_CANVAS.getContext('2d');
 
 var CHART;
 
-var CHART_BARS 		= 20;
+var CHART_BARS 		= 40;
 var CURRENT_BARDATA = [];
+
+//How much time to show
+var CHART_TIME_10MINUTES	= 1000 * 60 * 10;
+var CHART_TIME_HOUR 		= CHART_TIME_10MINUTES * 6;
+var CHART_TIME_DAY 			= CHART_TIME_HOUR * 24;
+var CHART_TIME_WEEK 		= CHART_TIME_DAY * 7;
+
+var CHART_TIMESPAN 			= CHART_TIME_10MINUTES;
 
 /**
  * Update the price chart given the current trades and market
@@ -30,62 +38,86 @@ function initPriceChart(){
 	}); 
 }
 
+function setPriceChartTimeSpan(spantime){
+	if(spantime == "WEEK"){
+		CHART_TIMESPAN = CHART_TIME_WEEK; 
+	}else if(spantime == "DAY"){
+		CHART_TIMESPAN = CHART_TIME_DAY; 
+	}else if(spantime == "HOUR"){
+		CHART_TIMESPAN = CHART_TIME_HOUR; 
+	}else if(spantime == "10MINUTES"){
+		CHART_TIMESPAN = CHART_TIME_10MINUTES; 
+	} 
+	
+	updatePriceChart();
+}
+
 function setPriceData(){
 	
 	//Set the title
-	var dataset = CHART.config.data.datasets[0].label = CURRENT_MARKET.mktname;
+	if(CHART_TIMESPAN == CHART_TIME_WEEK){
+		CHART.config.data.datasets[0].label = CURRENT_MARKET.mktname+" (1 Week)";
+	}else if(CHART_TIMESPAN == CHART_TIME_DAY){
+		CHART.config.data.datasets[0].label = CURRENT_MARKET.mktname+" (1 Day)";	
+	}else if(CHART_TIMESPAN == CHART_TIME_HOUR){
+		CHART.config.data.datasets[0].label = CURRENT_MARKET.mktname+" (1 Hour)";	
+	}else if(CHART_TIMESPAN == CHART_TIME_10MINUTES){
+		CHART.config.data.datasets[0].label = CURRENT_MARKET.mktname+" (10 Minutes)";	
+	}
 	
-	//First get all the trades for the current market
+	//Curent time
+	var timenow = getTimeMilli();
+	var mintime = timenow - CHART_TIMESPAN;
+	
+	//First get all the trades for the current market in the current timespan
 	var ctrades = [];
 	var len = ALL_TRADES.length;
 	for(var i=0;i<len;i++) {
 		var trade=ALL_TRADES[i];
-		if(trade.market.mktuid == CURRENT_MARKET.mktuid){
+		if(trade.market.mktuid == CURRENT_MARKET.mktuid && trade.date>=mintime){
 			ctrades.push(trade);
 		}
 	}
 	var ctradelen 	= ctrades.length;
 	
 	//Find the high / low
-	var highestprice = 0;
-	var lowestprice  = 1000000000;
+	var highestprice = DECIMAL_ZERO;
+	var lowestprice  = new Decimal(1000000000);
+	
 	for(var j=0;j<ctradelen;j++){
 		var ctrade = ctrades[j];
 	
-		if(ctrade.price<lowestprice){
-			lowestprice = ctrade.price; 
-		}else if(ctrade.price>highestprice){
-			highestprice = ctrade.price; 
+		var price = new Decimal(ctrade.price);
+		
+		if(price.lessThan(lowestprice)){
+			lowestprice = price; 
+		}
+		
+		if(price.greaterThan(highestprice)){
+			highestprice = price; 
 		} 
 	}
 	
-	if(lowestprice == 1000000000){
-		lowestprice = 0;
+	//Check we found at least 1
+	if(highestprice.eq(DECIMAL_ZERO)){
+		lowestprice = DECIMAL_ZERO;
 	}
-	
-	//Add a little head room
-	highestprice 	= highestprice * 1.5;
-	lowestprice  	= lowestprice  * 0.75;
-	var midprice	= (highestprice + lowestprice) / 2;  
-	
-	//Now create the hourly candles
-	var timewindowgap 	= 60000 * 10;
-	var fullgap 		= timewindowgap * CHART_BARS;
-	var timenow 		= getTimeMilli();
-	
-	var current_close=lowestprice;
+	var midprice	= highestprice.plus(lowestprice).div(2);  
+		
+	//Now create the candles
+	var candletime 	= CHART_TIMESPAN / CHART_BARS;
+			
+	var current_close = midprice;
 	for(var i=0;i<CHART_BARS;i++){
 		
-		//Create the time window..
-		var starttime 	= timenow - fullgap + (timewindowgap * i);
-		var endtime 	= starttime + timewindowgap; 
+		//Start and end time of the candle
+		var starttime 	= timenow - CHART_TIMESPAN + (candletime * i);
+		var endtime 	= starttime + candletime; 
 		 
-		var maxtime 	= timenow + (60000 * 60 * 24);
+		//The open is the latest close..
+		var open 		= current_close;
 		
-		var open 		= 0;
-		var opentime	= maxtime;
-		
-		var close 		= 0;
+		var close 		= current_close;
 		var closetime 	= 0;
 		
 		var high 		= 0;
@@ -98,14 +130,7 @@ function setPriceData(){
 			//Is this trade in the window.. ?
 			if(ctrade.date>=starttime && ctrade.date<=endtime){
 				
-				console.log("TRADE IN WINDOW : "+ctrade.date+" @ "+ctrade.price+" "+ctrade.type);
-				
 				//Add to totals..
-				if(ctrade.date < opentime){
-					open 		= ctrade.price;
-					opentime 	= ctrade.date;  
-				}
-				
 				if(ctrade.date > closetime){
 					close 			= ctrade.price;
 					closetime 		= ctrade.date;
@@ -128,18 +153,11 @@ function setPriceData(){
 			high 	= current_close;
 			open 	= current_close;
 			close 	= current_close;
-		
-		}else{
-			var test = createCandle(starttime, open, high, low, close);
-			console.log("CANDLE : "+JSON.stringify(test));
 		}
 		
-		//var cc = createCandle(starttime, open, high, low, close);
-		//CURRENT_BARDATA[i] = cc;
-		
-		var newtime = timenow + (60000 * i); 
-		var cc = createCandle(starttime, getRandom(10), getRandom(10), getRandom(10), getRandom(10));
-		CURRENT_BARDATA[i] = cc;
+		//Create the candle
+		var cc = createCandle(starttime, open, high, low, close);
+		CURRENT_BARDATA[i] = cc;	
 	}
 }
 

@@ -65,9 +65,6 @@ function mainListenerLoop(){
 			
 			//Set ALL my orders table
 			setAllMyOrders();
-			
-			//Update the price chart
-			updatePriceChart();
 		
 			//Set the trades table..
 			setTradesTable();
@@ -126,10 +123,10 @@ function postStartupDex(){
 	//Init History
 	initHistory();
 	
+	initPriceChart();
+	
 	//Init trade panel
 	tradesInit();
-	
-	initPriceChart();
 	
 	fetchFullBalance(function(){
 		navigate_dex();	

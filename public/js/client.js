@@ -5,6 +5,7 @@ const MESSAGE_LISTENERS = [];
 var LOGGING_ENABLED = false;
 
 var ERROR_CONNECT_RECONNECT = false;
+var RECONNECT_TIMER 		= 30000;
 
 const dex_state	= document.getElementById('id_dex_state');
 function setDexState(str){
@@ -57,11 +58,11 @@ function wsInitSocket(initcallback){
 			return;
 		}
 		
-		setDexState("Diconnected.. reconnecting in 10s");
-		console.log('Disconnected from server.. reconnect in 10 seconds..');
+		setDexState("Diconnected.. reconnecting in 30s");
+		console.log('Disconnected from server.. reconnect in 30 seconds..');
 		
 		//Reconnect attempt in 10 seconds..
-		setTimeout(function(){connectToServer();}, 10000);
+		setTimeout(function(){connectToServer();}, RECONNECT_TIMER);
 	};
 	
 	WEB_SOCKET.onerror = () => {
@@ -71,7 +72,7 @@ function wsInitSocket(initcallback){
 		ERROR_CONNECT_RECONNECT = true;
 		
 		//Reconnect attempt in 10 seconds..
-		setTimeout(function(){connectToServer();}, 10000);
+		setTimeout(function(){connectToServer();}, RECONNECT_TIMER);
 	};
 }
 

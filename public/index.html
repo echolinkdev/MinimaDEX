@@ -341,9 +341,28 @@
 										
 										<td style="padding-bottom:10px;">
 											<div class="greyrounded">
-												
 												<div class="paddedborder">
-													<b>Price Graph</b><br>
+													<table style="width:100%" border=0> 
+														<tr>
+															<td><b>Price Graph</b></td>
+															<td style="text-align:right;">
+																<button onclick="setPriceChartTimeSpan('WEEK')" class=mybtn>Week</button>
+																<button onclick="setPriceChartTimeSpan('DAY')" class=mybtn>Day</button>
+																<button onclick="setPriceChartTimeSpan('HOUR')" class=mybtn>Hour</button>
+																<button onclick="setPriceChartTimeSpan('10MINUTES')" class=mybtn>10 Mins</button>
+															</td>
+														</tr>	
+													</table>
+													<!--<table style="width:100%" border=0>
+														<tr>
+															<td><b>Price Graph</b></td>
+															<td style="text-align:right;">
+																<button onclick="autoUpdateBalance();" class=mybtn>ALL</button>
+																<button onclick="autoUpdateBalance();" class=mybtn>24 HRS</button>
+																<button onclick="autoUpdateBalance();" class=mybtn>1 HR</button>
+															</td>
+														</tr>
+													<table>-->
 													
 													<div style="height:240px;">
 														<canvas id="chartgraph"></canvas>

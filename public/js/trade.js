@@ -18,7 +18,6 @@ function addTextTradeInfo(msg){
 	tradeinfo_text.value += msg+"\n";
 }
 
-
 /**
  * When you accept a trade from the frontend..
  */
