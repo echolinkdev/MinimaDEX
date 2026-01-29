@@ -111,6 +111,9 @@ function updateOrderAfterTrade(bookuid, tradecoins){
 
 function updateMyOrders(){
 	
+	//Sort my orders
+	USER_ORDERS.sort(sortMyOrders);
+	
 	//Store this locally..
 	storeMyOrders();
 		
@@ -162,6 +165,9 @@ function loadMyOrders(){
 	if(USER_ORDERS == null){
 		USER_ORDERS = [];
 	}
+	
+	//Sort my orders
+	USER_ORDERS.sort(sortMyOrders);
 }
 
 /**
