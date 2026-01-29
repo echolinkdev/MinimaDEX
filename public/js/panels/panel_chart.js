@@ -80,34 +80,26 @@ function setPriceData(){
 	}
 	var ctradelen 	= ctrades.length;
 	
-	//Find the high / low
-	var highestprice = DECIMAL_ZERO;
-	var lowestprice  = new Decimal(1000000000);
+	//Find the FIRST open
+	var firstopen 	  = DECIMAL_ZERO;
+	var firstopentime = new Decimal(timenow + (CHART_TIME_WEEK*2))
 	
 	for(var j=0;j<ctradelen;j++){
 		var ctrade = ctrades[j];
 	
-		var price = new Decimal(ctrade.price);
+		var price 		= new Decimal(ctrade.price);
+		var pricedate   = new Decimal(ctrade.date);
 		
-		if(price.lessThan(lowestprice)){
-			lowestprice = price; 
-		}
-		
-		if(price.greaterThan(highestprice)){
-			highestprice = price; 
+		if(pricedate.lessThan(firstopentime)){
+			firstopentime 	= pricedate; 
+			firstopen 		= price;
 		} 
 	}
 	
-	//Check we found at least 1
-	if(highestprice.eq(DECIMAL_ZERO)){
-		lowestprice = DECIMAL_ZERO;
-	}
-	var midprice	= highestprice.plus(lowestprice).div(2);  
-		
 	//Now create the candles
 	var candletime 	= CHART_TIMESPAN / CHART_BARS;
 			
-	var current_close = midprice;
+	var current_close = firstopen;
 	for(var i=0;i<CHART_BARS;i++){
 		
 		//Start and end time of the candle
