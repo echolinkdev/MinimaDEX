@@ -1,21 +1,63 @@
+/**
+ * Imports
+ */
 import { WebSocketServer } from 'ws';
 import { WebSocket } from 'ws';
-
 import fs from 'fs';
 
-//Are we logging..
-var DEBUG_LOGS 	= true;
-if(DEBUG_LOGS){
-	console.log("Debug logs enabled..");
+/**
+ * Defauilt parameters
+ */
+var DEBUG_LOGS 	= false;
+var SERVER_PORT = 8081;
+var MAX_TRADES 	= 10000;
+var TRADES_FILE = "trades.json";
+
+/**
+ * Command line params..
+ */
+const args = process.argv;
+for(var c=0;c<args.length;c++){
+	var param = args[c];
+	
+	if(param == "-help"){
+		
+		console.log("Usage parameters : ");
+		console.log("-port [port]            : Set the port to listen on");
+		console.log("-tradesfile [file]      : Set the file to store trades");
+		console.log("-maxtrades [maxtrades]  : Max trades to store in file");
+		console.log("-debug                  : Show debug output");
+		console.log("-help                   : Show this help");
+		
+		//And exit
+		process.exit();	
+	
+	}else if(param == "-debug"){
+		DEBUG_LOGS = true;
+	
+	}else if(param == "-tradesfile"){
+		c++;
+		TRADES_FILE = args[c];
+	
+	}else if(param == "-maxtrades"){
+		c++;
+		MAX_TRADES = +args[c];
+	
+	}else if(param == "-port"){
+		c++;
+		SERVER_PORT = +args[c];
+	}
 }
 
-var SERVER_PORT = 8081;
-
-//How many trades to keep in history log
-var MAX_TRADES 	= 10000;
-
-//What file are the trades storeed in
-var TRADES_FILE = "/home/spartacusrex/dextrades.json";
+//Output some info
+console.log('DEX server is running on port '+SERVER_PORT);
+console.log('Trades file '+TRADES_FILE);
+console.log('MAX Trades to store '+MAX_TRADES);
+if(DEBUG_LOGS){
+	console.log('DEBUG logs are ON');
+}else{
+	console.log('DEBUG logs are OFF');
+}
 
 //Create a WebSocket Server
 const server = new WebSocketServer({ 
@@ -145,8 +187,6 @@ server.on('connection', (socket) => {
 		
     });
 });
-
-console.log('DEX server is running on ws://localhost:'+SERVER_PORT);
 
 //Read in the trades..
 try {
