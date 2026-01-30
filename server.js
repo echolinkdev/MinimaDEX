@@ -304,9 +304,16 @@ function addTrade(trade){
  */
 function newChat(fromuuid, msg){
 	
+	//No blank messages
+	if(msg.data.trim() == ""){
+		return;
+	}else if(msg.data.length > 256){
+		//Too long..
+		return;	
+	}
+	
 	//Add the UUID..
 	var shortuuid  = fromuuid.substring(2,10);
-	
 	var nchat = shortuuid+" > "+msg.data;
 	
 	//Push to our list..
