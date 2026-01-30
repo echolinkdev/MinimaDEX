@@ -3,10 +3,6 @@ import { WebSocket } from 'ws';
 
 import fs from 'fs';
 
-//TEST STUFF
-//import * as clientjs from "./client.cjs";
-//console.log("Random:"+clientjs.getRandomHexString()+" "+clientjs.tester());
-
 //Are we logging..
 var DEBUG_LOGS 	= true;
 if(DEBUG_LOGS){
