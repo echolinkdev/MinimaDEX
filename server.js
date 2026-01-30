@@ -11,7 +11,7 @@ import fs from 'fs';
 var DEBUG_LOGS 	= false;
 var SERVER_PORT = 8081;
 var MAX_TRADES 	= 10000;
-var TRADES_FILE = "trades.json";
+var TRADES_FILE = "";
 
 /**
  * Command line params..
@@ -47,6 +47,12 @@ for(var c=0;c<args.length;c++){
 		c++;
 		SERVER_PORT = +args[c];
 	}
+}
+
+//MUST set a trades file..
+if(TRADES_FILE == ""){
+	console.log("You MUST specify a file to store trades.. Use -help for more info");
+	process.exit();
 }
 
 //Output some info
