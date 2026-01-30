@@ -14,12 +14,7 @@ function chatroomInit(){
 	wsAddListener(function(msg){
 		//Is it a chat message
 		if(msg.type=="chat"){
-			//console.log("Chat room : "+JSON.stringify(msg));
-			
-			//Add the UUID..
-			var shortuuid = msg.uuid.substring(2,10);
-			
-			chatarea.value+= shortuuid+" > "+msg.data+"\n";
+			chatarea.value+= msg.data+"\n";
 		}
 	});	
 	
@@ -34,11 +29,30 @@ function chatroomInit(){
 	});
 }
 
+function dexChatHistory(allchat){
+	
+	//First wipe..
+	chatarea.value = "";
+	
+	//Now add the chat
+	try{
+		for(var i=0;i<allchat.length;i++){
+			chatarea.value+= allchat[i]+"\n";
+		}	
+	}catch(Error){
+		console.log9("Error importing startup chat.. "+JSON.stringify(allchat));	
+	}
+}
+
+//Check not too long..
+function addChatLine(){
+	
+}
+
 function getSendChat(){
 	var msg  = {};
 	msg.type = "chat";
 	
-	//msg.data = USER_NAME+" > "+chatinput.value.trim();
 	msg.data = chatinput.value.trim();
 	
 	chatinput.value = '';
