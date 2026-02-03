@@ -23,6 +23,9 @@ mktcurrentamount.addEventListener("change", (event) => {
 	MKT_CURRENT_AMOUNT = financial(mktcurrentamount.value)
 	MKT_CURRENT_AMOUNT = getToDecimalPlacesRoundDown(MKT_CURRENT_AMOUNT, CURRENT_MARKET.token1.decimals);
 	
+	//Set - decimals may have chjanged
+	mktcurrentamount.value=MKT_CURRENT_AMOUNT;
+	
 	if(MKT_CURRENT_AMOUNT < 0){
 		MKT_CURRENT_AMOUNT = 0;
 		mktcurrentamount.value=0;
