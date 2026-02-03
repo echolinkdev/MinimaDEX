@@ -44,7 +44,7 @@ Then initialise a nodejs app
 npm init
 ```
 
-Then you need to install the websocket module 
+Then you need to install the websocket package 
 
 ```
 npm install ws
