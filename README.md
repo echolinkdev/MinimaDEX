@@ -30,11 +30,13 @@ You can set the Chrome Settings for "Always keep these sites active" in 'Perform
 
 You can add this DEX to your Website and specify which tokens you want it to support!
 
-All the settings you can specify are in <b>dexconfig.js</b> in the main <b>public</b> folder. They are pretty self-explanatory.
+All the <b>Settings</b> you can specify are in <b>dexconfig.js</b> in the main <b>public</b> folder. They are pretty self-explanatory.
 
-You should also specify your OWN Dex server - this way your dex will run much smoother and quicker than if it was linked to a conjested DEX server with many other tokens.
+The default dex server is running on ws://localhost:8081.. so you will need to change that!
 
-To run the dex server yourself ( it's basically a chat server - no private keys or anything ) you need nodejs installed.. 
+You should specify your OWN Dex server - that way your dex will run much smoother and quicker than if it was linked to a congested DEX server with many other tokens.
+
+To run the dex server yourself ( it's basically a chat server - no private keys or anything ) you need <b>node</b> installed.. 
 
 Then - create a folder and copy server.js into it..
 
