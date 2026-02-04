@@ -11,7 +11,7 @@ import fs from 'fs';
 var DEBUG_LOGS 	= false;
 var SERVER_PORT = 8081;
 var MAX_TRADES 	= 10000;
-var TRADES_FILE = "";
+var TRADES_FILE = "./trades.json";
 
 /**
  * Command line params..
@@ -57,7 +57,7 @@ if(TRADES_FILE == ""){
 
 //Output some info
 console.log('DEX server is running on port '+SERVER_PORT);
-console.log('Trades file '+TRADES_FILE);
+console.log('Trades are stored in file '+TRADES_FILE);
 console.log('MAX Trades to store '+MAX_TRADES);
 if(DEBUG_LOGS){
 	console.log('DEBUG logs are ON');
