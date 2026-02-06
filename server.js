@@ -312,12 +312,13 @@ function newChat(fromuuid, msg){
 		return;	
 	}
 	
-	//Add the UUID..
-	var shortuuid  = fromuuid.substring(2,10);
-	var nchat = shortuuid+" > "+msg.data;
+	//Create a Chat object
+	var chatobj 	= {};
+	chatobj.uuid	= fromuuid;
+	chatobj.message = msg.data.trim();
 	
 	//Push to our list..
-	allchat.push(nchat);
+	allchat.push(chatobj);
 	
 	//Max number of trades
 	if(allchat.length > 250){
@@ -325,7 +326,7 @@ function newChat(fromuuid, msg){
 	}
 	
 	//Broadcast to all..
-	broadcast(createCustomMsg(fromuuid,"chat",nchat));	
+	broadcast(createCustomMsg(fromuuid,"chat",chatobj));	
 }
 
 //Create any message
