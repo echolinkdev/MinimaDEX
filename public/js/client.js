@@ -70,8 +70,8 @@ function wsInitSocket(initcallback){
 			//Send the message to the listeners..
 			try{
 				MESSAGE_LISTENERS[i](msg);	
-			}catch(Error){
-				console.log("Error forwarding message to WS Listeners : "+Error);
+			}catch(err){
+				console.log("Error forwarding message to WS Listeners : "+err);
 			}	
 		}
 	};

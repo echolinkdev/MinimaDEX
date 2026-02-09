@@ -176,9 +176,9 @@ function updateAllMarkets(){
 						usermarkets.push(createMinimaMarket(baltok));
 					}
 				}	
-			}catch(Error){
+			}catch(err){
 				//Hmm.. maybe user sent an invalid order book?
-				console.log("Error reading ALL_USERS book : "+Error+" "+JSON.stringify(ALL_ORDERS[key]));
+				console.log("Error reading ALL_USERS book : "+err+" "+JSON.stringify(ALL_ORDERS[key]));
 				
 			}
 		}

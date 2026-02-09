@@ -100,8 +100,8 @@ function mainListenerLoop(){
 					//Just finished a trade
 					tradeComplete(recmsg.data);	
 				}	
-			}catch(Error){
-				console.log("Message REC error : "+Error);
+			}catch(err){
+				console.log("Message REC error : "+err);
 			}
 			
 		}else if(msg.type=="pong"){
@@ -183,7 +183,7 @@ function setTotalUsersConnected(){
 			var len 	= book.length;
 			totorders  += len;
 			
-		}catch(Error){
+		}catch(err){
 			//console.log("Could not add user OrderBook to all orders : "+Error);
 		}	
 	}
