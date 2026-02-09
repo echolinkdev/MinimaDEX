@@ -199,4 +199,7 @@ function updateAllMarkets(){
 	
 	//Set the markets
 	setMarketSelect();
+	
+	//How many users are connected
+	setTotalUsersConnected();	
 }

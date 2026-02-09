@@ -62,7 +62,6 @@ function setTradesTable(){
 			
 	//Get all trades
 	var firsttrade = true;
-	setDexState("");
 	
 	var len = ALL_TRADES.length;
 	if(len>250){
