@@ -8,10 +8,11 @@ import fs from 'fs';
 /**
  * Defauilt parameters
  */
-var DEBUG_LOGS 	= false;
-var SERVER_PORT = 8081;
-var MAX_TRADES 	= 1000;
-var TRADES_FILE = "./trades.json";
+var DEBUG_LOGS 			= false;
+var SERVER_PORT 		= 8081;
+var MAX_TRADES 			= 1000;
+var MAX_USER_ORDERS 	= 50;
+var TRADES_FILE 		= "./trades.json";
 
 /**
  * Command line params..
@@ -135,11 +136,12 @@ server.on('connection', (socket) => {
 				var orderbook = msgjson.data;
 				
 				//Check is a valid book
-				if(!(	orderbook.address && 
-						orderbook.script && 
-						orderbook.balance && 
-						orderbook.orders)){
-					//Bad Orderbook
+				if(!checkOrderBookMessage(orderbook)){
+					console.log("Invalid orderbook received.. "+JSON.stringify(orderbook));
+					
+					//Send them a message.. or disonnect ?
+					socket.send(createCustomMsg("0x00","error","You have sent an invalid orderbook! MAX ("+MAX_USER_ORDERS+")"));
+					
 					return;
 				}
 				
@@ -337,6 +339,27 @@ function createCustomMsg(id, type, data){
 	msg.data	= data;
 	
 	return JSON.stringify(msg);
+}
+
+//Check the Update_orderBook message
+function checkOrderBookMessage(orderbook){
+	
+	//Check is a valid book
+	if(!(	orderbook.address && 
+			orderbook.script && 
+			orderbook.balance && 
+			orderbook.orders)){
+		//Bad Orderbook
+		return false;
+	}
+	
+	//How many orders
+	if(orderbook.orders.length >= MAX_USER_ORDERS){
+		return false;
+	}
+	
+	return true;
+	
 }
 
 //Get a random string
