@@ -383,10 +383,11 @@
 														<tr>
 															<td><b>Price Graph</b></td>
 															<td style="text-align:right;">
-																<button onclick="setPriceChartTimeSpan('WEEK')" class=mybtn>Week</button>
-																<button onclick="setPriceChartTimeSpan('DAY')" class=mybtn>Day</button>
-																<button onclick="setPriceChartTimeSpan('HOUR')" class=mybtn>Hour</button>
-																<button onclick="setPriceChartTimeSpan('10MINUTES')" class=mybtn>10 Mins</button>
+																<button onclick="setPriceChartTimeSpan('WEEK')" class=chartbtn>Week</button>
+																<button onclick="setPriceChartTimeSpan('DAY')" class=chartbtn>Day</button>
+																<button onclick="setPriceChartTimeSpan('HOUR')" class=chartbtn>Hour</button>
+																<button onclick="setPriceChartTimeSpan('30MINUTES')" class=chartbtn>30 Mins</button>
+																<button onclick="setPriceChartTimeSpan('10MINUTES')" class=chartbtn>10 Mins</button>
 															</td>
 														</tr>	
 													</table>
@@ -865,6 +866,8 @@ Enjoy!<br>
 	<script type="text/javascript" src="./js/panels/panel_init.js"></script>
 			
 	<script type="text/javascript">
+		
+		requestNotifications();
 		
 		//Init the DEX
 		initDEX();
