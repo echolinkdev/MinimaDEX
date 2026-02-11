@@ -9,6 +9,11 @@ function setTradeDexState(str){
 	trade_dex_state.innerHTML = str;
 }
 
+document.getElementById('id_init_password').addEventListener("keydown", function(event) {
+    if (event.key === "Enter") {
+        init_passwordcheck();	
+    }
+});
 
 /**
  * Called to  init DEX
