@@ -209,7 +209,7 @@ function setTotalUsersConnected(){
 	}
 	setTradeDexState("Users : "+Object.keys(ALL_ORDERS).length
 					+" / Markets : "+ALL_MARKETS.length
-					+" / Total Orders : "+totorders);
+					+" / Orders : "+totorders);
 }
 
 /**
