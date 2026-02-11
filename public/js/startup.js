@@ -53,6 +53,8 @@ function mainListenerLoop(){
 		//First start up message
 		if(msg.type=="init_dex"){
 			
+			console.log("Init message received..");
+			
 			//Tells us who we are
 			USER_UUID = msg.uuid;
 			
@@ -171,6 +173,11 @@ function postStartupDex(){
 						
 	//Now connect to server
 	connectToServer();
+	
+	//Refresh the local data completely every 30 mins..
+	setInterval(function(){
+		refreshAllData();
+	}, 60000 * 30);
 }
 
 function loadUserDetails(){
@@ -204,4 +211,16 @@ function setTotalUsersConnected(){
 	setTradeDexState("Total Orders : "+totorders+" / Markets : "+ALL_MARKETS.length);
 }
 
+/**
+ * Refresh all data
+ */
+function refreshAllData(){
+	//Post an add message
+	var msg  = {};
+	msg.type = "refresh";
+	msg.data = "";
+	
+	//Post to server
+	wsPostToServer(msg);
+}
 

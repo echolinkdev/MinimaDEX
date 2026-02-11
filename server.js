@@ -173,9 +173,15 @@ server.on('connection', (socket) => {
 					
 			}else if(msgjson.type=="refresh"){
 				
-				//Send the whole orderbook
-				socket.send(createCustomMsg("0x00","orderbooks",orderbooks));
-			
+				//Create an init message
+				var init 		= {};
+				init.trades 	= alltrades;
+				init.orderbooks = orderbooks;
+				init.chat 		= allchat;
+				
+				//Tell the user their uuid and the current orderbooks
+				socket.send(createCustomMsg(socket.id,"init_dex",init));
+				
 			}else if(msgjson.type=="message"){
 				
 				//Get the User..
@@ -343,7 +349,7 @@ function newChat(fromuuid, msg){
 	allchat.push(chatobj);
 	
 	//Max number of trades
-	if(allchat.length > 250){
+	if(allchat.length > 500){
 		allchat.shift();
 	}
 	
