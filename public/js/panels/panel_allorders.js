@@ -36,14 +36,8 @@ function allordersInit(){
 				var neworders = [];
 				var len = book.length;
 				for(var i=0;i<len;i++) {
-					
-					var bkuid = book[i].uuid;
-					console.log("CHECK ID "+bkuid);
-					
-					if(bkuid != bookuuid){
+					if(book[i].uuid != bookuuid){
 						neworders.push(book[i]);
-					}else{
-						console.log("ORDER REMNOVED!");
 					}
 				}
 				
