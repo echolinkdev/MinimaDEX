@@ -254,9 +254,9 @@
 								</td>
 								
 								<td style="text-align:right">
+									<button class="menubtn" onclick="navigate_settings();">Settings</button>
 									<button class="menubtn" onclick="navigate_help();">Help</button>
 									<!--<button class="menubtn" onclick="navigate_logout();">Log Out</button>-->
-									<!-- <button class="menubtn" onclick="navigate_settings();">Settings</button> -->
 								</td>
 							
 							</tr>
@@ -316,10 +316,10 @@
 															<td style="text-align:right">Price : </td>
 															<td><input type=number id="id_createorder_price" step="0.0001" min=0 value=1></td>
 														</tr>
-														<tr>
+														<!--<tr>
 															<td style="text-align:right;font-size:0.7em;">Confirm Dialog : </td>
 															<td><input type=checkbox id="id_createorder_confirm"></td>
-														</tr>
+														</tr>-->
 														<tr><td>&nbsp;</td></tr>
 														<tr>
 															<td><button class="mybtn" id="id_createorder_buy">BUY</button></td>
@@ -784,6 +784,27 @@ Enjoy!<br>
 																									
 									<div class="paddedborder">
 										<b>Settings</b><br>
+										<br><br>
+										<center>
+											
+											<table width=300>
+												<tr>
+													<td class="alignright"><input type=checkbox id="id_settings_createorder_confirm"></td>
+													<td>Show confirm Dialog when adding / removing orders</td>
+												</tr>
+												<tr><td>&nbsp;</td></tr>
+												<tr>
+													<td class="alignright"><input type=checkbox id="id_settings_notify_trade"></td>
+													<td>Notify on any trade</td>
+												</tr>
+												<tr><td>&nbsp;</td></tr>
+												<tr>
+													<td class="alignright"><input type=checkbox id="id_settings_notify_chat"></td>
+													<td>Notify on chat message</td>
+												</tr>
+											</table>
+											
+										</center>
 									</div>
 								
 								</div>			
@@ -863,11 +884,10 @@ Enjoy!<br>
 	<script type="text/javascript" src="./js/panels/panel_history.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_trades.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_alltrades.js"></script>
+	<script type="text/javascript" src="./js/panels/panel_settings.js"></script>
 	<script type="text/javascript" src="./js/panels/panel_init.js"></script>
 			
 	<script type="text/javascript">
-		
-		requestNotifications();
 		
 		//Init the DEX
 		initDEX();

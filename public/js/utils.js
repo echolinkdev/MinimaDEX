@@ -222,7 +222,7 @@ function requestNotifications() {
   } else if (Notification.permission === "granted") {
     // Check whether notification permissions have already been granted;
     // if so, create a notification
-	notification("Thisis a test!!");
+	//notification("Thisis a test!!");
 	//const notification = new Notification("Hi there!");
     // …
   } else if (Notification.permission !== "denied") {
@@ -242,9 +242,14 @@ function requestNotifications() {
 }
 
 function notification(text){
-	const notification = new Notification("Minima DEX", {
-	  body: text,
-	  icon: "./images/minima128.png",
-	});
+	if(isPageHidden()){
+		const notification = new Notification("Minima DEX", {
+		  body: text,
+		  icon: "./images/minima128.png",
+		});	
+	}
 }
 
+function isPageHidden(){
+	return document.hidden || document.msHidden || document.webkitHidden || document.mozHidden;
+}

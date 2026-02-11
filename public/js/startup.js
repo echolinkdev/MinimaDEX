@@ -142,12 +142,11 @@ function postStartupDex(){
 	
 	//Load User Settings
 	loadUserSettings();
+	initSettings();
 	
 	//Init each Panel
 	chatroomInit();
 	allordersInit();
-	
-	initCreateOrder();
 	
 	//Wallet
 	walletInit();
