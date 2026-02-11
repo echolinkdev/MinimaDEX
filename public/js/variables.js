@@ -1,4 +1,9 @@
 /**
+ * Version number
+ */
+var DEX_VERSION = 0.9;
+
+/**
  * User Variables
  */
 var USER_NAME 	= "";

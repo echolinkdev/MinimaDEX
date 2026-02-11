@@ -189,7 +189,7 @@ function saveUserDetails(){
 }
 
 function setTotalUsersConnected(){
-	setUserDexState("Connected Users : "+Object.keys(ALL_ORDERS).length);
+	//setUserDexState("Connected Users : "+Object.keys(ALL_ORDERS).length);
 	
 	//Count the Orders
 	var totorders=0;
@@ -208,7 +208,9 @@ function setTotalUsersConnected(){
 			//console.log("Could not add user OrderBook to all orders : "+Error);
 		}	
 	}
-	setTradeDexState("Total Orders : "+totorders+" / Markets : "+ALL_MARKETS.length);
+	setTradeDexState("Users : "+Object.keys(ALL_ORDERS).length
+					+" / Markets : "+ALL_MARKETS.length
+					+" / Total Orders : "+totorders);
 }
 
 /**
