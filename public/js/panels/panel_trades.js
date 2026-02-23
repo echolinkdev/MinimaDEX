@@ -61,6 +61,15 @@ function checkTrade(trade){
 		if(resp.status && resp.data.found){
 			trade.checked=true;
 			
+			//Add the trade..
+			ALL_TRADES.push(trade);
+			
+			//Order inverse
+			ALL_TRADES.sort(sortTradesByTime);
+			if(ALL_TRADES.length > MAX_TRADES_STORED){
+				ALL_TRADES.pop();
+			}
+			
 			//Refresh all trades..
 			REFRESH_TRADES = true;
 		}	
@@ -89,21 +98,6 @@ function tradesInit(){
 			
 			//Add to our checker list
 			CHECK_TRADES.push(santrade);
-			
-			//Add the trade..
-			ALL_TRADES.push(santrade);
-			
-			//Order inverse
-			ALL_TRADES.sort(sortTradesByTime);
-			if(ALL_TRADES.length > MAX_TRADES_STORED){
-				ALL_TRADES.pop();
-			} 
-						
-			//Reset the table..
-			//setTradesTable();
-			
-			//Reset the ALL table..
-			//setAllTradesTable();
 		}
 	});	
 	
