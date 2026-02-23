@@ -5,8 +5,9 @@
 const tradestable = document.getElementById('id_trades_table');
 
 //TRADE CHECKER..
-var CHECK_TRADES 	= [];
-var REFRESH_TRADES 	= false;
+var MAX_CHECK_ATTEMPTS 	= 20;
+var CHECK_TRADES 		= [];
+var REFRESH_TRADES 		= false;
 
 setInterval(function(){
 	
@@ -14,7 +15,7 @@ setInterval(function(){
 	if(REFRESH_TRADES){
 		REFRESH_TRADES = false;
 		
-		console.log("Refresh trades..");
+		//console.log("Refresh trades..");
 				
 		//Reset the table..
 		setTradesTable();
@@ -27,12 +28,12 @@ setInterval(function(){
 		return;
 	}
 	
-	console.log("Check new trades..");
+	console.log("Check all new trades..");
 	
 	//Check TRADES txpowid..
 	var keeptrades = [];
 	for(var i=0;i<CHECK_TRADES.length;i++){
-		if(!CHECK_TRADES[i].checked){
+		if(!CHECK_TRADES[i].checked && CHECK_TRADES[i].checkedamount<MAX_CHECK_ATTEMPTS){
 			
 			try{
 				//Check if this is a valid trade
@@ -53,13 +54,17 @@ setInterval(function(){
 }, 1000 * 30);
 
 function checkTrade(trade){
-	console.log("Checking new trade : "+JSON.stringify(trade));
+	//console.log("Checking new trade : "+JSON.stringify(trade));
+	
+	//Increment checked amount..
+	trade.checkedamount++;
 	
 	//Check if this trade exists..
 	MINIMASK.meg.checktxpow(trade.txpowid, function(resp){
-		console.log(JSON.stringify(resp));
 		if(resp.status && resp.data.found){
 			trade.checked=true;
+			
+			console.log("Valid trade found : "+JSON.stringify(resp));
 			
 			//Add the trade..
 			ALL_TRADES.push(trade);
@@ -87,11 +92,12 @@ function tradesInit(){
 			console.log("New Trade : "+JSON.stringify(msg));
 			
 			//Get a sanitized trade
-			var santrade 	 = safeSanitize(msg.data);
-			santrade.checked = false;
+			var santrade 	 		= safeSanitize(msg.data);
+			santrade.checked 		= false;
+			santrade.checkedamount 	= 0;
 			
 			//Check is a valid trade..
-			if(!santrade.txpowid.startsWith("0x000")){
+			if(!santrade.txpowid.startsWith("0x00")){
 				console.log("INVALID trade received : "+JSON.stringify(santrade));
 				return;
 			}
