@@ -503,7 +503,9 @@ if(MEG_CHECK_TRADES){
 			return;
 		}
 		
-		console.log("Check all new trades..");
+		if(DEBUG_LOGS){
+			console.log("Check all new trades..");	
+		}
 		
 		//Check TRADES txpowid..
 		var keeptrades = [];
