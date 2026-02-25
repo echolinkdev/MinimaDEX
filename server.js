@@ -4,9 +4,11 @@
 import { WebSocketServer } from 'ws';
 import { WebSocket } from 'ws';
 import fs from 'fs';
-
-//var http = require('http');
 import * as http from 'http';
+
+//var tools = require('./ratelimit.js');
+import * as RATE_LIMIT from "./serverlibs/ratelimit.js"
+
 
 /**
  * Defauilt parameters
@@ -123,6 +125,9 @@ server.on('connection', (socket) => {
 	if(DEBUG_LOGS){
 		console.log("New Connection.. "+socket.id);	
 	}	
+	
+	//Add this User to the Rate Limiter
+	RATE_LIMIT.addRLUser(socket.id);
 		
 	//Add client to our list
 	clients.add(socket);
@@ -153,8 +158,45 @@ server.on('connection', (socket) => {
 				} 
 			}
 			
+			console.log("message type : "+msgjson.type);
+			
+			//Check if the User is in the SIN BIN
+			if(msgjson.type != "ping" && msgjson.type != "chat"){
+				
+				//Are they in the SIN BIN
+				if(RATE_LIMIT.checkSinBin(socket.id)){
+					//NOT ALLOWED TO RECEIVE MESSAGES!
+					console.log("SINBIN Message ignored from:"+socket.id+" msg:"+msgjson.type);
+					return;
+				}
+				
+				//Check general rate limit
+				if(!RATE_LIMIT.newValidRLMessage(socket.id)){
+									
+					//EXCEEDED..! add to SIN BIN	
+					sibin(socket);
+					
+					return;
+				}	
+			}
+			
 			//What message type is it..
 			if(msgjson.type == "chat"){
+				
+				//Check this users chat rate
+				if(!RATE_LIMIT.newValidRLChatMessage(socket.id)){
+					console.log("User Exceeded Chat Rate Limit! "+socket.id);
+					
+					//Create a Chat object
+					var chatobj 	= {};
+					chatobj.uuid	= "0x000000";
+					chatobj.message = "YOU HAVE EXCEEDED THE CHAT RATE LIMIT! (..now wait 1 minute)";
+					
+					//Send them a message..
+					socket.send(createCustomMsg(socket.id,"chat",chatobj));
+					
+					return;
+				}
 				
 				if(msgjson.data.trim() != ""){
 					
@@ -175,7 +217,7 @@ server.on('connection', (socket) => {
 					err.type 		= "INVALID_ORDER";
 					err.message 	= "You have sent an invalid orderbook! MAX ("+MAX_USER_ORDERS+")";
 					
-					//Send them a message.. or disonnect ?
+					//Send them a message.. 
 					socket.send(createCustomMsg("0x00","error","You have sent an invalid orderbook! MAX ("+MAX_USER_ORDERS+")"));
 					
 					return;
@@ -243,10 +285,8 @@ server.on('connection', (socket) => {
 									
 			}else if(msgjson.type=="ping"){
 				
-				var pong = createCustomMsg("0x00","pong",{});
-				
 				//Send back a pong message
-				socket.send(pong);		
+				socket.send(createCustomMsg("0x00","pong",{}));		
 				
 			}else{
 				console.log("Unknown message type :"+msgjson.type+" msg:"+strmsg);
@@ -364,6 +404,30 @@ function sendToUser(from, to, data){
 	if(!found){
 		console.log("Error user not found:"+id);	
 	}
+}
+
+/**
+ * RATE LIMIT SIN BIN
+ */
+function sibin(socket){
+	
+	//Add User to the Sin bin.. 
+	RATE_LIMIT.addUserSinBin(socket.id);
+	
+	//wipe their orders.. they refresh in 10 minutes
+	var sinorderbook 	= orderbooks[socket.id];
+	sinorderbook.orders = [];
+	
+	//Broadcast this new empty book..
+	broadcast(createCustomMsg(socket.id,"update_orderbook",sinorderbook));
+	
+	//Tell the user to refresh in 10 minutes..
+	var rateobj 	= {};
+	rateobj.uuid	= "0x000000";
+	rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 10 minutes)";
+	
+	//Send them a message..
+	socket.send(createCustomMsg("0x00","ratelimit",rateobj));
 }
 
 /**

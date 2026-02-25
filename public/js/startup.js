@@ -99,6 +99,20 @@ function mainListenerLoop(){
 			}catch(err){
 				console.log("Message REC error : "+err);
 			}
+		
+		}else if(msg.type=="ratelimit"){
+			console.log("RATE LIMIT Exceeded.. SIN BIN active (..ends in 10 minutes)");
+						
+			addChatLine(msg.data, true);
+			
+			//User has exceeded the rate limit.. in sin bin
+			setTimeout(function(){
+				console.log("RESEND Orderbook after SIN BIN")
+				
+				//Re-Post your orders..
+				postMyOrdersToServer();
+				
+			}, 1000 * 40);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");

@@ -92,8 +92,8 @@ function sendOrder(buysell){
 		
 		prevorder.amount = ""+pamt.plus(namt);
 		
-		//Update all relevant
-		updateMyOrders();
+		//Update all relevant - and post
+		updateMyOrders(true);
 			
 	}else{
 		//Create the order
