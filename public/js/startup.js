@@ -102,12 +102,18 @@ function mainListenerLoop(){
 		
 		}else if(msg.type=="ratelimit"){
 			console.log("RATE LIMIT Exceeded.. SIN BIN active (..ends in 10 minutes)");
-						
+			
+			//Tell the User			
 			addChatLine(msg.data, true);
+			
+			//we are in the sinbin
+			SINBIN = true;
 			
 			//User has exceeded the rate limit.. in sin bin
 			setTimeout(function(){
 				console.log("RESEND Orderbook after SIN BIN")
+				
+				SINBIN = false;
 				
 				//Re-Post your orders..
 				postMyOrdersToServer();
@@ -125,7 +131,6 @@ function mainListenerLoop(){
 			refreshAllOrders();
 									
 		}else if(msg.type=="closed"){
-			//console.log("UUID CLOSED : "+JSON.stringify(msg));
 			
 			//Remove this user from All orders..
 			delete ALL_ORDERS[msg.uuid];

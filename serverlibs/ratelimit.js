@@ -9,12 +9,14 @@ const MAX_CHAT_MESSAGES_PM	= 3;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
-	console.log("Reset Chat Rate Limit Messages")
 	//Set message count to ZERO
 	var len = RLIMIT_USER_LIST.length;
+	console.log("Reset Chat Rate Limit Messages size:"+len);
+		
 	for(var i=0;i<len;i++){
-		RLIMIT_USER_LIST[i].messages 	 = 0;
-		RLIMIT_USER_LIST[i].chatmessages = 0; 
+		RLIMIT_USER_LIST[i].messages 	 	= 0;
+		RLIMIT_USER_LIST[i].chatmessages 	= 0;
+		RLIMIT_USER_LIST[i].chatbin 		= false; 
 	}
 	
 }, 1000 * 30);
@@ -30,22 +32,37 @@ setInterval(function(){
 	
 }, 1000 * 30);
 
-
 function addRLUser(uuid){
 	
 	//Current time
 	var recdate = new Date();
 	
 	//create user
-	var user 			= {};
-	user.uuid 			= uuid;
-	user.created 		= recdate.getTime();
-	user.chatmessages 	= 0;
-	user.messages 		= 0;
-	user.sinbin			= false;
+	var user 				= {};
+	user.uuid 				= uuid;
+	user.created 			= recdate.getTime();
+	
+	user.chatmessages 		= 0;
+	user.chatbin 			= false;
+	
+	user.messages 			= 0;
+	user.sinbin				= false;
 	
 	//Add to the List
 	RLIMIT_USER_LIST.push(user);
+}
+
+function removeRLUser(uuid){
+	
+	var newarr = [];
+	var len = RLIMIT_USER_LIST.length;
+	for(var i=0;i<len;i++){
+		if(RLIMIT_USER_LIST[i].uuid != uuid){
+			newarr.push(RLIMIT_USER_LIST[i]);
+		} 
+	}
+	
+	RLIMIT_USER_LIST = newarr;
 }
 
 function getRLUser(uuid){
@@ -108,9 +125,29 @@ function addUserSinBin(uuid){
 	user.sinbin = true;
 }
 
+function addUserChatBin(uuid){
+	//Get the User
+	var user = getRLUser(uuid);
+	
+	//ASdd to SIN BIN
+	user.chatbin = true;
+}
+
 function checkSinBin(uuid){
 	return getRLUser(uuid).sinbin;
 }
 
+function checkChatBin(uuid){
+	return getRLUser(uuid).chatbin;
+}
+
 //Export the Functions
-export { addRLUser, newValidRLMessage, newValidRLChatMessage, addUserSinBin, checkSinBin };
+export { 	addRLUser, 
+			removeRLUser,
+			newValidRLMessage, 
+			newValidRLChatMessage, 
+			addUserSinBin, 
+			checkSinBin,
+			addUserChatBin, 
+			checkChatBin
+	 };

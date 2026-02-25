@@ -183,9 +183,19 @@ server.on('connection', (socket) => {
 			//What message type is it..
 			if(msgjson.type == "chat"){
 				
+				//Are we in the chat bin
+				if(RATE_LIMIT.checkChatBin(socket.id)){
+					//NOT ALLOWED TO RECEIVE MESSAGES!
+					console.log("CHATBIN Message ignored from:"+socket.id);
+					return;
+				}
+				
 				//Check this users chat rate
 				if(!RATE_LIMIT.newValidRLChatMessage(socket.id)){
 					console.log("User Exceeded Chat Rate Limit! "+socket.id);
+					
+					//Add to Chat Bin
+					RATE_LIMIT.addUserChatBin(socket.id);
 					
 					//Create a Chat object
 					var chatobj 	= {};
@@ -304,6 +314,9 @@ server.on('connection', (socket) => {
 		}
 		
 		try{
+			
+			//Remove user from Rate Limit
+			removeRLUser.removeRLUser(socket.id);
 			
 			//remove from our client list
 			clients.delete(socket);

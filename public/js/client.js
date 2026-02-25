@@ -8,6 +8,8 @@ var RECONNECT_TIMER 		= 30000;
 
 var AUTO_CLIENT_PINGID 		= 0;
 
+var SINBIN = false;
+
 const dex_state	= document.getElementById('id_dex_state');
 function setDexState(str){
 	dex_state.innerHTML = str;
@@ -117,6 +119,11 @@ function wsPostToServer(jsonmsg){
 	
 	//Are we in no connect mode
 	if(DEX_DONOT_CONNECT){
+		return;
+	}
+	
+	//Are we in the SINBIN
+	if(SINBIN){
 		return;
 	}
 	
