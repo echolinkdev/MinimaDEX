@@ -316,7 +316,7 @@ server.on('connection', (socket) => {
 		try{
 			
 			//Remove user from Rate Limit
-			removeRLUser.removeRLUser(socket.id);
+			RATE_LIMIT.removeRLUser(socket.id);
 			
 			//remove from our client list
 			clients.delete(socket);
@@ -437,7 +437,7 @@ function sibin(socket){
 	//Tell the user to refresh in 10 minutes..
 	var rateobj 	= {};
 	rateobj.uuid	= "0x000000";
-	rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 10 minutes)";
+	rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 5 minutes)";
 	
 	//Send them a message..
 	socket.send(createCustomMsg("0x00","ratelimit",rateobj));

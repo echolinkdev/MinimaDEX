@@ -101,7 +101,7 @@ function mainListenerLoop(){
 			}
 		
 		}else if(msg.type=="ratelimit"){
-			console.log("RATE LIMIT Exceeded.. SIN BIN active (..ends in 10 minutes)");
+			console.log("MESSAGE RATE LIMIT Exceeded..");
 			
 			//Tell the User			
 			addChatLine(msg.data, true);
@@ -118,7 +118,7 @@ function mainListenerLoop(){
 				//Re-Post your orders..
 				postMyOrdersToServer();
 				
-			}, 1000 * 40);	
+			}, 1000 * 61 * 5);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");

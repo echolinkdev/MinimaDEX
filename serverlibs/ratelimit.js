@@ -4,8 +4,8 @@
 
 //The list of rate limited users
 var RLIMIT_USER_LIST 		= [];
-const MAX_MESSAGES_PM		= 3;
-const MAX_CHAT_MESSAGES_PM	= 3;
+const MAX_MESSAGES_PM		= 60;
+const MAX_CHAT_MESSAGES_PM	= 30;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
@@ -19,7 +19,7 @@ setInterval(function(){
 		RLIMIT_USER_LIST[i].chatbin 		= false; 
 	}
 	
-}, 1000 * 30);
+}, 1000 * 60);
 
 //Create a timer.. that wipes the users from SINBIN every 10 minutes
 setInterval(function(){
@@ -30,7 +30,7 @@ setInterval(function(){
 		RLIMIT_USER_LIST[i].sinbin = false;
 	}
 	
-}, 1000 * 30);
+}, 1000 * 60 * 5);
 
 function addRLUser(uuid){
 	
