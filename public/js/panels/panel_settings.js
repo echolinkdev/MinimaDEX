@@ -1,12 +1,6 @@
 
-const confirmcheck 	= document.getElementById('id_settings_createorder_confirm');
 const notifytrade 	= document.getElementById('id_settings_notify_trade');
 const notifychat 	= document.getElementById('id_settings_notify_chat');
-
-confirmcheck.addEventListener('click', () => {
-	USER_SETTINGS.confirmOrders = confirmcheck.checked;
-	saveUserSettings();
-});
 
 notifytrade.addEventListener('click', () => {
 	USER_SETTINGS.notifytrade = notifytrade.checked;
@@ -25,7 +19,6 @@ notifychat.addEventListener('click', () => {
 });
 
 function initSettings(){
-	confirmcheck.checked 	= USER_SETTINGS.confirmOrders;
 	notifytrade.checked 	= USER_SETTINGS.notifytrade;
 	notifychat.checked 		= USER_SETTINGS.notifychat;
 }
@@ -37,10 +30,6 @@ function loadUserSettings(){
 	//Check if exists
 	if(USER_SETTINGS == null){
 		USER_SETTINGS = {};
-	}
-	
-	if(typeof(USER_SETTINGS.confirmOrders) == "undefined"){
-		USER_SETTINGS.confirmOrders = true;
 	}
 	
 	if(typeof(USER_SETTINGS.notifytrade) == "undefined"){

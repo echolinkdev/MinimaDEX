@@ -74,13 +74,10 @@ function sendOrder(buysell){
 				+"\n\nConfirm ? ";
 	} 
 	
-	//Is the confirm checked..
-	if(USER_SETTINGS.confirmOrders){
-		//Check cnfirm
-		if(!confirm(confmsg)){
-			return;
-		}	
-	}
+	//Check cnfirm
+	if(!confirm(confmsg)){
+		return;
+	}	
 	
 	//Do we already have an order like this..
 	var prevorder = findMyOrder(buysell, price);
