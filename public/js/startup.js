@@ -118,7 +118,7 @@ function mainListenerLoop(){
 				//Re-Post your orders..
 				postMyOrdersToServer();
 				
-			}, 1000 * 61 * 5);	
+			}, 1000 * 65 * 5);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");

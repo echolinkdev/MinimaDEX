@@ -11,7 +11,7 @@ const MAX_CHAT_MESSAGES_PM	= 30;
 setInterval(function(){
 	//Set message count to ZERO
 	var len = RLIMIT_USER_LIST.length;
-	console.log("Reset Chat Rate Limit Messages size:"+len);
+	//console.log("Reset Chat Rate Limit Messages size:"+len);
 		
 	for(var i=0;i<len;i++){
 		RLIMIT_USER_LIST[i].messages 	 	= 0;
@@ -23,7 +23,7 @@ setInterval(function(){
 
 //Create a timer.. that wipes the users from SINBIN every 10 minutes
 setInterval(function(){
-	console.log("Reset All Message Rate Limit Messages")
+	//console.log("Reset All Message Rate Limit Messages")
 	//Set message count to ZERO
 	var len = RLIMIT_USER_LIST.length;
 	for(var i=0;i<len;i++){
@@ -91,8 +91,6 @@ function newValidRLMessage(uuid){
 	if(user.messages >= MAX_MESSAGES_PM){
 		return false;
 	}
-	
-	console.log("Check message limit : "+user.messages);
 	
 	//Increment
 	user.messages++;

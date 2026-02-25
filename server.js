@@ -158,8 +158,6 @@ server.on('connection', (socket) => {
 				} 
 			}
 			
-			console.log("message type : "+msgjson.type);
-			
 			//Check if the User is in the SIN BIN
 			if(msgjson.type != "ping" && msgjson.type != "chat"){
 				
@@ -186,13 +184,13 @@ server.on('connection', (socket) => {
 				//Are we in the chat bin
 				if(RATE_LIMIT.checkChatBin(socket.id)){
 					//NOT ALLOWED TO RECEIVE MESSAGES!
-					console.log("CHATBIN Message ignored from:"+socket.id);
+					//console.log("CHATBIN Message ignored from:"+socket.id);
 					return;
 				}
 				
 				//Check this users chat rate
 				if(!RATE_LIMIT.newValidRLChatMessage(socket.id)){
-					console.log("User Exceeded Chat Rate Limit! "+socket.id);
+					//console.log("User Exceeded Chat Rate Limit! "+socket.id);
 					
 					//Add to Chat Bin
 					RATE_LIMIT.addUserChatBin(socket.id);
