@@ -8,7 +8,7 @@ import fs from 'fs';
 var RLIMIT_USER_LIST 		= [];
 
 //Max messages that a user can send total per minute
-const MAX_MESSAGES_PM		= 100;
+const MAX_MESSAGES_PM		= 60;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
