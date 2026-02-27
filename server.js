@@ -158,8 +158,8 @@ server.on('connection', (socket) => {
 		console.log("New Connection.. "+socket.id);	
 	}	
 	
-	//Add this User to the Rate Limiter
-	RATE_LIMIT.addRLUser(socket.id);
+	//We still have to receive the FIRST message
+	socket.firstmessage = false;
 		
 	//Add client to our list
 	clients.add(socket);
@@ -184,59 +184,65 @@ server.on('connection', (socket) => {
 			//Get the JSON version
 			var msgjson = JSON.parse(strmsg);
 			
+			//Get the UUID
+			var uuid = msgjson .uuid;
+			
+			//Blank uuid.. as not to share
+			msgjson .uuid = "0xFF";
+			
+			//Check for User
+			if(!RATE_LIMIT.checkForUser(uuid)){
+				console.log("Add new UUID user : "+uuid);
+				//Add this User to the Rate Limiter
+				RATE_LIMIT.addRLUser(uuid);
+			}
+			
 			if(DEBUG_LOGS){
 				if(msgjson.type != "ping"){
 					console.log("Message from:"+socket.id+" msg:"+strmsg);	
 				} 
 			}
 			
-			//Check if the User is in the SIN BIN
-			if(msgjson.type != "ping" && msgjson.type != "chat"){
+			//Check if the User is in the SIN BIN (ping allowed)
+			if(msgjson.type != "ping"){
 				
 				//Are they in the SIN BIN
-				if(RATE_LIMIT.checkSinBin(socket.id)){
-					//NOT ALLOWED TO RECEIVE MESSAGES!
+				if(RATE_LIMIT.checkSinBin(uuid)){
 					console.log("SINBIN Message ignored from:"+socket.id+" msg:"+msgjson.type);
+					
+					//Is this the FIRST message
+					if(!socket.firstmessage){
+						socket.firstmessage = true;
+						
+						console.log("Send sinbin message to User "+uuid);
+						
+						//Tell the user to refresh in 10 minutes..
+						var rateobj 	= {};
+						rateobj.uuid	= "0x000000";
+						rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..you are in the SIN BIN for 5 minutes)";
+						
+						//Send them a message..
+						socket.send(createCustomMsg("0x00","ratelimit",rateobj));
+					}
+					
 					return;
 				}
 				
 				//Check general rate limit
-				if(!RATE_LIMIT.newValidRLMessage(socket.id)){
+				if(!RATE_LIMIT.newValidRLMessage(uuid)){
 									
 					//EXCEEDED..! add to SIN BIN	
-					sinbin(socket);
+					sinbin(uuid, socket);
 					
 					return;
 				}	
 			}
 			
+			//We have now received the first message
+			socket.firstmessage = true;
+			
 			//What message type is it..
 			if(msgjson.type == "chat"){
-				
-				//Are we in the chat bin
-				if(RATE_LIMIT.checkChatBin(socket.id)){
-					//NOT ALLOWED TO RECEIVE MESSAGES!
-					//console.log("CHATBIN Message ignored from:"+socket.id);
-					return;
-				}
-				
-				//Check this users chat rate
-				if(!RATE_LIMIT.newValidRLChatMessage(socket.id)){
-					//console.log("User Exceeded Chat Rate Limit! "+socket.id);
-					
-					//Add to Chat Bin
-					RATE_LIMIT.addUserChatBin(socket.id);
-					
-					//Create a Chat object
-					var chatobj 	= {};
-					chatobj.uuid	= "0x000000";
-					chatobj.message = "YOU HAVE EXCEEDED THE CHAT RATE LIMIT! (..now wait 1 minute)";
-					
-					//Send them a message..
-					socket.send(createCustomMsg(socket.id,"chat",chatobj));
-					
-					return;
-				}
 				
 				if(msgjson.data.trim() != ""){
 					
@@ -344,10 +350,6 @@ server.on('connection', (socket) => {
 		}
 		
 		try{
-			
-			//Remove user from Rate Limit
-			RATE_LIMIT.removeRLUser(socket.id);
-			
 			//remove from our client list
 			clients.delete(socket);
 			
@@ -452,10 +454,10 @@ function sendToUser(from, to, data){
 /**
  * RATE LIMIT SIN BIN
  */
-function sinbin(socket){
+function sinbin(uuid, socket){
 	
 	//Add User to the Sin bin.. 
-	RATE_LIMIT.addUserSinBin(socket.id);
+	RATE_LIMIT.addUserSinBin(uuid);
 	
 	//wipe their orders.. they refresh in 10 minutes
 	var sinorderbook 	= orderbooks[socket.id];

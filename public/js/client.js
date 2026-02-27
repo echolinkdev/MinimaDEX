@@ -127,6 +127,10 @@ function wsPostToServer(jsonmsg){
 		return;
 	}
 	
+	//Add OUR uuid.. 
+	jsonmsg.uuid = USER_SETTINGS.uuid_rate;
+	
+	//Convert to string
 	var strmsg = JSON.stringify(jsonmsg);
 	
 	//Is the Socket OPEN

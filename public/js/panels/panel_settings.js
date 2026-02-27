@@ -33,16 +33,25 @@ function loadUserSettings(){
 	}
 	
 	//The USER picks a random UID - that is not shared.. this is for the server
+	var needsave = false;
 	if(typeof(USER_SETTINGS.uuid_rate) == "undefined"){
+		needsave = true;
 		USER_SETTINGS.uuid_rate = getRandomHexString();
 	}
 	
 	if(typeof(USER_SETTINGS.notifytrade) == "undefined"){
+		needsave = true;
 		USER_SETTINGS.notifytrade = false;
 	}
 	
 	if(typeof(USER_SETTINGS.notifychat) == "undefined"){
+		needsave = true;
 		USER_SETTINGS.notifychat = false;
+	}
+	
+	//Save them..
+	if(needsave){
+		saveUserSettings();	
 	}
 }
 

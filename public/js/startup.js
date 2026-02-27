@@ -15,6 +15,9 @@ document.getElementById('id_init_password').addEventListener("keydown", function
     }
 });
 
+//Timeout ID for reconnect after ratelimit..
+var RATELIMIT_TIMEOUT = 0;
+
 /**
  * Called to  init DEX
  */
@@ -101,7 +104,7 @@ function mainListenerLoop(){
 			}
 		
 		}else if(msg.type=="ratelimit"){
-			console.log("MESSAGE RATE LIMIT Exceeded..");
+			console.log("MESSAGE RATE LIMIT Exceeded.. timer started");
 			
 			//Tell the User			
 			addChatLine(msg.data, true);
@@ -109,8 +112,11 @@ function mainListenerLoop(){
 			//we are in the sinbin
 			SINBIN = true;
 			
+			//Clear the old timeout..
+			clearTimeout(RATELIMIT_TIMEOUT);
+			
 			//User has exceeded the rate limit.. in sin bin
-			setTimeout(function(){
+			RATELIMIT_TIMEOUT = setTimeout(function(){
 				console.log("RESEND Orderbook after SIN BIN")
 				
 				SINBIN = false;
@@ -118,7 +124,13 @@ function mainListenerLoop(){
 				//Re-Post your orders..
 				postMyOrdersToServer();
 				
-			}, 1000 * 65 * 5);	
+				//Tell them in the chat
+				var chatobj 		= {};
+				chatobj.uuid 		= "0x000000";
+				chatobj.message 	= "You have rejoined the server..";
+				addChatLine(chatobj, true);
+				
+			}, 1000 * 65 * 1);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");
