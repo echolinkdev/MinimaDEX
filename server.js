@@ -117,6 +117,39 @@ var alltrades	= [];
 //Last few Chat messages..
 var allchat	= [];
 
+//Run a function on exit
+process.on("SIGINT", function(){
+	process.exit(0);
+});
+
+process.on("SIGTERM", function(){
+	process.exit(0);
+});
+
+process.on("exit", function(){
+	shutdown();
+});
+
+function shutdown(){
+	
+	console.log("Running shutdown function..");
+	
+	
+	//Try and write this..
+	try{
+		console.log("Save trades file..");
+		fs.writeFileSync(TRADES_FILE, JSON.stringify(alltrades));
+			
+		console.log("Save rate limit data..");
+		RATE_LIMIT.saveRateLimitData();
+			
+	}catch(Error){
+		console.log("Error writing files.. : "+Error)
+	}
+	
+	
+}
+
 //What to do on connections
 server.on('connection', (socket) => {
 	
@@ -356,11 +389,11 @@ try {
 
 		//Set this..
 		alltrades = newarr; 
-		
-		//And save this..
-		fs.writeFileSync(TRADES_FILE, JSON.stringify(alltrades));
 	}
   
+	//Load in the Rate limit..
+	RATE_LIMIT.loadRateLimitData();
+	
 } catch (err) {
   	//File not found.. first time running..
 	console.error('No Trades found.. yet..');
@@ -452,13 +485,6 @@ function addTrade(trade){
 	//Max number of trades
 	if(alltrades.length > MAX_TRADES){
 		alltrades.shift();
-	}
-
-	//Try and write this..
-	try{
-		fs.writeFileSync(TRADES_FILE, JSON.stringify(alltrades));	
-	}catch(Error){
-		console.log("Error write file.. : "+Error)
 	}	
 }
 

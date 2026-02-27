@@ -1,3 +1,5 @@
+import fs from 'fs';
+
 /**
  * Simple Rate Limit function 
  */
@@ -6,6 +8,9 @@
 var RLIMIT_USER_LIST 		= [];
 const MAX_MESSAGES_PM		= 60;
 const MAX_CHAT_MESSAGES_PM	= 30;
+
+//The RATE LIMIT DB file
+var RATELIMIT_FILE = "ratelimit.json";
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
@@ -31,6 +36,25 @@ setInterval(function(){
 	}
 	
 }, 1000 * 60 * 5);
+
+function loadRateLimitData(){
+	
+	try{
+		console.log("Load Rate Limit data..");
+		
+		// Read file synchronously
+	  	const data = fs.readFileSync(RATELIMIT_FILE, 'utf8');
+	  
+	  	//Convert
+	  	RLIMIT_USER_LIST = JSON.parse(data);	
+	}catch(err){
+		//console.log("Error loading rate limit file : "+err);
+	}
+}
+
+function saveRateLimitData(){
+	fs.writeFileSync(RATELIMIT_FILE, JSON.stringify(RLIMIT_USER_LIST));
+}
 
 function addRLUser(uuid){
 	
@@ -140,7 +164,9 @@ function checkChatBin(uuid){
 }
 
 //Export the Functions
-export { 	addRLUser, 
+export { 	loadRateLimitData,
+			saveRateLimitData,
+			addRLUser, 
 			removeRLUser,
 			newValidRLMessage, 
 			newValidRLChatMessage, 
