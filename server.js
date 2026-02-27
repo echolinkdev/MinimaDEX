@@ -16,7 +16,9 @@ var DEBUG_LOGS 			= false;
 var SERVER_PORT 		= 8081;
 var MAX_TRADES 			= 1000;
 var MAX_USER_ORDERS 	= 50;
+
 var TRADES_FILE 		= "./trades.json";
+var RATELIMIT_FILE 		= "./ratelimit.json";
 
 var MEG_CHECK_TRADES	= false;
 var MEG_SERVER 			= "127.0.0.1";
@@ -36,6 +38,7 @@ for(var c=0;c<args.length;c++){
 		console.log("-port [port]                            : Set the port to listen on");
 		console.log("-megserver [user:password@host:port]    : Specify a MEG server to check trades");
 		console.log("-tradesfile [file]                      : Set the file to store trades");
+		console.log("-ratesfile [file]                       : Set the file to store rate limit data");
 		console.log("-maxtrades [maxtrades]                  : Max trades to store in file");
 		console.log("-debug                                  : Show debug output");
 		console.log("-help                                   : Show this help");
@@ -50,6 +53,10 @@ for(var c=0;c<args.length;c++){
 		c++;
 		TRADES_FILE = args[c];
 	
+	}else if(param == "-ratesfile"){
+		c++;
+		RATELIMIT_FILE = args[c];
+		
 	}else if(param == "-maxtrades"){
 		c++;
 		MAX_TRADES = +args[c];
@@ -81,12 +88,6 @@ for(var c=0;c<args.length;c++){
 		c++;
 		SERVER_PORT = +args[c];
 	}
-}
-
-//MUST set a trades file..
-if(TRADES_FILE == ""){
-	console.log("You MUST specify a file to store trades.. Use -help for more info");
-	process.exit();
 }
 
 //Output some info
@@ -140,7 +141,7 @@ function shutdown(){
 		fs.writeFileSync(TRADES_FILE, JSON.stringify(alltrades));
 			
 		console.log("Save rate limit data..");
-		RATE_LIMIT.saveRateLimitData();
+		RATE_LIMIT.saveRateLimitData(RATELIMIT_FILE);
 			
 	}catch(Error){
 		console.log("Error writing files.. : "+Error)
@@ -192,7 +193,8 @@ server.on('connection', (socket) => {
 			
 			if(DEBUG_LOGS){
 				if(msgjson.type != "ping"){
-					console.log("Message from:"+socket.id+" msg:"+strmsg);	
+					//console.log("Message from:"+socket.id+" msg:"+strmsg);
+					console.log("Message from:"+socket.id+" msg:"+strmsg.substring(0,20)+"..");	
 				} 
 			}
 			
@@ -207,7 +209,7 @@ server.on('connection', (socket) => {
 					RATE_LIMIT.addRLUser(uuid);
 					
 					//NEW users automatically go in SIN BIN..
-					sinbin(uuid, socket, "As a NEW USER you are not allowed to send messages for 10 minutes..");
+					sinbin(uuid, socket, "As a NEW USER you are not allowed to send messages for 5 minutes..");
 					
 					socket.firstmessage = true;
 					
@@ -225,7 +227,7 @@ server.on('connection', (socket) => {
 						//Tell the user to refresh in 10 minutes..
 						var rateobj 	= {};
 						rateobj.uuid	= "0x000000";
-						rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..you are in the SIN BIN for 10 minutes)";
+						rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..you are in the SIN BIN for 5 minutes)";
 						
 						//Send them a message..
 						socket.send(createCustomMsg("0x00","ratelimit",rateobj));
@@ -236,7 +238,7 @@ server.on('connection', (socket) => {
 				}else if(!RATE_LIMIT.newValidRLMessage(uuid)){
 									
 					//EXCEEDED..! add to SIN BIN	
-					sinbin(uuid, socket, "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 10 minutes)");
+					sinbin(uuid, socket, "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 5 minutes)");
 					
 					try{
 						//wipe their orders.. they refresh in 10 minutes
@@ -414,7 +416,7 @@ try {
 }
 
 //Load in the Rate limit..
-RATE_LIMIT.loadRateLimitData();
+RATE_LIMIT.loadRateLimitData(RATELIMIT_FILE);
 
 /**
  * UTILITY FUNCTIONS
@@ -424,7 +426,8 @@ RATE_LIMIT.loadRateLimitData();
 function broadcast(str){
 	
 	if(DEBUG_LOGS){
-		console.log("Broadcast > "+str);	
+		//console.log("Broadcast > "+str);
+		console.log("Broadcast > "+str.substring(0,20)+"..");	
 	}
 	
 	//Cycle through all the clients

@@ -93,6 +93,7 @@ function wsInitSocket(initcallback){
 	};
 	
 	WEB_SOCKET.onerror = () => {
+		
 		setDexState("Error.. reconnecting in 30s");
 		console.log('Error connecting to server');
 		

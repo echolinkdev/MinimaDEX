@@ -8,12 +8,7 @@ import fs from 'fs';
 var RLIMIT_USER_LIST 		= [];
 
 //Max messages that a user can send total per minute
-const MAX_MESSAGES_PM		= 100;
-
-//The RATE LIMIT DB file
-var RATELIMIT_FILE = "ratelimit.json";
-
-var HOURS_1 = 1000 * 60 * 60;
+const MAX_MESSAGES_PM		= 10;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
@@ -27,7 +22,7 @@ setInterval(function(){
 	
 }, 1000 * 60);
 
-//Create a timer.. that wipes the users from SINBIN every 10 minutes
+//Create a timer.. that wipes the users from SINBIN every 5 minutes
 setInterval(function(){
 	//console.log("Reset All Message Rate Limit Messages")
 	//Set message count to ZERO
@@ -36,30 +31,34 @@ setInterval(function(){
 		RLIMIT_USER_LIST[i].sinbin = false;
 	}
 	
-}, 1000 * 60 * 10);
+}, 1000 * 60 * 1);
 
-function loadRateLimitData(){
+function loadRateLimitData(file){
 	
 	try{
 		console.log("Load Rate Limit data..");
 		
 		// Read file synchronously
-	  	const data = fs.readFileSync(RATELIMIT_FILE, 'utf8');
+	  	const data = fs.readFileSync(file, 'utf8');
 	  
 	  	//Convert
 	  	RLIMIT_USER_LIST = JSON.parse(data);	
 		
-		//Remove OLD users.. 7 days since last visit
+		//Reset SINBIN && Remove OLD users.. 7 days since last visit
 		var recdate = new Date();
-		var maxtime = recdate.getTime() - (HOURS_1*24*7);
+		var maxtime = recdate.getTime() - (1000 * 60 * 60 * 24 *7);
 		 
 		var newarr = [];
 		var len = RLIMIT_USER_LIST.length;
 		for(var i=0;i<len;i++){
 			if(RLIMIT_USER_LIST[i].lastmessage > maxtime){
+				
+				//Not in SIN BIN
+				RLIMIT_USER_LIST[i].messages = 0;
+				RLIMIT_USER_LIST[i].sinbin 	 = false;
+				
+				//KEEP this user
 				newarr.push(RLIMIT_USER_LIST[i]);
-			}else{
-				//console.log("OLD RL user removed.. : "+RLIMIT_USER_LIST[i].uuid);
 			} 
 		}
 		RLIMIT_USER_LIST = newarr;
@@ -69,8 +68,8 @@ function loadRateLimitData(){
 	}
 }
 
-function saveRateLimitData(){
-	fs.writeFileSync(RATELIMIT_FILE, JSON.stringify(RLIMIT_USER_LIST));
+function saveRateLimitData(file){
+	fs.writeFileSync(file, JSON.stringify(RLIMIT_USER_LIST));
 }
 
 function addRLUser(uuid){
@@ -138,8 +137,6 @@ function newValidRLMessage(uuid){
 		return false;
 	}
 	
-	console.log("Check User messages : "+user.messages);
-	
 	//Current time
 	var recdate 		= new Date();
 	user.lastmessage	= recdate.getTime();
@@ -163,7 +160,8 @@ function checkSinBin(uuid){
 }
 
 //Export the Functions
-export { 	loadRateLimitData,
+export { 	
+			loadRateLimitData,
 			saveRateLimitData,
 			addRLUser, 
 			checkForUser,

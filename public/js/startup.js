@@ -127,10 +127,10 @@ function mainListenerLoop(){
 				//Tell them in the chat
 				var chatobj 		= {};
 				chatobj.uuid 		= "0x000000";
-				chatobj.message 	= "You have rejoined the server..";
+				chatobj.message 	= "You have now rejoined the server..";
 				addChatLine(chatobj, true);
 				
-			}, 1000 * 65 * 10);	
+			}, 1000 * 65 * 1);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");
