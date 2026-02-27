@@ -190,13 +190,6 @@ server.on('connection', (socket) => {
 			//Blank uuid.. as not to share
 			msgjson .uuid = "0xFF";
 			
-			//Check for User
-			if(!RATE_LIMIT.checkForUser(uuid)){
-				console.log("Add new UUID user : "+uuid);
-				//Add this User to the Rate Limiter
-				RATE_LIMIT.addRLUser(uuid);
-			}
-			
 			if(DEBUG_LOGS){
 				if(msgjson.type != "ping"){
 					console.log("Message from:"+socket.id+" msg:"+strmsg);	
@@ -206,8 +199,21 @@ server.on('connection', (socket) => {
 			//Check if the User is in the SIN BIN (ping allowed)
 			if(msgjson.type != "ping"){
 				
-				//Are they in the SIN BIN
-				if(RATE_LIMIT.checkSinBin(uuid)){
+				//Check for User
+				if(!RATE_LIMIT.checkForUser(uuid)){
+					console.log("Add new UUID user : "+uuid);
+					
+					//Add this User to the Rate Limiter
+					RATE_LIMIT.addRLUser(uuid);
+					
+					//NEW users automatically go in SIN BIN..
+					sinbin(uuid, socket, "As a NEW USER you are not allowed to send messages for 10 minutes..");
+					
+					socket.firstmessage = true;
+					
+					return;
+					
+				}else if(RATE_LIMIT.checkSinBin(uuid)){
 					console.log("SINBIN Message ignored from:"+socket.id+" msg:"+msgjson.type);
 					
 					//Is this the FIRST message
@@ -219,20 +225,30 @@ server.on('connection', (socket) => {
 						//Tell the user to refresh in 10 minutes..
 						var rateobj 	= {};
 						rateobj.uuid	= "0x000000";
-						rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..you are in the SIN BIN for 5 minutes)";
+						rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..you are in the SIN BIN for 10 minutes)";
 						
 						//Send them a message..
 						socket.send(createCustomMsg("0x00","ratelimit",rateobj));
 					}
 					
 					return;
-				}
 				
-				//Check general rate limit
-				if(!RATE_LIMIT.newValidRLMessage(uuid)){
+				}else if(!RATE_LIMIT.newValidRLMessage(uuid)){
 									
 					//EXCEEDED..! add to SIN BIN	
-					sinbin(uuid, socket);
+					sinbin(uuid, socket, "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 10 minutes)");
+					
+					try{
+						//wipe their orders.. they refresh in 10 minutes
+						var sinorderbook 	= orderbooks[socket.id];
+						sinorderbook.orders = [];
+						
+						//Broadcast this new empty book..
+						broadcast(createCustomMsg(socket.id,"update_orderbook",sinorderbook));	
+						
+					}catch(err){
+						
+					}
 					
 					return;
 				}	
@@ -454,22 +470,15 @@ function sendToUser(from, to, data){
 /**
  * RATE LIMIT SIN BIN
  */
-function sinbin(uuid, socket){
+function sinbin(uuid, socket, message){
 	
 	//Add User to the Sin bin.. 
 	RATE_LIMIT.addUserSinBin(uuid);
 	
-	//wipe their orders.. they refresh in 10 minutes
-	var sinorderbook 	= orderbooks[socket.id];
-	sinorderbook.orders = [];
-	
-	//Broadcast this new empty book..
-	broadcast(createCustomMsg(socket.id,"update_orderbook",sinorderbook));
-	
 	//Tell the user to refresh in 10 minutes..
 	var rateobj 	= {};
 	rateobj.uuid	= "0x000000";
-	rateobj.message = "YOU HAVE EXCEEDED THE MESSAGE RATE LIMIT! (..added to SIN BIN for 5 minutes)";
+	rateobj.message = message;
 	
 	//Send them a message..
 	socket.send(createCustomMsg("0x00","ratelimit",rateobj));

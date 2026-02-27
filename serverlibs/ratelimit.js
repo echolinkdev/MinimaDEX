@@ -8,10 +8,12 @@ import fs from 'fs';
 var RLIMIT_USER_LIST 		= [];
 
 //Max messages that a user can send total per minute
-const MAX_MESSAGES_PM		= 10;
+const MAX_MESSAGES_PM		= 100;
 
 //The RATE LIMIT DB file
 var RATELIMIT_FILE = "ratelimit.json";
+
+var HOURS_1 = 1000 * 60 * 60;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
@@ -20,7 +22,7 @@ setInterval(function(){
 	//console.log("Reset Chat Rate Limit Messages size:"+len);
 		
 	for(var i=0;i<len;i++){
-		RLIMIT_USER_LIST[i].messages 	 	= 0; 
+		RLIMIT_USER_LIST[i].messages = 0; 
 	}
 	
 }, 1000 * 60);
@@ -34,7 +36,7 @@ setInterval(function(){
 		RLIMIT_USER_LIST[i].sinbin = false;
 	}
 	
-}, 1000 * 60 * 1);
+}, 1000 * 60 * 10);
 
 function loadRateLimitData(){
 	
@@ -46,6 +48,22 @@ function loadRateLimitData(){
 	  
 	  	//Convert
 	  	RLIMIT_USER_LIST = JSON.parse(data);	
+		
+		//Remove OLD users.. 7 days since last visit
+		var recdate = new Date();
+		var maxtime = recdate.getTime() - (HOURS_1*24*7);
+		 
+		var newarr = [];
+		var len = RLIMIT_USER_LIST.length;
+		for(var i=0;i<len;i++){
+			if(RLIMIT_USER_LIST[i].lastmessage > maxtime){
+				newarr.push(RLIMIT_USER_LIST[i]);
+			}else{
+				//console.log("OLD RL user removed.. : "+RLIMIT_USER_LIST[i].uuid);
+			} 
+		}
+		RLIMIT_USER_LIST = newarr;
+		
 	}catch(err){
 		//console.log("Error loading rate limit file : "+err);
 	}
@@ -121,6 +139,10 @@ function newValidRLMessage(uuid){
 	}
 	
 	console.log("Check User messages : "+user.messages);
+	
+	//Current time
+	var recdate 		= new Date();
+	user.lastmessage	= recdate.getTime();
 	
 	//Increment
 	user.messages++;
