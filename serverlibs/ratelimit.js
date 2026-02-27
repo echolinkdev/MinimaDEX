@@ -8,7 +8,7 @@ import fs from 'fs';
 var RLIMIT_USER_LIST 		= [];
 
 //Max messages that a user can send total per minute
-const MAX_MESSAGES_PM		= 10;
+const MAX_MESSAGES_PM		= 100;
 
 //Create a timer.. that wipes the users chat rate every minute..
 setInterval(function(){
@@ -31,7 +31,7 @@ setInterval(function(){
 		RLIMIT_USER_LIST[i].sinbin = false;
 	}
 	
-}, 1000 * 60 * 1);
+}, 1000 * 60 * 5);
 
 function loadRateLimitData(file){
 	
@@ -44,21 +44,23 @@ function loadRateLimitData(file){
 	  	//Convert
 	  	RLIMIT_USER_LIST = JSON.parse(data);	
 		
-		//Reset SINBIN && Remove OLD users.. 7 days since last visit
+		//Reset SINBIN && Remove OLD users.. 14 days since last visit
 		var recdate = new Date();
-		var maxtime = recdate.getTime() - (1000 * 60 * 60 * 24 *7);
+		var maxtime = recdate.getTime() - (1000 * 60 * 60 * 24 * 14);
 		 
 		var newarr = [];
 		var len = RLIMIT_USER_LIST.length;
 		for(var i=0;i<len;i++){
-			if(RLIMIT_USER_LIST[i].lastmessage > maxtime){
+			
+			var rluser = RLIMIT_USER_LIST[i];
+			if(rluser.lastmessage > maxtime){
 				
 				//Not in SIN BIN
-				RLIMIT_USER_LIST[i].messages = 0;
-				RLIMIT_USER_LIST[i].sinbin 	 = false;
+				rluser.messages  = 0;
+				rluser.sinbin 	 = false;
 				
 				//KEEP this user
-				newarr.push(RLIMIT_USER_LIST[i]);
+				newarr.push(rluser);
 			} 
 		}
 		RLIMIT_USER_LIST = newarr;

@@ -130,7 +130,7 @@ function mainListenerLoop(){
 				chatobj.message 	= "You have now rejoined the server..";
 				addChatLine(chatobj, true);
 				
-			}, 1000 * 65 * 1);	
+			}, 1000 * 65 * 5);	
 			
 		}else if(msg.type=="pong"){
 			//console.log("Received PONG : ");
