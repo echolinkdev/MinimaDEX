@@ -32,6 +32,11 @@ function loadUserSettings(){
 		USER_SETTINGS = {};
 	}
 	
+	//The USER picks a random UID - that is not shared.. this is for the server
+	if(typeof(USER_SETTINGS.uuid_rate) == "undefined"){
+		USER_SETTINGS.uuid_rate = getRandomHexString();
+	}
+	
 	if(typeof(USER_SETTINGS.notifytrade) == "undefined"){
 		USER_SETTINGS.notifytrade = false;
 	}
