@@ -4,10 +4,9 @@
 import { WebSocketServer } from 'ws';
 import { WebSocket } from 'ws';
 import fs from 'fs';
-import * as http from 'http';
 
-//var tools = require('./ratelimit.js');
 import * as RATE_LIMIT from "./serverlibs/ratelimit.js"
+import * as UTILS from "./serverlibs/serverutils.js"
 
 
 /**
@@ -154,7 +153,7 @@ function shutdown(){
 server.on('connection', (socket) => {
 	
 	//Set a unique ID
-	socket.id = getRandomHexString();
+	socket.id = UTILS.getRandomHexString();
 	if(DEBUG_LOGS){
 		console.log("New Connection.. "+socket.id);	
 	}	
@@ -205,7 +204,7 @@ server.on('connection', (socket) => {
 				if(!RATE_LIMIT.newValidRLMessage(socket.id)){
 									
 					//EXCEEDED..! add to SIN BIN	
-					sibin(socket);
+					sinbin(socket);
 					
 					return;
 				}	
@@ -308,7 +307,7 @@ server.on('connection', (socket) => {
 				var trade = msgjson.data;
 								
 				//NOT checked yet
-				trade.checkuid  = getRandomHexString();
+				trade.checkuid  = UTILS.getRandomHexString();
 				trade.checked   = false;
 				trade.checking  = MEG_CHECK_TRADES;
 				
@@ -391,13 +390,13 @@ try {
 		alltrades = newarr; 
 	}
   
-	//Load in the Rate limit..
-	RATE_LIMIT.loadRateLimitData();
-	
 } catch (err) {
   	//File not found.. first time running..
 	console.error('No Trades found.. yet..');
 }
+
+//Load in the Rate limit..
+RATE_LIMIT.loadRateLimitData();
 
 /**
  * UTILITY FUNCTIONS
@@ -453,7 +452,7 @@ function sendToUser(from, to, data){
 /**
  * RATE LIMIT SIN BIN
  */
-function sibin(socket){
+function sinbin(socket){
 	
 	//Add User to the Sin bin.. 
 	RATE_LIMIT.addUserSinBin(socket.id);
@@ -576,15 +575,6 @@ function removeOrder(fromid, bookuuid){
 	orderbooks[fromid].orders = neworders;
 }
 
-//Get a random string
-const HEXVALS = '0123456789ABCDEF';
-function getRandomHexString() {
-    let output = '';
-    for (let i = 0; i < 30; ++i) {
-        output += HEXVALS.charAt(Math.floor(Math.random() * HEXVALS.length));
-    }
-    return "0x"+output;
-}
 
 /**
  * IF a MEG server is spoecified.. will check a Trade before sending on..
@@ -633,7 +623,7 @@ if(MEG_CHECK_TRADES){
 	}, 1000 * 30);
 	
 	//Run a check
-	postURL("/wallet/block","",function(resp){
+	UTILS.postURL(MEG_SERVER, MEG_PORT, MEG_AUTH, "/wallet/block","",function(resp){
 		console.log("MEG check block call : "+JSON.stringify(resp));
 	});
 }
@@ -678,13 +668,13 @@ function checkTrade(trade){
 }
 
 function checkTxPoW(txpowid,callback){
-	postURL("/wallet/checktxpow","txpowid="+txpowid, function(resp){
+	UTILS.postURL(MEG_SERVER, MEG_PORT, MEG_AUTH, "/wallet/checktxpow","txpowid="+txpowid, function(resp){
 		callback(resp);	
 	});
 }
 
 //Make a GET request
-function postURL(url, postData, callback){
+/*function postURL(url, postData, callback){
 	
 	//Create the AUTH header
 	var header =  { 
@@ -724,4 +714,4 @@ function postURL(url, postData, callback){
 	// Write data to request body
 	req.write(postData);
 	req.end();
-}
+}*/
