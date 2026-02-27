@@ -13,6 +13,7 @@ import * as UTILS from "./serverlibs/serverutils.js"
  * Defauilt parameters
  */
 var DEBUG_LOGS 			= false;
+var DEBUG_SHORT			= false;
 var SERVER_PORT 		= 8081;
 var MAX_TRADES 			= 1000;
 var MAX_USER_ORDERS 	= 50;
@@ -41,6 +42,7 @@ for(var c=0;c<args.length;c++){
 		console.log("-ratesfile [file]                       : Set the file to store rate limit data");
 		console.log("-maxtrades [maxtrades]                  : Max trades to store in file");
 		console.log("-debug                                  : Show debug output");
+		console.log("-debugshort                             : Show shorter debug output");
 		console.log("-help                                   : Show this help");
 		
 		//And exit
@@ -49,6 +51,10 @@ for(var c=0;c<args.length;c++){
 	}else if(param == "-debug"){
 		DEBUG_LOGS = true;
 	
+	}else if(param == "-debugshort"){
+		DEBUG_LOGS  = true;
+		DEBUG_SHORT = true;
+				
 	}else if(param == "-tradesfile"){
 		c++;
 		TRADES_FILE = args[c];
@@ -186,15 +192,18 @@ server.on('connection', (socket) => {
 			var msgjson = JSON.parse(strmsg);
 			
 			//Get the UUID
-			var uuid = msgjson .uuid;
+			var uuid = msgjson.uuid;
 			
 			//Blank uuid.. as not to share
-			msgjson .uuid = "0xFF";
+			msgjson.uuid = "0xFF";
 			
 			if(DEBUG_LOGS){
 				if(msgjson.type != "ping"){
-					//console.log("Message from:"+socket.id+" msg:"+strmsg);
-					console.log("Message from:"+socket.id+" msg:"+strmsg.substring(0,20)+"..");	
+					if(DEBUG_SHORT){
+						console.log("Message from:"+socket.id+" msg:"+strmsg.substring(0,20)+"..");	
+					}else{
+						console.log("Message from:"+socket.id+" msg:"+strmsg);	
+					}	
 				} 
 			}
 			
@@ -426,8 +435,11 @@ RATE_LIMIT.loadRateLimitData(RATELIMIT_FILE);
 function broadcast(str){
 	
 	if(DEBUG_LOGS){
-		//console.log("Broadcast > "+str);
-		console.log("Broadcast > "+str.substring(0,20)+"..");	
+		if(DEBUG_SHORT){
+			console.log("Broadcast > "+str.substring(0,20)+"..");
+		}else{
+			console.log("Broadcast > "+str);
+		}	
 	}
 	
 	//Cycle through all the clients
@@ -446,10 +458,14 @@ function broadcast(str){
 function sendToUser(from, to, data){
 	
 	//Create the message
-	var msg 	= createCustomMsg(from, "message", data);
+	var msg = createCustomMsg(from, "message", data);
 	
 	if(DEBUG_LOGS){
-		console.log("Send To "+to+"> "+msg);	
+		if(DEBUG_SHORT){
+			console.log("Send To "+to+"> "+msg.substring(0,20)+"..");
+		}else{
+			console.log("Send To "+to+"> "+msg);	
+		}
 	}
 	
 	//Cycle through all the clients
