@@ -44,26 +44,33 @@ function loadRateLimitData(file){
 	  	//Convert
 	  	RLIMIT_USER_LIST = JSON.parse(data);	
 		
-		//Reset SINBIN && Remove OLD users.. 14 days since last visit
-		var recdate = new Date();
-		var maxtime = recdate.getTime() - (1000 * 60 * 60 * 24 * 14);
-		 
-		var newarr = [];
-		var len = RLIMIT_USER_LIST.length;
-		for(var i=0;i<len;i++){
-			
-			var rluser = RLIMIT_USER_LIST[i];
-			if(rluser.lastmessage > maxtime){
-				
-				//Not in SIN BIN
-				rluser.messages  = 0;
-				rluser.sinbin 	 = false;
-				
-				//KEEP this user
-				newarr.push(rluser);
-			} 
+		//Noone in SIN BIN at restart
+		var rllen = RLIMIT_USER_LIST.length;
+		for(var i=0;i<rllen;i++){
+			//Not in SIN BIN
+			RLIMIT_USER_LIST[i].messages  = 0;
+			RLIMIT_USER_LIST[i].sinbin 	  = false;
 		}
-		RLIMIT_USER_LIST = newarr;
+		
+		//Once too large
+		console.log("Rate Limit data size : "+rllen);
+		if(rllen > 2000){
+			console.log("Pruning Rate Limit DB of users > 14 days old..");
+			
+			//Reset SINBIN && Remove OLD users.. 14 days since last visit
+			var recdate = new Date();
+			var maxtime = recdate.getTime() - (1000 * 60 * 60 * 24 * 14);
+			 
+			var newarr = [];
+			for(var i=0;i<rllen;i++){
+				if(RLIMIT_USER_LIST[i].lastmessage > maxtime){
+					//KEEP this user
+					newarr.push(RLIMIT_USER_LIST[i]);
+				} 
+			}
+			
+			RLIMIT_USER_LIST = newarr;
+		}
 		
 	}catch(err){
 		//console.log("Error loading rate limit file : "+err);
