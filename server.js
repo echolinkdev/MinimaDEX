@@ -219,7 +219,6 @@ server.on('connection', (socket) => {
 				
 				//Check for User
 				if(!RATE_LIMIT.checkForUser(uuid)){
-					console.log("Add new UUID user : "+uuid);
 					
 					//Add this User to the Rate Limiter
 					RATE_LIMIT.addRLUser(uuid);
