@@ -86,9 +86,23 @@ p {
 	padding:8px;
 }
 
-.buyorder{background-color: #aaffaa;} 
+.buyorder {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, rgba(34, 197, 94, 0.05) 100%);
+  border-left: 3px solid var(--buy);
+} 
+.sellorder {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2) 0%, rgba(239, 68, 68, 0.05) 100%);
+  border-left: 3px solid var(--sell);
+} 
+.otherorder {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.2) 0%, rgba(251, 146, 60, 0.05) 100%);
+  border-left: 3px solid var(--other);
+} 
+
+/*.buyorder{background-color: #aaffaa;} 
 .sellorder{background-color: #ffaaaa;} 
 .otherorder{background-color: #bbbbff;} 
+*/
 
 .chatroom{
 	padding:4px;
