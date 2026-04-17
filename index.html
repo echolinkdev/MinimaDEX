@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MinimaDEX</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #ffffff;
+            transition: background-color 0.3s ease;
+        }
+
+        header {
+            background: linear-gradient(90deg, #6a11cb, #2575fc);
+            padding: 1em;
+            text-align: center;
+        }
+
+        nav {
+            margin: 1em 0;
+        }
+
+        nav a {
+            color: white;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .card {
+            background: #1e1e1e;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin: 15px;
+            padding: 20px;
+            flex: 1 1 calc(30% - 40px);
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            margin-top: 0;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                flex: 1 1 calc(45% - 40px);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to MinimaDEX</h1>
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#services">Services</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h3>Card Title 1</h3>
+            <p>Some description about this feature goes here.</p>
+        </div>
+        <div class="card">
+            <h3>Card Title 2</h3>
+            <p>Some description about this feature goes here.</p>
+        </div>
+        <div class="card">
+            <h3>Card Title 3</h3>
+            <p>Some description about this feature goes here.</p>
+        </div>
+    </div>
+</body>
+</html>
